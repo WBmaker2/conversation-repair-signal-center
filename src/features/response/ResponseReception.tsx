@@ -22,7 +22,7 @@ export function ResponseReception({
 }: ResponseReceptionProps) {
   return (
     <section aria-labelledby="response-heading">
-      <h2 id="response-heading">응답 수신</h2>
+      <h2 id="response-heading" tabIndex={-1}>응답 수신</h2>
       <blockquote>
         <LanguageText language="en">{mission.clarifyingResponse.textEn}</LanguageText>
         {mission.clarifyingResponse.supportKo && (
@@ -35,7 +35,7 @@ export function ResponseReception({
       <fieldset>
         <legend>상대가 확인해 준 뜻은 무엇인가요?</legend>
         {mission.meaningOptions.map((option) => (
-          <label key={option.id}>
+          <label className="choice-label" key={option.id}>
             <input
               type="radio"
               name="meaning"

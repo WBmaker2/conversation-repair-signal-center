@@ -1,0 +1,87 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-inline-size: 320px;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-inline-size: 320px;
+  min-block-size: 100%;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-size: clamp(1rem, 0.94rem + 0.2vw, 1.125rem);
+  line-height: 1.55;
+}
+
+button,
+select,
+summary,
+input {
+  font: inherit;
+}
+
+button,
+select,
+summary,
+.choice-label {
+  min-block-size: 44px;
+  min-inline-size: 44px;
+}
+
+button,
+select {
+  border: 2px solid var(--color-signal-dark);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  padding: var(--space-2) var(--space-4);
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-signal);
+  outline-offset: 3px;
+}
+
+h1,
+h2,
+h3,
+p,
+ul,
+ol,
+figure,
+blockquote {
+  margin-block: 0 var(--space-4);
+}
+
+h1 {
+  font-size: clamp(1.75rem, 1.35rem + 2vw, 3rem);
+  line-height: 1.12;
+}
+
+h2 {
+  font-size: clamp(1.35rem, 1.15rem + 1vw, 2rem);
+  line-height: 1.2;
+}
+
+img,
+audio {
+  max-inline-size: 100%;
+}
+
+span,
+p,
+li,
+dd,
+dt {
+  overflow-wrap: anywhere;
+}

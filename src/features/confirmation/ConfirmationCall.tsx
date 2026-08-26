@@ -22,12 +22,12 @@ export function ConfirmationCall({
 
   return (
     <section aria-labelledby="confirmation-call-heading">
-      <h2 id="confirmation-call-heading">확인 통화</h2>
+      <h2 id="confirm-heading" tabIndex={-1}>확인 통화</h2>
       <p lang="ko">상대의 추가 답을 바탕으로 내가 이해한 뜻을 다시 연결해 보세요.</p>
       <fieldset>
         <legend>내가 이해한 뜻을 영어로 다시 확인해 보세요.</legend>
         {mission.confirmationOptions.map((option) => (
-          <label key={option.id}>
+          <label className="choice-label" key={option.id}>
             <input
               type="radio"
               name="confirmation"

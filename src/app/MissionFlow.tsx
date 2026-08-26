@@ -1,4 +1,4 @@
-import type { Dispatch } from 'react';
+import { useEffect, type Dispatch } from 'react';
 import type { Mission } from '../domain/mission';
 import type { MissionSessionAction, MissionSessionState } from '../domain/session';
 import { evaluateMissionChoice } from '../domain/evaluation';
@@ -16,6 +16,14 @@ export interface MissionFlowProps {
 }
 
 export function MissionFlow({ mission, session, dispatch, voiceEnabled }: MissionFlowProps) {
+  useEffect(() => {
+    document.documentElement.lang = 'ko';
+  }, []);
+
+  useEffect(() => {
+    document.getElementById(`${session.phase}-heading`)?.focus();
+  }, [session.phase]);
+
   const selectAmbiguity = (optionId: string) => {
     dispatch({ type: 'choice.selected', stage: 'ambiguity', optionId });
   };
@@ -58,11 +66,14 @@ export function MissionFlow({ mission, session, dispatch, voiceEnabled }: Missio
   };
 
   return (
-    <section data-session-phase={session.phase} data-voice-enabled={voiceEnabled ? 'true' : 'false'}>
+    <>
+      <a className="skip-link" href="#main-content">본문으로 건너뛰기</a>
+      <main id="main-content" tabIndex={-1} className="app-shell">
+      <section className="mission-workspace" data-session-phase={session.phase} data-voice-enabled={voiceEnabled ? 'true' : 'false'}>
       <header>
-        <p>{mission.titleKo}</p>
+        <p className="eyebrow">대화 수리 미션</p>
         <h1>{mission.titleKo}</h1>
-        <p>{mission.scenarioKo}</p>
+        <p lang="ko">{mission.scenarioKo}</p>
       </header>
       {session.phase === 'observe' ? (
         <DialogueObservation
@@ -106,8 +117,8 @@ export function MissionFlow({ mission, session, dispatch, voiceEnabled }: Missio
           onReturnCenter={() => dispatch({ type: 'center.returned' })}
         />
       ) : (
-        <section aria-labelledby="phase-heading">
-          <h2 id="phase-heading">통신 기록</h2>
+        <section aria-labelledby="record-heading">
+          <h2 id="record-heading" tabIndex={-1}>통신 기록</h2>
           <p role="alert">학습 증거를 찾을 수 없습니다. 이 미션을 다시 시작해 주세요.</p>
           <div>
             <button type="button" onClick={() => dispatch({ type: 'mission.restarted' })}>이 미션 다시 하기</button>
@@ -115,6 +126,8 @@ export function MissionFlow({ mission, session, dispatch, voiceEnabled }: Missio
           </div>
         </section>
       )}
-    </section>
+      </section>
+      </main>
+    </>
   );
 }

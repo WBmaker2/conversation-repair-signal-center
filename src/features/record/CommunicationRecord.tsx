@@ -57,8 +57,8 @@ function controlledError(
   callbacks: Pick<CommunicationRecordProps, 'onRetry' | 'onReturnCenter'>,
 ) {
   return (
-    <section aria-labelledby="record-error-heading">
-      <h2 id="record-error-heading">통신 기록</h2>
+    <section aria-labelledby="record-heading">
+      <h2 id="record-heading" tabIndex={-1}>통신 기록</h2>
       <p role="alert">{message}</p>
       <RecoveryActions {...callbacks} />
     </section>
@@ -140,7 +140,7 @@ export function CommunicationRecord({
 
   return (
     <section aria-labelledby="record-heading">
-      <h2 id="record-heading">통신 기록</h2>
+      <h2 id="record-heading" tabIndex={-1}>통신 기록</h2>
       <h3>미션</h3>
       <p>{mission.titleKo}</p>
       <dl>

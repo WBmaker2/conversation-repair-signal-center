@@ -23,9 +23,9 @@ export function RepairTransmission({
 
   return (
     <section aria-labelledby="repair-heading">
-      <h2 id="repair-heading">수리 송신</h2>
+      <h2 id="repair-heading" tabIndex={-1}>수리 송신</h2>
       <p lang="ko">대화가 막힌 신호에 맞는 표현을 골라 보내 보세요.</p>
-      <div aria-label="허용된 수리 전략">
+      <div className="strategy-grid" aria-label="허용된 수리 전략">
         {visibleStrategies.map((strategy) => (
           <StrategyCard key={strategy.id} strategy={strategy} politenessContext={mission.politenessContext} />
         ))}
@@ -33,7 +33,7 @@ export function RepairTransmission({
       <fieldset>
         <legend>어떤 표현으로 다시 물어볼까요?</legend>
         {mission.repairOptions.map((option) => (
-          <label key={option.id}>
+          <label className="choice-label" key={option.id}>
             <input
               type="radio"
               name="repair"

@@ -23,10 +23,10 @@ export function DialogueObservation({
   onSubmit,
 }: DialogueObservationProps) {
   return (
-    <section aria-labelledby="observation-heading">
-      <h2 id="observation-heading">대화 관측</h2>
+    <section aria-labelledby="observe-heading">
+      <h2 id="observe-heading" tabIndex={-1}>대화 관측</h2>
       <p>대화에서 어떤 부분이 분명하지 않은지 살펴보세요.</p>
-      <ol aria-label="대화 순서">
+      <ol className="dialogue-list" aria-label="대화 순서">
         {mission.dialogue.map((turn, index) => (
           <DialogueTurnView key={turn.id} turn={turn} sequence={index + 1} />
         ))}
@@ -37,7 +37,7 @@ export function DialogueObservation({
       <fieldset>
         <legend>어느 부분이 분명하지 않나요?</legend>
         {mission.ambiguityOptions.map((option) => (
-          <label key={option.id}>
+          <label className="choice-label" key={option.id}>
             <input
               type="radio"
               name="ambiguity"

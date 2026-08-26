@@ -1,0 +1,54 @@
+@keyframes gi-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgb(35 119 170 / 45%);
+  }
+
+  50% {
+    box-shadow: 0 0 0 8px rgb(35 119 170 / 0%);
+  }
+}
+
+.gi-pulse:not(:disabled) {
+  animation: gi-pulse 1.6s ease-in-out infinite;
+}
+
+button,
+select,
+summary,
+.choice-label {
+  transition: background-color 140ms ease, border-color 140ms ease, transform 140ms ease;
+}
+
+button:hover:not(:disabled),
+select:hover,
+summary:hover,
+.choice-label:hover {
+  border-color: var(--color-signal);
+}
+
+button:active:not(:disabled),
+.choice-label:active {
+  transform: translateY(1px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+
+  .gi-pulse:not(:disabled) {
+    animation: none;
+    outline: 3px solid var(--color-signal);
+    outline-offset: 3px;
+  }
+
+  .dialogue-turn {
+    transform: none;
+    border-inline-start: 4px solid var(--color-signal);
+  }
+}
