@@ -1,4 +1,5 @@
 import { act, cleanup, screen } from '@testing-library/react';
+import { StrictMode } from 'react';
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { renderWithUser } from '../../test/renderWithApp';
 import { getAudioCues } from '../../content/missions/audioManifest';
@@ -99,6 +100,23 @@ describe('MissionAudioPlayer', () => {
     await view.user.click(screen.getByRole('button', { name: '재생' }));
     view.unmount();
     await act(async () => { resolvePlay?.(); await Promise.resolve(); });
+    expect(screen.queryByRole('button', { name: '일시 정지' })).not.toBeInTheDocument();
+  });
+
+  it('restores the mounted guard under StrictMode and blocks a late unmount resolve', async () => {
+    let resolveFirstPlay: (() => void) | undefined;
+    let resolveLatePlay: (() => void) | undefined;
+    vi.mocked(HTMLMediaElement.prototype.play)
+      .mockImplementationOnce(() => new Promise<void>((resolve) => { resolveFirstPlay = resolve; }))
+      .mockImplementationOnce(() => new Promise<void>((resolve) => { resolveLatePlay = resolve; }));
+    const view = renderWithUser(<StrictMode><MissionAudioPlayer cue={cue} labelKo="대화 듣기" /></StrictMode>);
+    await view.user.click(screen.getByRole('button', { name: '재생' }));
+    await act(async () => { resolveFirstPlay?.(); await Promise.resolve(); });
+    expect(screen.getByRole('button', { name: '일시 정지' })).toBeVisible();
+    await view.user.click(screen.getByRole('button', { name: '일시 정지' }));
+    await view.user.click(screen.getByRole('button', { name: '재생' }));
+    view.unmount();
+    await act(async () => { resolveLatePlay?.(); await Promise.resolve(); });
     expect(screen.queryByRole('button', { name: '일시 정지' })).not.toBeInTheDocument();
   });
 

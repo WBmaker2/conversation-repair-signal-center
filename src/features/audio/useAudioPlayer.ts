@@ -45,9 +45,12 @@ export function useAudioPlayer(
     };
   }, [audioRef, cueId]);
 
-  useEffect(() => () => {
-    mountedRef.current = false;
-    generationRef.current += 1;
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+      generationRef.current += 1;
+    };
   }, []);
 
   const setPlaybackRate = useCallback((rate: PlaybackRate) => {

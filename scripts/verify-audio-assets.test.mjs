@@ -11,6 +11,7 @@ const execFileAsync = promisify(execFile);
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const verifier = path.join(root, 'scripts/verify-audio-assets.mjs');
 const manifest = path.join(root, 'src/content/missions/audio-manifest.json');
+const contract = path.join(root, 'scripts/audio-contract.json');
 const publicRoot = path.join(root, 'public');
 const ffmpeg = '/opt/homebrew/bin/ffmpeg';
 
@@ -35,17 +36,36 @@ test('fails closed when ffmpeg is explicitly unavailable', async () => {
   assert.match(result.output, /ffmpeg is required/);
 });
 
-test('rejects a tampered transcript or unsafe path before media work', async () => {
+test('rejects a tampered transcript before media work', async () => {
   const folder = await mkdtemp('/private/tmp/task11-tampered-manifest-');
   try {
     const parsed = JSON.parse(await readFile(manifest, 'utf8'));
     parsed['g34-classroom-box'][0].transcriptEn = 'tampered';
-    parsed['g34-classroom-box'][1].src = 'https://example.invalid/audio.mp3';
     const fixture = path.join(folder, 'manifest.json');
     await writeFile(fixture, JSON.stringify(parsed));
     const result = await run({ AUDIO_MANIFEST_PATH: fixture });
     assert.notEqual(result.code, 0);
     assert.match(result.output, /production manifest differs from independent canonical audio contract/);
+  } finally {
+    await rm(folder, { recursive: true, force: true });
+  }
+});
+
+test('rejects an unsafe path through the path validator after canonical parity', async () => {
+  const folder = await mkdtemp('/private/tmp/task11-unsafe-path-');
+  try {
+    const parsed = JSON.parse(await readFile(manifest, 'utf8'));
+    const independent = JSON.parse(await readFile(contract, 'utf8'));
+    const unsafePath = 'https://example.invalid/audio.mp3';
+    parsed['g34-classroom-box'][1].src = unsafePath;
+    independent['g34-classroom-box'][1].src = unsafePath;
+    const fixture = path.join(folder, 'manifest.json');
+    const independentFixture = path.join(folder, 'contract.json');
+    await writeFile(fixture, JSON.stringify(parsed));
+    await writeFile(independentFixture, JSON.stringify(independent));
+    const result = await run({ AUDIO_MANIFEST_PATH: fixture, AUDIO_CONTRACT_PATH: independentFixture });
+    assert.notEqual(result.code, 0);
+    assert.match(result.output, /g34-classroom-box-response: unsafe local source https:\/\/example\.invalid\/audio\.mp3/);
   } finally {
     await rm(folder, { recursive: true, force: true });
   }
