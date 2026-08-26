@@ -1,5 +1,5 @@
 import { readdir, readFile } from 'node:fs/promises';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { extname, join, resolve } from 'node:path';
 
 export const FORBIDDEN_TOKENS = [
@@ -43,9 +43,16 @@ export async function scanRuntimeSources(rootUrl) {
   return violations;
 }
 
+export async function runPrivacyCheck(sourceRoot = new URL('../src/', import.meta.url)) {
+  return scanRuntimeSources(sourceRoot);
+}
+
 async function main() {
-  const sourceRoot = new URL('../src/', import.meta.url);
-  const violations = await scanRuntimeSources(sourceRoot);
+  const overrideRoot = process.env.PRIVACY_SOURCE_ROOT;
+  const sourceRoot = overrideRoot
+    ? pathToFileURL(`${resolve(overrideRoot)}/`)
+    : new URL('../src/', import.meta.url);
+  const violations = await runPrivacyCheck(sourceRoot);
   if (violations.length) {
     console.error(violations.join('\n'));
     process.exitCode = 1;
@@ -54,4 +61,5 @@ async function main() {
   console.log('Privacy boundary verified: 0 forbidden capabilities.');
 }
 
-if (resolve(process.argv[1] ?? '') === fileURLToPath(import.meta.url)) await main();
+const invokedPath = process.argv[1] ? resolve(process.argv[1]) : '';
+if (invokedPath === fileURLToPath(import.meta.url)) await main();

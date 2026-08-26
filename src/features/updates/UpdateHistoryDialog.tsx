@@ -1,4 +1,4 @@
-import { useEffect, useRef, type JSX } from 'react';
+import { useEffect, useRef, type JSX, type KeyboardEvent as ReactKeyboardEvent } from 'react';
 import type { ChangeRecord } from '../../content/changelog';
 
 export interface UpdateHistoryDialogProps {
@@ -8,6 +8,7 @@ export interface UpdateHistoryDialogProps {
 
 export function UpdateHistoryDialog({ records, onClose }: UpdateHistoryDialogProps): JSX.Element {
   const titleRef = useRef<HTMLHeadingElement>(null);
+  const dialogRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     titleRef.current?.focus();
@@ -18,13 +19,33 @@ export function UpdateHistoryDialog({ records, onClose }: UpdateHistoryDialogPro
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [onClose]);
 
+  const trapTab = (event: ReactKeyboardEvent<HTMLElement>) => {
+    if (event.key !== 'Tab') return;
+    const focusable = [
+      titleRef.current,
+      ...Array.from(dialogRef.current?.querySelectorAll<HTMLElement>('button, a, input, select, textarea, [tabindex]') ?? []),
+    ].filter((element, index, elements) => element && elements.indexOf(element) === index && !element.hasAttribute('disabled'));
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last?.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first?.focus();
+    }
+  };
+
   return (
     <div className="update-history-backdrop">
       <section
         className="update-history-dialog"
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby="update-history-title"
+        onKeyDown={trapTab}
       >
         <div className="update-history-dialog-header">
           <h2 id="update-history-title" ref={titleRef} tabIndex={-1}>업데이트 내역</h2>
