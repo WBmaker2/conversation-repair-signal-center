@@ -12,7 +12,7 @@
     { "id": "g34-recess-place-response", "src": "audio/g34-recess-place/response.mp3", "mimeType": "audio/mpeg", "transcriptEn": "Partner: At the bench beside the playground gate." }
   ],
   "g34-recess-time": [
-    { "id": "g34-recess-time-dialogue", "src": "audio/g34-recess-time/dialogue.mp3", "mimeType": "audio/mpeg", "transcriptEn": "A bell rings. You could not catch this sentence." },
+    { "id": "g34-recess-time-dialogue", "src": "audio/g34-recess-time/dialogue.mp3", "mimeType": "audio/mpeg", "transcriptEn": "Partner: You could not catch this sentence because the bell rang." },
     { "id": "g34-recess-time-response", "src": "audio/g34-recess-time/response.mp3", "mimeType": "audio/mpeg", "transcriptEn": "Partner: Let’s start the game at one thirty." }
   ],
   "g34-recess-rephrase": [

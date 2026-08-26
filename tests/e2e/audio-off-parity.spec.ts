@@ -15,7 +15,9 @@ test.describe('audio-off text parity', () => {
       await page.goto('/');
       await expect(page.getByRole('checkbox', { name: /음성 자료/ })).not.toBeChecked();
       await chooseGradeAndMission(page, path);
-      await expect(page.getByText(mission.dialogue[0]!.textEn, { exact: true })).toBeVisible();
+      for (const turn of mission.dialogue) {
+        await expect(page.getByText(turn.textEn, { exact: true })).toBeVisible();
+      }
       await expect(page.locator('audio')).toHaveCount(0);
       await page.getByRole('radio', { name: path.ambiguityLabel }).check();
       await page.getByRole('button', { name: '모호한 부분 찾기' }).click();
@@ -50,7 +52,9 @@ test('voice-on exposes every manifest cue with transcript, source, controls, and
     await voice.check();
     await chooseGradeAndMission(page, path);
     await expectCue(page, mission.audioCues[0]!, '대화 듣기', audioResponses, previewOrigin);
-    await expect(page.getByText(mission.dialogue[0]!.textEn, { exact: true })).toBeVisible();
+    for (const turn of mission.dialogue) {
+      await expect(page.getByText(turn.textEn, { exact: true })).toBeVisible();
+    }
     await page.getByRole('radio', { name: path.ambiguityLabel }).check();
     await page.getByRole('button', { name: '모호한 부분 찾기' }).click();
     await page.getByRole('radio', { name: path.repairExpression }).check();
@@ -68,6 +72,21 @@ test('voice-on exposes every manifest cue with transcript, source, controls, and
     expect(record!.ok, `${expectedPath} response.ok`).toEqual(record!.ok.map(() => true));
     expect(record!.statuses.every((status) => status >= 200 && status < 300), `${expectedPath} statuses`).toBe(true);
   }
+});
+
+test('g34-recess-rephrase keeps both exact speaker turns visible with voice disabled', async ({ page }) => {
+  const path = ACCEPTED_PATHS.find(({ missionId }) => missionId === 'g34-recess-rephrase')!;
+  await page.goto('/');
+  await chooseGradeAndMission(page, path);
+  await expect(page.locator('.dialogue-turn')).toHaveCount(2);
+  await expect(page.locator('.dialogue-turn').evaluateAll((nodes) => nodes.map((node) => ({
+    speaker: node.querySelector('.dialogue-speaker')?.textContent,
+    text: node.querySelector('p[lang="en"]')?.textContent,
+  })))).resolves.toEqual([
+    { speaker: 'You', text: 'Let’s do it over there.' },
+    { speaker: 'Partner', text: 'I’m not sure what you mean.' },
+  ]);
+  await expect(page.locator('audio')).toHaveCount(0);
 });
 
 async function expectCue(

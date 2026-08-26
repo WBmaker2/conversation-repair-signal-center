@@ -5,19 +5,19 @@ import { getMissionById } from '../../src/content/missionRepository';
 
 test('375px full learner path stays inside one column without overlap or overflow', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
-  const path = ACCEPTED_PATHS.find(({ missionId }) => missionId === 'g56-directions-sequence')!;
+  const path = ACCEPTED_PATHS.find(({ missionId }) => missionId === 'g34-recess-rephrase')!;
   await walkGeometryPath(page, path);
 });
 
 test('200% CSS zoom keeps the full learner path and update dialog inside the viewport', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
-  const path = ACCEPTED_PATHS.find(({ missionId }) => missionId === 'g56-directions-sequence')!;
+  const path = ACCEPTED_PATHS.find(({ missionId }) => missionId === 'g34-recess-rephrase')!;
   await walkGeometryPath(page, path, true);
 });
 
 test('desktop representative viewport has no horizontal overflow across the learner path', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
-  const path = ACCEPTED_PATHS.find(({ missionId }) => missionId === 'g56-directions-sequence')!;
+  const path = ACCEPTED_PATHS.find(({ missionId }) => missionId === 'g34-recess-rephrase')!;
   await walkGeometryPath(page, path);
 });
 
@@ -200,7 +200,7 @@ async function assertResponsiveGeometry(page: Page, phase: GeometryPhase) {
       width: document.documentElement.clientWidth,
       height: document.documentElement.clientHeight,
     };
-    const candidates = Array.from(document.querySelectorAll<HTMLElement>('a, button, select, summary, .choice-label, [role="button"]'));
+    const candidates = Array.from(document.querySelectorAll<HTMLElement>('a, button, select, summary, .choice-label, .audio-preference-label, [role="button"]'));
     const controls = candidates.filter((node) => {
       const box = node.getBoundingClientRect();
       const style = getComputedStyle(node);
@@ -237,12 +237,12 @@ async function assertResponsiveGeometry(page: Page, phase: GeometryPhase) {
   expect(geometry.outsideHorizontal, `${phase} controls outside viewport`).toEqual([]);
   expect(geometry.undersized, `${phase} controls below 44px`).toEqual([]);
   expect(geometry.fixedOutsideViewport, `${phase} fixed controls outside viewport`).toEqual([]);
-  const expectedTurnCount = phase === 'observe' ? 1 : 0;
+  const expectedTurnCount = phase === 'observe' ? 2 : 0;
   expect(geometry.turns, `${phase} canonical dialogue structure`).toHaveLength(expectedTurnCount);
   if (geometry.turns.length >= 2) {
     expect(await findOverlappingBoxes(page.locator('.dialogue-turn')), `${phase} dialogue overlap`).toEqual([]);
   } else if (geometry.turns.length === 1) {
-    // Every canonical mission currently has one source turn; containment is the applicable invariant.
+    // A single-turn phase still needs containment; the representative path above exercises pairwise overlap.
     const [turn] = geometry.turns;
     expect(turn!.left).toBeGreaterThanOrEqual(0);
     expect(turn!.right).toBeLessThanOrEqual(geometry.viewport.width);

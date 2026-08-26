@@ -55,17 +55,20 @@ export const GRADE34_RECESS_CONTRACT = [
       { id: 'g34-recess-time--confirmation-retry-a', mode: 'confirm', textEn: 'The game starts at one, right?', accepted: false, feedbackKo: '어떤 정보가 아직 없나요? 확인 문장에서 문장 전체 정보가 바뀌거나 빠졌어요.' },
       { id: 'g34-recess-time--confirmation-retry-b', mode: 'confirm', textEn: 'The game starts at two thirty, right?', accepted: false, feedbackKo: '어떤 정보가 아직 없나요? 확인 문장에서 문장 전체 정보가 바뀌거나 빠졌어요.' },
     ], audioCues: [
-      { id: 'g34-recess-time-dialogue', src: 'audio/g34-recess-time/dialogue.mp3', mimeType: 'audio/mpeg', transcriptEn: 'A bell rings. You could not catch this sentence.' },
+      { id: 'g34-recess-time-dialogue', src: 'audio/g34-recess-time/dialogue.mp3', mimeType: 'audio/mpeg', transcriptEn: 'Partner: You could not catch this sentence because the bell rang.' },
       { id: 'g34-recess-time-response', src: 'audio/g34-recess-time/response.mp3', mimeType: 'audio/mpeg', transcriptEn: 'Partner: Let’s start the game at one thirty.' },
     ],
   },
   {
     id: 'g34-recess-rephrase', gradeBand: '3-4', titleKo: '장소를 다시 설명하기', scenarioKo: '친구가 “저기”가 어디인지 이해하지 못했습니다.', politenessContext: 'peer-brief', curriculumCodes: ['[4영02-10]'], learningTargets: ['understand', 'apply', 'analyze', 'create'],
-    dialogue: [{ id: 'g34-recess-rephrase-dialogue', speaker: 'Partner', textEn: 'Let’s do it over there.' }],
+    dialogue: [
+      { id: 'g34-recess-rephrase-you-dialogue', speaker: 'You', textEn: 'Let’s do it over there.' },
+      { id: 'g34-recess-rephrase-partner-dialogue', speaker: 'Partner', textEn: 'I’m not sure what you mean.' },
+    ],
     ambiguityOptions: [
-      { id: 'g34-recess-rephrase--ambiguity-target', turnId: 'g34-recess-rephrase-dialogue', labelEn: 'over there', slotKind: 'place', accepted: true, feedbackKo: '불명확한 장소를 찾았어요.' },
-      { id: 'g34-recess-rephrase--ambiguity-distractor-a', turnId: 'g34-recess-rephrase-dialogue', labelEn: 'Let’s', slotKind: 'place', accepted: false, feedbackKo: '어떤 정보가 아직 없나요? 대화에서 두 가지로 해석되거나 놓친 부분을 다시 찾아보세요.' },
-      { id: 'g34-recess-rephrase--ambiguity-distractor-b', turnId: 'g34-recess-rephrase-dialogue', labelEn: 'do it', slotKind: 'place', accepted: false, feedbackKo: '어떤 정보가 아직 없나요? 대화에서 두 가지로 해석되거나 놓친 부분을 다시 찾아보세요.' },
+      { id: 'g34-recess-rephrase--ambiguity-target', turnId: 'g34-recess-rephrase-you-dialogue', labelEn: 'over there', slotKind: 'place', accepted: true, feedbackKo: '불명확한 장소를 찾았어요.' },
+      { id: 'g34-recess-rephrase--ambiguity-distractor-a', turnId: 'g34-recess-rephrase-you-dialogue', labelEn: 'Let’s', slotKind: 'place', accepted: false, feedbackKo: '어떤 정보가 아직 없나요? 대화에서 두 가지로 해석되거나 놓친 부분을 다시 찾아보세요.' },
+      { id: 'g34-recess-rephrase--ambiguity-distractor-b', turnId: 'g34-recess-rephrase-you-dialogue', labelEn: 'do it', slotKind: 'place', accepted: false, feedbackKo: '어떤 정보가 아직 없나요? 대화에서 두 가지로 해석되거나 놓친 부분을 다시 찾아보세요.' },
     ],
     allowedStrategyIds: ['rephrase'],
     repairOptions: [

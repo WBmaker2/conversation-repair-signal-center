@@ -5,6 +5,22 @@ fieldset {
   padding: var(--space-4);
 }
 
+.audio-preference-label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-block-size: 44px;
+  min-inline-size: 44px;
+  cursor: pointer;
+  padding: var(--space-2);
+}
+
+.audio-preference-label input {
+  flex: 0 0 auto;
+  inline-size: 1.15rem;
+  block-size: 1.15rem;
+}
+
 legend {
   font-weight: 700;
   padding-inline: var(--space-2);

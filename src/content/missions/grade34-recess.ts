@@ -82,12 +82,13 @@ export const GRADE34_RECESS_MISSIONS = [
     curriculumCodes: ['[4영02-10]'],
     learningTargets: ['understand', 'apply', 'analyze', 'create'],
     dialogue: [
-      { id: 'g34-recess-rephrase-dialogue', speaker: 'Partner', textEn: 'Let’s do it over there.' },
+      { id: 'g34-recess-rephrase-you-dialogue', speaker: 'You', textEn: 'Let’s do it over there.' },
+      { id: 'g34-recess-rephrase-partner-dialogue', speaker: 'Partner', textEn: 'I’m not sure what you mean.' },
     ],
     ambiguityOptions: [
-      { id: 'g34-recess-rephrase--ambiguity-target', turnId: 'g34-recess-rephrase-dialogue', labelEn: 'over there', slotKind: 'place', accepted: true, feedbackKo: '불명확한 장소를 찾았어요.' },
-      { id: 'g34-recess-rephrase--ambiguity-distractor-a', turnId: 'g34-recess-rephrase-dialogue', labelEn: 'Let’s', slotKind: 'place', accepted: false, feedbackKo: AMBIGUITY_RETRY_FEEDBACK_KO },
-      { id: 'g34-recess-rephrase--ambiguity-distractor-b', turnId: 'g34-recess-rephrase-dialogue', labelEn: 'do it', slotKind: 'place', accepted: false, feedbackKo: AMBIGUITY_RETRY_FEEDBACK_KO },
+      { id: 'g34-recess-rephrase--ambiguity-target', turnId: 'g34-recess-rephrase-you-dialogue', labelEn: 'over there', slotKind: 'place', accepted: true, feedbackKo: '불명확한 장소를 찾았어요.' },
+      { id: 'g34-recess-rephrase--ambiguity-distractor-a', turnId: 'g34-recess-rephrase-you-dialogue', labelEn: 'Let’s', slotKind: 'place', accepted: false, feedbackKo: AMBIGUITY_RETRY_FEEDBACK_KO },
+      { id: 'g34-recess-rephrase--ambiguity-distractor-b', turnId: 'g34-recess-rephrase-you-dialogue', labelEn: 'do it', slotKind: 'place', accepted: false, feedbackKo: AMBIGUITY_RETRY_FEEDBACK_KO },
     ],
     allowedStrategyIds: ['rephrase'],
     repairOptions: [

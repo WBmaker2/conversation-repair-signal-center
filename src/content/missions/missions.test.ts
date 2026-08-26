@@ -97,7 +97,10 @@ describe('reviewed ten-mission content pack', () => {
         clarifyingResponse: { id: 'g34-recess-time-response', speaker: 'Partner', textEn: 'Let’s start the game at one thirty.' },
       },
       'g34-recess-rephrase': {
-        dialogue: [{ id: 'g34-recess-rephrase-dialogue', speaker: 'Partner', textEn: 'Let’s do it over there.' }],
+        dialogue: [
+          { id: 'g34-recess-rephrase-you-dialogue', speaker: 'You', textEn: 'Let’s do it over there.' },
+          { id: 'g34-recess-rephrase-partner-dialogue', speaker: 'Partner', textEn: 'I’m not sure what you mean.' },
+        ],
         clarifyingResponse: { id: 'g34-recess-rephrase-response', speaker: 'Partner', textEn: 'Okay, beside the hopscotch grid.' },
       },
       'g56-materials-quantity': {

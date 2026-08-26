@@ -5,9 +5,9 @@ export interface AudioPreferenceToggleProps {
 
 export function AudioPreferenceToggle({ checked, onChange }: AudioPreferenceToggleProps) {
   return (
-    <fieldset>
+    <fieldset className="audio-preference-toggle">
       <legend>음성 자료</legend>
-      <label>
+      <label className="audio-preference-label">
         <input
           type="checkbox"
           checked={checked}
