@@ -1,5 +1,5 @@
 import { readdir, readFile } from 'node:fs/promises';
-import { fileURLToPath, pathToFileURL } from 'node:url';
+import { fileURLToPath } from 'node:url';
 import { extname, join, resolve } from 'node:path';
 
 export const FORBIDDEN_TOKENS = [
@@ -48,10 +48,7 @@ export async function runPrivacyCheck(sourceRoot = new URL('../src/', import.met
 }
 
 async function main() {
-  const overrideRoot = process.env.PRIVACY_SOURCE_ROOT;
-  const sourceRoot = overrideRoot
-    ? pathToFileURL(`${resolve(overrideRoot)}/`)
-    : new URL('../src/', import.meta.url);
+  const sourceRoot = new URL('../src/', import.meta.url);
   const violations = await runPrivacyCheck(sourceRoot);
   if (violations.length) {
     console.error(violations.join('\n'));

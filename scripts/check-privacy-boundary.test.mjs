@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { promisify } from 'node:util';
 import { execFile as execFileCallback } from 'node:child_process';
 import { tmpdir } from 'node:os';
@@ -58,17 +58,20 @@ describe('privacy boundary scanner', () => {
     }
   });
 
-  it('keeps the CLI side-effect free on import and exits nonzero for an unsafe tree', async () => {
+  it('keeps the CLI side-effect free on import and fixes its source root', async () => {
     const root = await mkdtemp(join(tmpdir(), 'privacy-cli-'));
     try {
       await writeFile(join(root, 'unsafe.ts'), 'export const request = fetch();', 'utf8');
-      await assert.rejects(
-        execFile(process.execPath, ['scripts/check-privacy-boundary.mjs'], {
+      const ignoredEnvKey = ['PRIVACY', 'SOURCE_ROOT'].join('_');
+      const { stdout } = await execFile(process.execPath, ['scripts/check-privacy-boundary.mjs'], {
           cwd: process.cwd(),
-          env: { ...process.env, PRIVACY_SOURCE_ROOT: root },
-        }),
-        (error) => error?.code === 1 && error?.stderr.includes('fetch('),
-      );
+          env: { ...process.env, [ignoredEnvKey]: root },
+      });
+      assert.match(stdout, /Privacy boundary verified: 0 forbidden capabilities/);
+      const script = await readFile(new URL('./check-privacy-boundary.mjs', import.meta.url), 'utf8');
+      const packageJson = await readFile(new URL('../package.json', import.meta.url), 'utf8');
+      assert.equal(script.includes(ignoredEnvKey), false);
+      assert.equal(packageJson.includes(ignoredEnvKey), false);
     } finally {
       await rm(root, { recursive: true, force: true });
     }

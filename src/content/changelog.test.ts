@@ -4,6 +4,7 @@ import { CHANGELOG } from './changelog';
 describe('CHANGELOG', () => {
   it('keeps dated design, development, content, curriculum, and accessibility records', () => {
     expect(CHANGELOG).toEqual([
+      { date: '2026-08-26', category: '접근성', detailKo: '업데이트 대화상자 키보드 초점 범위와 개인정보 안전 검사를 강화했습니다.' },
       { date: '2026-08-26', category: '접근성', detailKo: '키보드, 375px 모바일, 200% 확대, 스크린 리더 언어, 모션 감소 대체를 검증했습니다.' },
       { date: '2026-08-26', category: '교육과정', detailKo: '4영02-10과 6영02-07·09·10을 미션별 성취 증거에 연결했습니다.' },
       { date: '2026-08-26', category: '콘텐츠', detailKo: '대화 문구 10개와 번들 음원 대본 20개를 학년 수준과 포용성 기준으로 검수했습니다.' },
