@@ -17,6 +17,10 @@ export class MissionChoiceError extends Error {
   }
 }
 
+function assertNever(value: never): never {
+  throw new Error(`Unhandled mission stage: ${String(value)}`);
+}
+
 function getOptionsForStage(mission: Mission, stage: MissionStage): readonly MissionOption[] {
   switch (stage) {
     case 'ambiguity':
@@ -28,6 +32,7 @@ function getOptionsForStage(mission: Mission, stage: MissionStage): readonly Mis
     case 'confirmation':
       return mission.confirmationOptions;
   }
+  return assertNever(stage);
 }
 
 export function evaluateMissionChoice(
