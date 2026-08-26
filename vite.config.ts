@@ -14,6 +14,7 @@ export default defineConfig({
       '**/cypress/**',
       '**/.{idea,git,cache,output,temp}/**',
       'scripts/**/*.test.mjs',
+      'tests/e2e/**',
     ],
   },
 });

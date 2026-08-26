@@ -63,7 +63,7 @@ describe('privacy boundary scanner', () => {
     try {
       await writeFile(join(root, 'unsafe.ts'), 'export const request = fetch();', 'utf8');
       const ignoredEnvKey = ['PRIVACY', 'SOURCE_ROOT'].join('_');
-      const { stdout } = await execFile(process.execPath, ['scripts/check-privacy-boundary.mjs'], {
+      const { stdout } = await execFile(process.execPath, ['scripts/check-privacy-boundary.mjs', root], {
           cwd: process.cwd(),
           env: { ...process.env, [ignoredEnvKey]: root },
       });

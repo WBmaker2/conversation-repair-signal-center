@@ -85,3 +85,10 @@ dd,
 dt {
   overflow-wrap: anywhere;
 }
+
+@media (max-width: 640px) {
+  html,
+  body {
+    min-inline-size: 0;
+  }
+}

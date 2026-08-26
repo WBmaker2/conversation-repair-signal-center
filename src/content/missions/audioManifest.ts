@@ -1,5 +1,5 @@
 import type { AudioCue } from '../../domain/mission';
-import rawAudioManifest from './audio-manifest.json';
+import rawAudioManifest from './audio-manifest.json' with { type: 'json' };
 
 export const AUDIO_MANIFEST = rawAudioManifest as Readonly<Record<string, readonly AudioCue[]>>;
 
