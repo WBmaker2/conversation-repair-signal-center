@@ -3,6 +3,11 @@ import type { Mission } from '../../domain/mission';
 import { validateMissionPack } from '../missionValidation';
 import { MISSIONS, MISSION_IDS } from './index';
 import { getMissionById, getMissionsByGradeBand } from '../missionRepository';
+import { GRADE34_CLASSROOM_CONTRACT } from './contract-fixtures/grade34-classroom';
+import { GRADE34_RECESS_CONTRACT } from './contract-fixtures/grade34-recess';
+import { GRADE56_MATERIALS_CONTRACT } from './contract-fixtures/grade56-materials';
+import { GRADE56_DIRECTIONS_CONTRACT } from './contract-fixtures/grade56-directions';
+import { GRADE56_EVENTS_CONTRACT } from './contract-fixtures/grade56-events';
 
 const EXPECTED_IDS = [
   'g34-classroom-box',
@@ -22,6 +27,18 @@ describe('reviewed ten-mission content pack', () => {
     expect(MISSION_IDS).toEqual(EXPECTED_IDS);
     expect(MISSIONS).toHaveLength(10);
     expect(validateMissionPack(MISSIONS)).toMatchObject({ valid: true, issues: [] });
+  });
+
+  it('deep-equals every production mission to independent canonical literals', () => {
+    const expected = [
+      ...GRADE34_CLASSROOM_CONTRACT,
+      ...GRADE34_RECESS_CONTRACT,
+      ...GRADE56_MATERIALS_CONTRACT,
+      ...GRADE56_DIRECTIONS_CONTRACT,
+      ...GRADE56_EVENTS_CONTRACT,
+    ];
+    expect(MISSIONS).toEqual(expected);
+    expect(expected).toHaveLength(10);
   });
 
   it('covers both grade bands, all strategies, and multiple valid expressions', () => {
