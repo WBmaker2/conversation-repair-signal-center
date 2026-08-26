@@ -15,7 +15,7 @@ export function CriticalActionButton({
   void type;
   const exactLabel = action === 'find-ambiguity' ? '모호한 부분 찾기' : '확인 질문 보내기';
   return (
-    <button {...props} type="button" className={`gi-pulse ${className}`.trim()}>
+    <button {...props} type="button" className={`gi-pulse ${className}`.trim()} aria-label={exactLabel}>
       {exactLabel}
     </button>
   );

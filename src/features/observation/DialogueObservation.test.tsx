@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { getMissionById } from '../../content/missionRepository';
 import { CriticalActionButton } from '../../shared/CriticalActionButton';
 import {
+  createSessionAtPhase,
   renderMissionAtConfirmation,
   renderMissionAtObservation,
   renderMissionAtRepair,
@@ -82,7 +83,7 @@ describe('DialogueObservation', () => {
 
   it('keeps the critical action contract despite caller children and type', () => {
     render(
-      <CriticalActionButton action="send-confirmation" className="caller-class" type="submit">
+      <CriticalActionButton action="send-confirmation" className="caller-class" type="submit" aria-label="다른 이름">
         caller text
       </CriticalActionButton>,
     );
@@ -90,5 +91,30 @@ describe('DialogueObservation', () => {
     expect(button).toHaveAttribute('type', 'button');
     expect(button).toHaveClass('gi-pulse', 'caller-class');
     expect(button).not.toHaveTextContent('caller text');
+    expect(screen.queryByRole('button', { name: '다른 이름' })).not.toBeInTheDocument();
+  });
+
+  it('keeps one stable Korean status region from the initial render through retry', async () => {
+    const { user } = renderMissionAtObservation('g34-classroom-box');
+    const status = screen.getByRole('status');
+    expect(status).toHaveTextContent('');
+    expect(status).toHaveAttribute('aria-live', 'polite');
+    expect(status).toHaveAttribute('lang', 'ko');
+    await user.click(screen.getByRole('radio', { name: 'the crayons' }));
+    await user.click(screen.getByRole('button', { name: '모호한 부분 찾기' }));
+    expect(screen.getByRole('status')).toBe(status);
+    expect(status).toHaveTextContent('어떤 정보가 아직 없나요?');
+  });
+
+  it('reports invalid phase and missing accepted replay options with controlled errors', () => {
+    const mission = getMissionById('g34-classroom-box');
+    expect(() => createSessionAtPhase(mission, 'not-a-phase' as never)).toThrow('Invalid target phase: not-a-phase');
+    const noAcceptedAmbiguity = {
+      ...mission,
+      ambiguityOptions: mission.ambiguityOptions.map((option) => ({ ...option, accepted: false })),
+    };
+    expect(() => createSessionAtPhase(noAcceptedAmbiguity, 'repair')).toThrow(
+      'No accepted option for g34-classroom-box at ambiguity',
+    );
   });
 });
