@@ -54,7 +54,7 @@ export function RepairTransmission({
       >
         수리 표현 보내기
       </button>
-      <FeedbackNotice result={latestResult} />
+      <FeedbackNotice result={latestResult?.stage === 'repair' ? latestResult : null} />
     </section>
   );
 }
