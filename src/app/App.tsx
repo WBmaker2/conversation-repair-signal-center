@@ -1,4 +1,6 @@
-export function App() {
+import type { JSX } from 'react';
+
+export function App(): JSX.Element {
   return (
     <main id="main-content">
       <h1>대화 수리 신호센터</h1>
