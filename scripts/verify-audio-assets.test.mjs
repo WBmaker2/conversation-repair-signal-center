@@ -2,6 +2,7 @@ import { cp, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { Buffer } from 'node:buffer';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
+import { tmpdir } from 'node:os';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import path from 'node:path';
@@ -13,7 +14,8 @@ const verifier = path.join(root, 'scripts/verify-audio-assets.mjs');
 const manifest = path.join(root, 'src/content/missions/audio-manifest.json');
 const contract = path.join(root, 'scripts/audio-contract.json');
 const publicRoot = path.join(root, 'public');
-const ffmpeg = '/opt/homebrew/bin/ffmpeg';
+const ffmpeg = process.env.AUDIO_FFMPEG || 'ffmpeg';
+const tempPrefix = (name) => path.join(tmpdir(), `task11-${name}-`);
 
 async function run(env) {
   try {
@@ -25,19 +27,19 @@ async function run(env) {
 }
 
 test('fails closed when ffprobe is explicitly unavailable', async () => {
-  const result = await run({ AUDIO_FFPROBE: '/private/tmp/task11-no-such-ffprobe' });
+  const result = await run({ AUDIO_FFPROBE: tempPrefix('no-such-ffprobe') });
   assert.notEqual(result.code, 0);
   assert.match(result.output, /ffprobe is required/);
 });
 
 test('fails closed when ffmpeg is explicitly unavailable', async () => {
-  const result = await run({ AUDIO_FFMPEG: '/private/tmp/task11-no-such-ffmpeg' });
+  const result = await run({ AUDIO_FFMPEG: tempPrefix('no-such-ffmpeg') });
   assert.notEqual(result.code, 0);
   assert.match(result.output, /ffmpeg is required/);
 });
 
 test('rejects a tampered transcript before media work', async () => {
-  const folder = await mkdtemp('/private/tmp/task11-tampered-manifest-');
+  const folder = await mkdtemp(tempPrefix('tampered-manifest'));
   try {
     const parsed = JSON.parse(await readFile(manifest, 'utf8'));
     parsed['g34-classroom-box'][0].transcriptEn = 'tampered';
@@ -52,7 +54,7 @@ test('rejects a tampered transcript before media work', async () => {
 });
 
 test('rejects an unsafe path through the path validator after canonical parity', async () => {
-  const folder = await mkdtemp('/private/tmp/task11-unsafe-path-');
+  const folder = await mkdtemp(tempPrefix('unsafe-path'));
   try {
     const parsed = JSON.parse(await readFile(manifest, 'utf8'));
     const independent = JSON.parse(await readFile(contract, 'utf8'));
@@ -72,7 +74,7 @@ test('rejects an unsafe path through the path validator after canonical parity',
 });
 
 test('rejects a tampered media fixture without modifying real assets', async () => {
-  const folder = await mkdtemp('/private/tmp/task11-tampered-media-');
+  const folder = await mkdtemp(tempPrefix('tampered-media'));
   try {
     await cp(publicRoot, folder, { recursive: true });
     await writeFile(path.join(folder, 'audio/g34-classroom-box/dialogue.mp3'), Buffer.alloc(2048));
@@ -85,7 +87,7 @@ test('rejects a tampered media fixture without modifying real assets', async () 
 });
 
 test('rejects a decodable media fixture with wrong metadata', async () => {
-  const folder = await mkdtemp('/private/tmp/task11-wrong-metadata-');
+  const folder = await mkdtemp(tempPrefix('wrong-metadata'));
   const original = path.join(folder, 'audio/g34-classroom-box/dialogue.mp3');
   const converted = path.join(folder, 'wrong-rate.mp3');
   try {
