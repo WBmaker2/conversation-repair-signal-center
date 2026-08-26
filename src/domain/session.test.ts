@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { getMissionById } from '../content/missionRepository';
 import type { EvaluationResult, Mission, MissionStage } from './mission';
+import { evaluateMissionChoice } from './evaluation';
 import {
   buildMissionEvidence,
   createInitialSession,
@@ -16,6 +17,15 @@ function optionId(stage: MissionStage, suffix: string): string {
 
 function result(stage: MissionStage, id: string, status: EvaluationResult['status']): EvaluationResult {
   return { stage, optionId: id, status, feedbackKo: `${status}:${stage}`, revealAnswer: false };
+}
+
+function forgedResult(stage: MissionStage, id: string, status: EvaluationResult['status']): EvaluationResult {
+  return {
+    ...result(stage, id, status),
+    feedbackKo: '정답을 공개하는 위조 피드백',
+    revealAnswer: true,
+    naturalness: 'works',
+  } as unknown as EvaluationResult;
 }
 
 function startSession(selectedMission: Mission = mission) {
@@ -93,6 +103,53 @@ describe('missionSessionReducer', () => {
     expect(state.selectedOptionIds.ambiguity).toBe(secondId);
     expect(state.latestResult).toBeNull();
     expect(state.attempts).toHaveLength(1);
+  });
+
+  it('canonicalizes forged result metadata and status from the supplied mission option', () => {
+    const ambiguityRetryId = optionId('ambiguity', 'distractor-a');
+    const ambiguitySelected = missionSessionReducer(startSession(), {
+      type: 'choice.selected', stage: 'ambiguity', optionId: ambiguityRetryId,
+    });
+    const forgedAccepted = missionSessionReducer(ambiguitySelected, {
+      type: 'choice.submitted',
+      mission,
+      result: forgedResult('ambiguity', ambiguityRetryId, 'accepted'),
+    });
+    expect(forgedAccepted.phase).toBe('observe');
+    expect(forgedAccepted.latestResult).toEqual(evaluateMissionChoice(mission, 'ambiguity', ambiguityRetryId));
+    expect(forgedAccepted.attempts).toEqual([
+      { stage: 'ambiguity', optionId: ambiguityRetryId, status: 'retry' },
+    ]);
+
+    const repairAcceptedId = optionId('repair', 'best');
+    const advanced = submit(startSession(), 'ambiguity', optionId('ambiguity', 'target'), 'accepted');
+    const forgedRetry = missionSessionReducer(
+      missionSessionReducer(advanced, { type: 'choice.selected', stage: 'repair', optionId: repairAcceptedId }),
+      {
+        type: 'choice.submitted',
+        mission,
+        result: forgedResult('repair', repairAcceptedId, 'retry'),
+      },
+    );
+    expect(forgedRetry.phase).toBe('response');
+    expect(forgedRetry.latestResult).toEqual(evaluateMissionChoice(mission, 'repair', repairAcceptedId));
+    expect(forgedRetry.attempts.at(-1)).toEqual({
+      stage: 'repair', optionId: repairAcceptedId, status: 'accepted',
+    });
+  });
+
+  it('ignores a selected or submitted option ID absent from the supplied mission', () => {
+    const started = startSession();
+    const selected = missionSessionReducer(started, {
+      type: 'choice.selected', stage: 'ambiguity', optionId: 'missing-option',
+    });
+    const submitted = missionSessionReducer(selected, {
+      type: 'choice.submitted',
+      mission,
+      result: result('ambiguity', 'missing-option', 'accepted'),
+    });
+    expect(submitted).toBe(selected);
+    expect(submitted.attempts).toEqual([]);
   });
 
   it('records the first meaning choice once, even when retry is followed by acceptance', () => {
@@ -191,5 +248,42 @@ describe('buildMissionEvidence', () => {
     expect(() => buildMissionEvidence(mission, invalid)).toThrow(
       'Cannot build evidence: ambiguity option missing-ambiguity was not found in supplied mission',
     );
+  });
+
+  it('rejects a forged accepted result that points to a retry option', () => {
+    let state = startSession();
+    state = submit(state, 'ambiguity', optionId('ambiguity', 'target'), 'accepted');
+    state = submit(state, 'repair', optionId('repair', 'best'), 'accepted');
+    state = submit(state, 'meaning', optionId('meaning', 'correct'), 'accepted');
+    state = submit(state, 'confirmation', optionId('confirmation', 'correct'), 'accepted');
+    const forged = {
+      ...state,
+      acceptedResults: {
+        ...state.acceptedResults,
+        ambiguity: {
+          ...state.acceptedResults.ambiguity!,
+          optionId: optionId('ambiguity', 'distractor-a'),
+        },
+      },
+    };
+    expect(() => buildMissionEvidence(mission, forged)).toThrow(
+      `Cannot build evidence: ambiguity option ${optionId('ambiguity', 'distractor-a')} is not accepted in supplied mission`,
+    );
+  });
+
+  it('returns evidence attempts without aliases to session state or each other', () => {
+    let state = startSession();
+    state = submit(state, 'ambiguity', optionId('ambiguity', 'target'), 'accepted');
+    state = submit(state, 'repair', optionId('repair', 'best'), 'accepted');
+    state = submit(state, 'meaning', optionId('meaning', 'correct'), 'accepted');
+    state = submit(state, 'confirmation', optionId('confirmation', 'correct'), 'accepted');
+    const evidence = buildMissionEvidence(mission, state);
+    expect(evidence.attempts).not.toBe(state.attempts);
+    expect(evidence.attempts[0]).not.toBe(state.attempts[0]);
+
+    evidence.attempts[0]!.status = 'retry';
+    expect(state.attempts[0]!.status).toBe('accepted');
+    state.attempts[0]!.status = 'retry';
+    expect(evidence.attempts[0]!.status).toBe('retry');
   });
 });

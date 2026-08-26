@@ -6,6 +6,7 @@ import type {
   RepairStrategyId,
   SessionPhase,
 } from './mission';
+import { evaluateMissionChoice } from './evaluation';
 
 export interface AttemptRecord {
   stage: MissionStage;
@@ -123,8 +124,8 @@ export function missionSessionReducer(
         return state;
       }
 
-      const submittedResult = { ...result };
-      const acceptedResults = result.status === 'accepted'
+      const submittedResult = evaluateMissionChoice(mission, result.stage, result.optionId);
+      const acceptedResults = submittedResult.status === 'accepted'
         ? { ...state.acceptedResults, [result.stage]: submittedResult }
         : state.acceptedResults;
       const firstMeaningOptionId = result.stage === 'meaning' && state.firstMeaningOptionId === null
@@ -132,14 +133,14 @@ export function missionSessionReducer(
         : state.firstMeaningOptionId;
       const nextState: MissionSessionState = {
         ...state,
-        phase: result.status === 'accepted' ? nextPhase[result.stage] : state.phase,
+        phase: submittedResult.status === 'accepted' ? nextPhase[result.stage] : state.phase,
         acceptedResults,
         latestResult: submittedResult,
-        attempts: [...state.attempts, { stage: result.stage, optionId: result.optionId, status: result.status }],
+        attempts: [...state.attempts, { stage: result.stage, optionId: result.optionId, status: submittedResult.status }],
         firstMeaningOptionId,
       };
 
-      if (result.stage === 'confirmation' && result.status === 'accepted') {
+      if (result.stage === 'confirmation' && submittedResult.status === 'accepted') {
         return { ...nextState, evidence: buildMissionEvidence(mission, nextState) };
       }
       return nextState;
@@ -180,6 +181,18 @@ function findEvidenceOption<T extends { id: string }>(
   return option;
 }
 
+function findAcceptedEvidenceOption<T extends { id: string; accepted: boolean }>(
+  options: readonly T[],
+  stage: MissionStage,
+  optionId: string,
+): T {
+  const option = findEvidenceOption(options, stage, optionId);
+  if (!option.accepted) {
+    throw new Error(`Cannot build evidence: ${stage} option ${optionId} is not accepted in supplied mission`);
+  }
+  return option;
+}
+
 export function buildMissionEvidence(
   mission: Mission,
   state: MissionSessionState,
@@ -192,11 +205,11 @@ export function buildMissionEvidence(
   const confirmationResult = acceptedResult(state, 'confirmation');
   if (!state.firstMeaningOptionId) return incompleteEvidence();
 
-  const ambiguity = findEvidenceOption(mission.ambiguityOptions, 'ambiguity', ambiguityResult.optionId);
-  const repair = findEvidenceOption(mission.repairOptions, 'repair', repairResult.optionId);
-  findEvidenceOption(mission.meaningOptions, 'meaning', meaningResult.optionId);
+  const ambiguity = findAcceptedEvidenceOption(mission.ambiguityOptions, 'ambiguity', ambiguityResult.optionId);
+  const repair = findAcceptedEvidenceOption(mission.repairOptions, 'repair', repairResult.optionId);
+  findAcceptedEvidenceOption(mission.meaningOptions, 'meaning', meaningResult.optionId);
   findEvidenceOption(mission.meaningOptions, 'meaning', state.firstMeaningOptionId);
-  findEvidenceOption(mission.confirmationOptions, 'confirmation', confirmationResult.optionId);
+  findAcceptedEvidenceOption(mission.confirmationOptions, 'confirmation', confirmationResult.optionId);
 
   return {
     missionId: mission.id,
