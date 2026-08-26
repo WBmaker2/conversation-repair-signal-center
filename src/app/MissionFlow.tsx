@@ -107,6 +107,10 @@ export function MissionFlow({ mission, session, dispatch, voiceEnabled }: Missio
         <section aria-labelledby="phase-heading">
           <h2 id="phase-heading">통신 기록</h2>
           <p role="alert">학습 증거를 찾을 수 없습니다. 이 미션을 다시 시작해 주세요.</p>
+          <div>
+            <button type="button" onClick={() => dispatch({ type: 'mission.restarted' })}>이 미션 다시 하기</button>
+            <button type="button" onClick={() => dispatch({ type: 'center.returned' })}>신호센터로 돌아가기</button>
+          </div>
         </section>
       )}
     </section>
