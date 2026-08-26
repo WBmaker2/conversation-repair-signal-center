@@ -188,6 +188,31 @@ const invalidMissionEvidence: MissionEvidence = {
   // @ts-expect-error MissionEvidence must keep meaningConfirmed as the literal true.
   meaningConfirmed: false,
 };
+const invalidConfirmationOption: ConfirmationOption = {
+  ...confirmationOptionFixture,
+  // @ts-expect-error ConfirmationOption.mode must stay confirm or rephrase.
+  mode: 'ask',
+};
+const invalidAudioCue: AudioCue = {
+  ...audioCueFixture,
+  // @ts-expect-error AudioCue.mimeType must stay audio/mpeg.
+  mimeType: 'audio/wav',
+};
+const invalidMissionPoliteness: Mission = {
+  ...missionFixture,
+  // @ts-expect-error Mission.politenessContext must stay a supported context.
+  politenessContext: 'casual',
+};
+const invalidMissionLearningTargets: Mission = {
+  ...missionFixture,
+  // @ts-expect-error Mission.learningTargets must stay the four learning levels.
+  learningTargets: ['understand', 'memorize'],
+};
+const invalidEvaluationStatus: EvaluationResult = {
+  ...evaluationResultFixture,
+  // @ts-expect-error EvaluationResult.status must stay accepted or retry.
+  status: 'correct',
+};
 // @ts-expect-error MissionSessionAction must reject unknown discriminants.
 const invalidSessionAction: MissionSessionAction = { type: 'unknown' };
 
@@ -200,6 +225,11 @@ void invalidSessionPhase;
 void invalidNaturalness;
 void invalidEvaluationResult;
 void invalidMissionEvidence;
+void invalidConfirmationOption;
+void invalidAudioCue;
+void invalidMissionPoliteness;
+void invalidMissionLearningTargets;
+void invalidEvaluationStatus;
 void invalidSessionAction;
 
 it('keeps every mission contract member explicit', () => {
@@ -214,6 +244,10 @@ it('keeps every mission contract member explicit', () => {
     mimeType: 'audio/mpeg',
     transcriptEn: dialogueTurnFixture.textEn,
   });
+  expect(missionFixture.politenessContext).toBe('classroom-polite');
+  expect(missionFixture.learningTargets).toEqual(['understand', 'apply', 'analyze', 'create']);
+  expect(evaluationResultFixture.status).toBe('accepted');
+  expect(confirmationOptionFixture.mode).toBe('confirm');
 });
 
 it('keeps session state and every action variant usable', () => {
