@@ -91,10 +91,8 @@ export function validateMissionPack(missions: readonly Mission[]): ContentValida
     seenIds.add(mission.id);
   }
 
-  for (const gradeBand of ['3-4', '5-6'] as const) {
-    if (gradeBandCounts[gradeBand] !== EXPECTED_GRADE_BAND_COUNT) {
-      issues.push(issue('pack', 'GRADE_BAND_COUNT', `gradeBand.${gradeBand}`, `${gradeBand} 미션은 5개여야 합니다.`));
-    }
+  if (Object.values(gradeBandCounts).some((count) => count !== EXPECTED_GRADE_BAND_COUNT)) {
+    issues.push(issue('pack', 'GRADE_BAND_COUNT', 'gradeBandCounts', '각 학년군 미션은 5개여야 합니다.'));
   }
 
   if (strategyIds.length !== REPAIR_STRATEGIES.length) {
@@ -113,7 +111,7 @@ export function validateMissionPack(missions: readonly Mission[]): ContentValida
     const acceptedRepairs = mission.repairOptions.filter((option) => option.accepted);
     for (const option of acceptedRepairs) {
       if (!mission.allowedStrategyIds.includes(option.strategyId)) {
-        issues.push(issue(mission.id, 'REPAIR_NOT_ALLOWED', 'repairOptions', '수락 수리 표현은 허용 전략이어야 합니다.'));
+        issues.push(issue(mission.id, 'REPAIR_NOT_ALLOWED', 'repairOptions.strategyId', '수락 수리 표현은 허용 전략이어야 합니다.'));
       }
     }
     if (acceptedRepairs.length < 2) {

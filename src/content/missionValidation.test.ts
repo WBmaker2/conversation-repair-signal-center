@@ -12,7 +12,7 @@ import {
   createMeaningRetryFeedback,
   SLOT_LABELS_KO,
 } from './feedback';
-import { validateMissionPack, type ValidationCode } from './missionValidation';
+import { validateMissionPack } from './missionValidation';
 import { CURRICULUM_LINKS } from './curriculum';
 import { REPAIR_STRATEGIES } from './strategies';
 
@@ -176,6 +176,35 @@ function makeTenMissionPack(template = makeValidMission()): Mission[] {
   });
 }
 
+function makePackWithFirst(mission: Mission): Mission[] {
+  return [mission, ...makeTenMissionPack().slice(1)];
+}
+
+function deepFreeze<T>(value: T): T {
+  if (value && typeof value === 'object') {
+    const record = value as unknown as Record<string, unknown>;
+    for (const child of Object.values(record)) deepFreeze(child);
+    Object.freeze(record);
+  }
+  return value;
+}
+
+function deepSnapshot(value: unknown): unknown {
+  if (Array.isArray(value)) return value.map((entry) => deepSnapshot(entry));
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(
+      Object.entries(value)
+        .sort(([left], [right]) => left.localeCompare(right))
+        .map(([key, entry]) => [key, deepSnapshot(entry)]),
+    );
+  }
+  return value;
+}
+
+function runtimeMission(overrides: Record<string, unknown>): Mission {
+  return { ...makeValidMission(), ...overrides } as unknown as Mission;
+}
+
 describe('content catalogs', () => {
   it('defines the four exact repair strategies', () => {
     expect(REPAIR_STRATEGIES).toEqual([
@@ -277,7 +306,7 @@ describe('validateMissionPack', () => {
       ],
     });
     expect(validateMissionPack(makeTenMissionPack(mission)).issues).toContainEqual(
-      expect.objectContaining({ missionId: mission.id, code: 'REPAIR_NOT_ALLOWED' }),
+      expect.objectContaining({ missionId: mission.id, code: 'REPAIR_NOT_ALLOWED', field: 'repairOptions.strategyId' }),
     );
   });
 
@@ -295,41 +324,145 @@ describe('validateMissionPack', () => {
       .toContain('DUPLICATE_FEEDBACK');
   });
 
-  it('requires a curriculum link and all four learning targets', () => {
-    const mission = makeValidMission({ curriculumCodes: [], learningTargets: [] });
-    const codes = validateMissionPack(makeTenMissionPack(mission)).issues.map(({ code }) => code);
-    expect(codes).toContain('CURRICULUM_LINK_REQUIRED');
-    expect(codes).toContain('LEARNING_TARGET_REQUIRED');
+  it('accepts duplicate known curriculum codes because the design requires one or more links only', () => {
+    const report = validateMissionPack(makePackWithFirst(makeValidMission({
+      curriculumCodes: ['[4영02-10]', '[4영02-10]'],
+    })));
+    expect(report).toMatchObject({ valid: true, issues: [] });
   });
 
-  it('rejects external audio URLs and blank transcripts but allows empty audio arrays', () => {
-    const emptyReport = validateMissionPack(makeTenMissionPack());
-    expect(emptyReport.issues.map(({ code }) => code)).not.toContain('EXTERNAL_AUDIO_URL');
-    const mission = makeValidMission({
-      audioCues: [
-        { id: 'external', src: 'https://example.com/audio.mp3', mimeType: 'audio/mpeg', transcriptEn: 'hello' },
-        { id: 'blank', src: 'audio/fixture.mp3', mimeType: 'audio/mpeg', transcriptEn: '   ' },
-      ],
-    });
-    const codes = validateMissionPack(makeTenMissionPack(mission)).issues.map(({ code }) => code);
-    expect(codes).toEqual(expect.arrayContaining(['EXTERNAL_AUDIO_URL', 'TRANSCRIPT_REQUIRED']));
-  });
-
-  it('does not mutate readonly mission input and keeps issue ordering stable', () => {
-    const pack = Object.freeze(makeTenMissionPack(makeValidMission({ id: 'ordered' })));
-    const before = pack.map((mission) => mission.id);
+  it('does not mutate deeply readonly mission input and keeps issue ordering stable', () => {
+    const pack = deepFreeze(makeTenMissionPack(makeValidMission({ id: 'ordered' })));
+    const before = deepSnapshot(pack);
     const first = validateMissionPack(pack);
     const second = validateMissionPack(pack);
-    expect(pack.map((mission) => mission.id)).toEqual(before);
+    expect(deepSnapshot(pack)).toEqual(before);
     expect(first).toEqual(second);
   });
 
-  it.each<ValidationCode>([
-    'PACK_COUNT', 'DUPLICATE_ID', 'GRADE_BAND_COUNT', 'STRATEGY_COVERAGE',
-    'MISSING_STAGE_OPTION', 'REPAIR_NOT_ALLOWED', 'MULTIPLE_EXPRESSION_REQUIRED',
-    'DUPLICATE_FEEDBACK', 'CURRICULUM_LINK_REQUIRED', 'LEARNING_TARGET_REQUIRED',
-    'EXTERNAL_AUDIO_URL', 'TRANSCRIPT_REQUIRED',
-  ])('exposes validation code %s in the contract', (code) => {
-    expect(code).toMatch(/^[A-Z_]+$/);
+  it.each([
+    {
+      name: 'pack count',
+      pack: () => makeTenMissionPack().slice(0, 9),
+      expected: [
+        { code: 'PACK_COUNT', missionId: 'pack', field: 'missions' },
+        { code: 'GRADE_BAND_COUNT', missionId: 'pack', field: 'gradeBandCounts' },
+      ],
+    },
+    {
+      name: 'duplicate ID',
+      pack: () => {
+        const pack = makeTenMissionPack();
+        const first = pack[0];
+        const second = pack[1];
+        if (!first || !second) throw new Error('fixture pack is incomplete');
+        pack[1] = { ...second, id: first.id };
+        return pack;
+      },
+      expected: [{ code: 'DUPLICATE_ID', missionId: 'fixture-mission', field: 'id' }],
+    },
+    {
+      name: 'grade-band count',
+      pack: () => {
+        const pack = makeTenMissionPack();
+        const sixth = pack[5];
+        if (!sixth) throw new Error('fixture pack is incomplete');
+        pack[5] = { ...sixth, gradeBand: '3-4' };
+        return pack;
+      },
+      expected: [{ code: 'GRADE_BAND_COUNT', missionId: 'pack', field: 'gradeBandCounts' }],
+    },
+    {
+      name: 'strategy coverage',
+      pack: () => makeTenMissionPack().map((mission) => ({
+        ...mission,
+        allowedStrategyIds: ['specify'] as Mission['allowedStrategyIds'],
+      })),
+      expected: [{ code: 'STRATEGY_COVERAGE', missionId: 'pack', field: 'allowedStrategyIds' }],
+    },
+    ...(['ambiguity', 'repair', 'meaning', 'confirmation'] as const).map((stage) => ({
+      name: `missing ${stage} stage option`,
+      pack: () => makePackWithFirst(makeValidMission({
+        ...(stage === 'ambiguity' ? { ambiguityOptions: makeValidMission().ambiguityOptions.map((option) => ({ ...option, accepted: false })) } : {}),
+        ...(stage === 'repair' ? { repairOptions: makeValidMission().repairOptions.map((option) => ({ ...option, accepted: false })) } : {}),
+        ...(stage === 'meaning' ? { meaningOptions: makeValidMission().meaningOptions.map((option) => ({ ...option, accepted: false })) } : {}),
+        ...(stage === 'confirmation' ? { confirmationOptions: makeValidMission().confirmationOptions.map((option) => ({ ...option, accepted: false })) } : {}),
+      })),
+      expected: stage === 'repair'
+        ? [
+            { code: 'MISSING_STAGE_OPTION', missionId: 'fixture-mission', field: `${stage}Options` },
+            { code: 'MULTIPLE_EXPRESSION_REQUIRED', missionId: 'fixture-mission', field: 'repairOptions' },
+          ]
+        : [{ code: 'MISSING_STAGE_OPTION', missionId: 'fixture-mission', field: `${stage}Options` }],
+    })),
+    {
+      name: 'repair strategy outside allowed set',
+      pack: () => makePackWithFirst(makeValidMission({
+        allowedStrategyIds: ['specify'],
+        repairOptions: [
+          acceptedRepair({ id: 'wrong-contract', strategyId: 'repeat' }),
+          acceptedRepair({ id: 'second-contract', strategyId: 'specify', naturalness: 'works', feedbackKo: '두 번째 표현도 자연스러워요.' }),
+        ],
+      })),
+      expected: [{ code: 'REPAIR_NOT_ALLOWED', missionId: 'fixture-mission', field: 'repairOptions.strategyId' }],
+    },
+    {
+      name: 'multiple accepted repairs',
+      pack: () => makePackWithFirst(makeValidMission({ repairOptions: [acceptedRepair()] })),
+      expected: [{ code: 'MULTIPLE_EXPRESSION_REQUIRED', missionId: 'fixture-mission', field: 'repairOptions' }],
+    },
+    {
+      name: 'duplicate accepted feedback',
+      pack: () => makePackWithFirst(makeValidMission({
+        repairOptions: [
+          acceptedRepair({ feedbackKo: '같은 피드백' }),
+          acceptedRepair({ id: 'other', feedbackKo: '같은 피드백', naturalness: 'works' }),
+        ],
+      })),
+      expected: [{ code: 'DUPLICATE_FEEDBACK', missionId: 'fixture-mission', field: 'repairOptions.feedbackKo' }],
+    },
+    {
+      name: 'unknown curriculum code',
+      pack: () => makePackWithFirst(runtimeMission({ curriculumCodes: ['[9영99-99]'] })),
+      expected: [{ code: 'CURRICULUM_LINK_REQUIRED', missionId: 'fixture-mission', field: 'curriculumCodes' }],
+    },
+    {
+      name: 'blank curriculum code',
+      pack: () => makePackWithFirst(runtimeMission({ curriculumCodes: [''] })),
+      expected: [{ code: 'CURRICULUM_LINK_REQUIRED', missionId: 'fixture-mission', field: 'curriculumCodes' }],
+    },
+    ...(['understand', 'apply', 'analyze', 'create'] as const).map((target) => ({
+      name: `missing ${target} learning target`,
+      pack: () => makePackWithFirst(makeValidMission({
+        learningTargets: makeValidMission().learningTargets.filter((candidate) => candidate !== target),
+      })),
+      expected: [{ code: 'LEARNING_TARGET_REQUIRED', missionId: 'fixture-mission', field: 'learningTargets' }],
+    })),
+    {
+      name: 'external audio URL',
+      pack: () => makePackWithFirst(runtimeMission({
+        audioCues: [{ id: 'external', src: 'https://example.com/audio.mp3', mimeType: 'audio/mpeg', transcriptEn: 'hello' }],
+      })),
+      expected: [{ code: 'EXTERNAL_AUDIO_URL', missionId: 'fixture-mission', field: 'audioCues.src' }],
+    },
+    {
+      name: 'blank audio transcript',
+      pack: () => makePackWithFirst(runtimeMission({
+        audioCues: [{ id: 'blank', src: 'audio/fixture.mp3', mimeType: 'audio/mpeg', transcriptEn: '   ' }],
+      })),
+      expected: [{ code: 'TRANSCRIPT_REQUIRED', missionId: 'fixture-mission', field: 'audioCues.transcriptEn' }],
+    },
+  ])('isolates the $name validation rule', ({ pack, expected }) => {
+    const report = validateMissionPack(pack());
+    expect(report.valid).toBe(false);
+    expect(report.issues).toHaveLength(expected.length);
+    expect(report.issues.map(({ code, missionId, field }) => ({ code, missionId, field }))).toEqual(expected);
+  });
+
+  it('accepts a supplied local audio cue with a nonblank transcript without false positives', () => {
+    const report = validateMissionPack(makePackWithFirst(runtimeMission({
+      audioCues: [{ id: 'local', src: 'audio/fixture.mp3', mimeType: 'audio/mpeg', transcriptEn: 'Please bring the blue item.' }],
+    })));
+    expect(report).toMatchObject({ valid: true, issues: [] });
   });
 });
