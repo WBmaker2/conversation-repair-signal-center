@@ -65,7 +65,8 @@ describe('DialogueObservation', () => {
     await user.click(screen.getByRole('radio', { name: 'that box' }));
     await user.click(screen.getByRole('button', { name: '모호한 부분 찾기' }));
     expect(screen.getByRole('heading', { name: '수리 송신' })).toBeVisible();
-    expect(screen.queryByRole('radio')).not.toBeInTheDocument();
+    expect(screen.getAllByRole('radio')).toHaveLength(3);
+    expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
   });
 
   it('renders semantic headings for every harness phase without later-stage interactions', () => {
