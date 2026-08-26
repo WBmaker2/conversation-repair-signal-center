@@ -4,10 +4,16 @@ import { SignalCenter } from '../features/center/SignalCenter';
 import { getMissionsByGradeBand, MISSIONS } from '../content/missionRepository';
 import type { GradeBand } from '../domain/mission';
 import { createInitialSession, missionSessionReducer } from '../domain/session';
+import { CHANGELOG } from '../content/changelog';
+import { UpdateHistoryButton } from '../features/updates/UpdateHistoryButton';
+import { UpdateHistoryDialog } from '../features/updates/UpdateHistoryDialog';
 
 export function App(): JSX.Element {
   const [gradeBand, setGradeBand] = useState<GradeBand>('3-4');
   const [voiceEnabled, setVoiceEnabled] = useState(false);
+  const [updatesOpen, setUpdatesOpen] = useState(false);
+  const updateTriggerRef = useRef<HTMLButtonElement>(null);
+  const restoreUpdateFocus = useRef(false);
   const [session, dispatch] = useReducer(missionSessionReducer, undefined, createInitialSession);
   const previousPhase = useRef(session.phase);
 
@@ -22,6 +28,18 @@ export function App(): JSX.Element {
     previousPhase.current = session.phase;
   }, [session.phase]);
 
+  useEffect(() => {
+    if (!updatesOpen && restoreUpdateFocus.current) {
+      restoreUpdateFocus.current = false;
+      updateTriggerRef.current?.focus();
+    }
+  }, [updatesOpen]);
+
+  const closeUpdates = () => {
+    restoreUpdateFocus.current = true;
+    setUpdatesOpen(false);
+  };
+
   if (session.phase !== 'center') {
     const mission = MISSIONS.find((candidate) => candidate.id === session.missionId);
     if (mission) {
@@ -33,7 +51,7 @@ export function App(): JSX.Element {
   return (
     <>
       <a className="skip-link" href="#main-content">본문으로 건너뛰기</a>
-      <main id="main-content" tabIndex={-1} className="app-shell">
+      <main id="main-content" tabIndex={-1} className="app-shell" inert={updatesOpen ? true : undefined}>
         <SignalCenter
           gradeBand={gradeBand}
           missions={getMissionsByGradeBand(gradeBand)}
@@ -42,7 +60,9 @@ export function App(): JSX.Element {
           onVoiceEnabledChange={setVoiceEnabled}
           onMissionStart={(missionId) => dispatch({ type: 'mission.started', missionId })}
         />
+        <UpdateHistoryButton ref={updateTriggerRef} onClick={() => setUpdatesOpen(true)} />
       </main>
+      {updatesOpen && <UpdateHistoryDialog records={CHANGELOG} onClose={closeUpdates} />}
     </>
   );
 }

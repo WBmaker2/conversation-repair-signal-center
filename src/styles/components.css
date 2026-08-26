@@ -83,6 +83,63 @@ summary {
   font-weight: 700;
 }
 
+.update-history-trigger {
+  position: fixed;
+  inset-inline-end: max(16px, env(safe-area-inset-right));
+  inset-block-end: max(16px, env(safe-area-inset-bottom));
+  z-index: 20;
+  min-block-size: 44px;
+  padding-inline: var(--space-3);
+  font-size: 0.875rem;
+  box-shadow: 0 3px 12px rgb(18 45 66 / 18%);
+}
+
+.update-history-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  padding: var(--space-4);
+  background: rgb(18 45 66 / 64%);
+}
+
+.update-history-dialog {
+  inline-size: min(100%, 42rem);
+  max-block-size: 90vh;
+  overflow: auto;
+  border: 2px solid var(--color-signal-dark);
+  border-radius: var(--radius);
+  background: var(--color-paper);
+  color: var(--color-ink);
+  padding: var(--space-5);
+  box-shadow: 0 12px 36px rgb(18 45 66 / 28%);
+}
+
+.update-history-dialog-header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.update-history-dialog-header h2 {
+  margin-block-end: 0;
+}
+
+.update-history-list {
+  margin-block: var(--space-5) 0;
+  padding-inline-start: 1.5rem;
+}
+
+.update-history-list li + li {
+  margin-block-start: var(--space-4);
+}
+
+.update-history-list p {
+  margin-block-end: var(--space-1);
+}
+
 @media (max-width: 640px) {
   .dialogue-turn {
     max-inline-size: 100%;
