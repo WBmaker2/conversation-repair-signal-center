@@ -228,4 +228,4 @@ git diff --check
 
 ### Fix Round 1 커밋
 
-Fix Round 1 구현 변경을 담은 새 task-scoped 커밋 SHA는 커밋 후 이 절에 기록합니다. 보고서 evidence 후속 기록 커밋은 구현 커밋을 변경하지 않습니다.
+Fix Round 1 구현 변경을 담은 새 task-scoped 커밋 SHA는 `e3c9000c5c1da2568f8babeeba013be102a18b23`입니다. 이 보고서의 SHA 기록은 구현 커밋 이후 별도 evidence-only 커밋으로 추가되며 구현 커밋을 변경하지 않습니다.
