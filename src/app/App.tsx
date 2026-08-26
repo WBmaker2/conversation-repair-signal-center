@@ -27,17 +27,7 @@ export function App(): JSX.Element {
     if (mission) {
       return <MissionFlow mission={mission} session={session} dispatch={dispatch} voiceEnabled={voiceEnabled} />;
     }
-    return (
-      <>
-        <a className="skip-link" href="#main-content">본문으로 건너뛰기</a>
-        <main id="main-content" tabIndex={-1} className="app-shell">
-          <h1 id="service-heading" tabIndex={-1}>대화 수리 신호센터</h1>
-          <h2 id="record-heading" tabIndex={-1}>통신 기록</h2>
-          <p>이 미션을 찾을 수 없어요. 신호센터에서 다른 미션을 골라 주세요.</p>
-          <button type="button" onClick={() => dispatch({ type: 'center.returned' })}>신호센터로 돌아가기</button>
-        </main>
-      </>
-    );
+    return <InvalidMissionFallback onReturnCenter={() => dispatch({ type: 'center.returned' })} />;
   }
 
   return (
@@ -52,6 +42,28 @@ export function App(): JSX.Element {
           onVoiceEnabledChange={setVoiceEnabled}
           onMissionStart={(missionId) => dispatch({ type: 'mission.started', missionId })}
         />
+      </main>
+    </>
+  );
+}
+
+export interface InvalidMissionFallbackProps {
+  onReturnCenter: () => void;
+}
+
+export function InvalidMissionFallback({ onReturnCenter }: InvalidMissionFallbackProps): JSX.Element {
+  useEffect(() => {
+    document.getElementById('invalid-mission-heading')?.focus();
+  }, []);
+
+  return (
+    <>
+      <a className="skip-link" href="#main-content">본문으로 건너뛰기</a>
+      <main id="main-content" tabIndex={-1} className="app-shell">
+        <h1 id="invalid-mission-heading" tabIndex={-1}>대화 수리 신호센터</h1>
+        <h2 id="record-heading" tabIndex={-1}>통신 기록</h2>
+        <p>이 미션을 찾을 수 없어요. 신호센터에서 다른 미션을 골라 주세요.</p>
+        <button type="button" onClick={onReturnCenter}>신호센터로 돌아가기</button>
       </main>
     </>
   );

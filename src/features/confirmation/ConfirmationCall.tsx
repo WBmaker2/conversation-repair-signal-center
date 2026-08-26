@@ -21,7 +21,7 @@ export function ConfirmationCall({
   const confirmationResult = latestResult?.stage === 'confirmation' ? latestResult : null;
 
   return (
-    <section aria-labelledby="confirmation-call-heading">
+    <section aria-labelledby="confirm-heading">
       <h2 id="confirm-heading" tabIndex={-1}>확인 통화</h2>
       <p lang="ko">상대의 추가 답을 바탕으로 내가 이해한 뜻을 다시 연결해 보세요.</p>
       <fieldset>

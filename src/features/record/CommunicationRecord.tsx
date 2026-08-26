@@ -60,6 +60,7 @@ function controlledError(
     <section aria-labelledby="record-heading">
       <h2 id="record-heading" tabIndex={-1}>통신 기록</h2>
       <p role="alert">{message}</p>
+      <p role="status" aria-live="polite" lang="ko">복구 방법을 선택해 학습을 이어 갈 수 있어요.</p>
       <RecoveryActions {...callbacks} />
     </section>
   );
@@ -141,6 +142,7 @@ export function CommunicationRecord({
   return (
     <section aria-labelledby="record-heading">
       <h2 id="record-heading" tabIndex={-1}>통신 기록</h2>
+      <p role="status" aria-live="polite" lang="ko">학습 기록이 준비되었습니다.</p>
       <h3>미션</h3>
       <p>{mission.titleKo}</p>
       <dl>

@@ -34,6 +34,7 @@ export function SignalCenter({
       </section>
 
       <p>이름을 묻지 않으며, 새로고침하면 현재 통신 기록이 사라져요.</p>
+      <p role="status" aria-live="polite" lang="ko">현재 수준과 음성 설정을 고른 뒤 미션을 시작할 수 있어요.</p>
 
       <section aria-labelledby="grade-selection-heading">
         <h2 id="grade-selection-heading">수준에 맞는 미션 고르기</h2>
