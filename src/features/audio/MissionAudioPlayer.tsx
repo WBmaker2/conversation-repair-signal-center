@@ -25,7 +25,6 @@ export function MissionAudioPlayer({ cue, labelKo }: MissionAudioPlayerProps) {
         data-testid="audio-element"
         src={`${import.meta.env.BASE_URL}${cue.src}`}
         preload="metadata"
-        controls
         aria-label={playerLabel}
         onEnded={stop}
       />

@@ -17,9 +17,12 @@ export function useAudioPlayer(
   const [isPlaying, setIsPlaying] = useState(false);
   const [playbackRate, setPlaybackRateState] = useState<PlaybackRate>(1);
   const isPlayingRef = useRef(false);
+  const generationRef = useRef(0);
+  const mountedRef = useRef(true);
 
   const stop = useCallback(() => {
     const audio = audioRef.current;
+    generationRef.current += 1;
     if (audio) {
       if (!audio.paused || isPlayingRef.current) audio.pause();
       audio.currentTime = 0;
@@ -30,15 +33,22 @@ export function useAudioPlayer(
 
   useEffect(() => {
     const audio = audioRef.current;
+    ++generationRef.current;
     return () => {
+      generationRef.current += 1;
       if (audio) {
         if (!audio.paused || isPlayingRef.current) audio.pause();
         audio.currentTime = 0;
       }
       isPlayingRef.current = false;
-      setIsPlaying(false);
+      if (mountedRef.current) setIsPlaying(false);
     };
   }, [audioRef, cueId]);
+
+  useEffect(() => () => {
+    mountedRef.current = false;
+    generationRef.current += 1;
+  }, []);
 
   const setPlaybackRate = useCallback((rate: PlaybackRate) => {
     setPlaybackRateState(rate);
@@ -49,22 +59,26 @@ export function useAudioPlayer(
   const togglePlayback = useCallback(async () => {
     const audio = audioRef.current;
     if (!audio) return;
-    if (isPlaying) {
-      audio.pause();
+    if (isPlayingRef.current) {
+      generationRef.current += 1;
       isPlayingRef.current = false;
+      audio.pause();
       setIsPlaying(false);
       return;
     }
+    isPlayingRef.current = true;
+    const generation = ++generationRef.current;
     try {
       audio.playbackRate = playbackRate;
       await audio.play();
-      isPlayingRef.current = true;
+      if (!mountedRef.current || generationRef.current !== generation || audioRef.current !== audio || !isPlayingRef.current) return;
       setIsPlaying(true);
     } catch {
+      if (!mountedRef.current || generationRef.current !== generation || audioRef.current !== audio || !isPlayingRef.current) return;
       isPlayingRef.current = false;
       setIsPlaying(false);
     }
-  }, [audioRef, isPlaying, playbackRate]);
+  }, [audioRef, playbackRate]);
 
   return { isPlaying, playbackRate, togglePlayback, setPlaybackRate, stop };
 }

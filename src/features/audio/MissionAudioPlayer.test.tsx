@@ -10,6 +10,7 @@ const cue = {
   mimeType: 'audio/mpeg' as const,
   transcriptEn: 'Teacher: Please put the crayons in that box.',
 };
+const secondCue = { ...cue, id: 'g34-classroom-box-response', src: 'audio/g34-classroom-box/response.mp3', transcriptEn: 'Teacher: The blue box by the window.' };
 
 describe('MissionAudioPlayer', () => {
   beforeEach(() => {
@@ -22,12 +23,14 @@ describe('MissionAudioPlayer', () => {
     vi.restoreAllMocks();
   });
 
-  it('keeps exact transcript visible and changes playback rate', async () => {
+  it('keeps exact transcript visible and changes through every playback rate', async () => {
     const { user } = renderWithUser(<MissionAudioPlayer cue={cue} labelKo="대화 듣기" />);
     expect(screen.getByText(cue.transcriptEn)).toHaveAttribute('lang', 'en');
     const select = screen.getByRole('combobox', { name: '재생 속도' });
-    await user.selectOptions(select, '0.75');
-    expect(screen.getByTestId('audio-element')).toHaveProperty('playbackRate', 0.75);
+    for (const rate of ['0.75', '1', '1.25']) {
+      await user.selectOptions(select, rate);
+      expect(screen.getByTestId('audio-element')).toHaveProperty('playbackRate', Number(rate));
+    }
     await user.click(screen.getByRole('button', { name: '재생' }));
     expect(HTMLMediaElement.prototype.play).toHaveBeenCalledOnce();
   });
@@ -47,12 +50,56 @@ describe('MissionAudioPlayer', () => {
     expect(screen.getByRole('button', { name: '재생' })).toBeVisible();
   });
 
-  it('uses BASE_URL-safe local sources and does not autoplay', () => {
+  it('uses BASE_URL-safe local sources and keeps custom controls as the only controls', () => {
     renderWithUser(<MissionAudioPlayer cue={cue} labelKo="대화 듣기" />);
     const audio = screen.getByTestId('audio-element');
     expect(audio).toHaveAttribute('src', expect.stringContaining('audio/g34-classroom-box/dialogue.mp3'));
     expect(audio).not.toHaveAttribute('autoplay');
+    expect(audio).not.toHaveAttribute('controls');
     expect(screen.getByRole('button', { name: '재생' })).toBeVisible();
+  });
+
+  it('ignores a play resolution after cue swap', async () => {
+    let resolvePlay: (() => void) | undefined;
+    vi.mocked(HTMLMediaElement.prototype.play).mockImplementationOnce(() => new Promise<void>((resolve) => { resolvePlay = resolve; }));
+    const view = renderWithUser(<MissionAudioPlayer cue={cue} labelKo="대화 듣기" />);
+    await view.user.click(screen.getByRole('button', { name: '재생' }));
+    view.rerender(<MissionAudioPlayer cue={secondCue} labelKo="응답 듣기" />);
+    await act(async () => { resolvePlay?.(); await Promise.resolve(); });
+    expect(screen.getByText(secondCue.transcriptEn)).toHaveAttribute('lang', 'en');
+    expect(screen.getByRole('button', { name: '재생' })).toBeVisible();
+  });
+
+  it('ignores a play rejection after cue swap', async () => {
+    let rejectPlay: ((error: Error) => void) | undefined;
+    vi.mocked(HTMLMediaElement.prototype.play).mockImplementationOnce(() => new Promise<void>((_, reject) => { rejectPlay = reject; }));
+    const view = renderWithUser(<MissionAudioPlayer cue={cue} labelKo="대화 듣기" />);
+    await view.user.click(screen.getByRole('button', { name: '재생' }));
+    view.rerender(<MissionAudioPlayer cue={secondCue} labelKo="응답 듣기" />);
+    await act(async () => { rejectPlay?.(new Error('late rejection')); await Promise.resolve(); });
+    expect(screen.getByText(secondCue.transcriptEn)).toHaveAttribute('lang', 'en');
+    expect(screen.getByRole('button', { name: '재생' })).toBeVisible();
+  });
+
+  it('invalidates a pending play when stopped by a duplicate request', async () => {
+    let resolvePlay: (() => void) | undefined;
+    vi.mocked(HTMLMediaElement.prototype.play).mockImplementationOnce(() => new Promise<void>((resolve) => { resolvePlay = resolve; }));
+    const view = renderWithUser(<MissionAudioPlayer cue={cue} labelKo="대화 듣기" />);
+    await view.user.click(screen.getByRole('button', { name: '재생' }));
+    await view.user.click(screen.getByRole('button', { name: '재생' }));
+    await act(async () => { resolvePlay?.(); await Promise.resolve(); });
+    expect(screen.getByRole('button', { name: '재생' })).toBeVisible();
+    expect(HTMLMediaElement.prototype.pause).toHaveBeenCalled();
+  });
+
+  it('does not update state when a pending play resolves after unmount', async () => {
+    let resolvePlay: (() => void) | undefined;
+    vi.mocked(HTMLMediaElement.prototype.play).mockImplementationOnce(() => new Promise<void>((resolve) => { resolvePlay = resolve; }));
+    const view = renderWithUser(<MissionAudioPlayer cue={cue} labelKo="대화 듣기" />);
+    await view.user.click(screen.getByRole('button', { name: '재생' }));
+    view.unmount();
+    await act(async () => { resolvePlay?.(); await Promise.resolve(); });
+    expect(screen.queryByRole('button', { name: '일시 정지' })).not.toBeInTheDocument();
   });
 
   it('provides the exact 20-cue manifest contract', () => {

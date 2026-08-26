@@ -15,10 +15,11 @@
     "typecheck": "tsc -b --pretty false",
     "test": "vitest",
     "test:run": "vitest run",
+    "test:audio-verifier": "node --test scripts/verify-audio-assets.test.mjs",
     "test:e2e": "playwright test",
     "check:size": "node scripts/check-source-lines.mjs",
     "check:audio": "node scripts/verify-audio-assets.mjs",
-    "verify": "npm run lint && npm run typecheck && npm run test:run && npm run check:size && npm run check:audio && npm run build"
+    "verify": "npm run lint && npm run typecheck && npm run test:run && npm run test:audio-verifier && npm run check:size && npm run check:audio && npm run build"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",
