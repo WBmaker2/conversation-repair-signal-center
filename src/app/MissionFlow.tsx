@@ -5,6 +5,8 @@ import { evaluateMissionChoice } from '../domain/evaluation';
 import { DialogueObservation } from '../features/observation/DialogueObservation';
 import { RepairTransmission } from '../features/repair/RepairTransmission';
 import { ResponseReception } from '../features/response/ResponseReception';
+import { ConfirmationCall } from '../features/confirmation/ConfirmationCall';
+import { CommunicationRecord } from '../features/record/CommunicationRecord';
 
 export interface MissionFlowProps {
   mission: Mission;
@@ -44,6 +46,16 @@ export function MissionFlow({ mission, session, dispatch, voiceEnabled }: Missio
       result: evaluateMissionChoice(mission, 'meaning', optionId),
     });
   };
+  const selectConfirmation = (optionId: string) => {
+    dispatch({ type: 'choice.selected', stage: 'confirmation', optionId });
+  };
+  const submitConfirmation = (optionId: string) => {
+    dispatch({
+      type: 'choice.submitted',
+      mission,
+      result: evaluateMissionChoice(mission, 'confirmation', optionId),
+    });
+  };
 
   return (
     <section data-session-phase={session.phase} data-voice-enabled={voiceEnabled ? 'true' : 'false'}>
@@ -76,12 +88,25 @@ export function MissionFlow({ mission, session, dispatch, voiceEnabled }: Missio
           onSelect={selectMeaning}
           onSubmit={submitMeaning}
         />
+      ) : session.phase === 'confirm' ? (
+        <ConfirmationCall
+          mission={mission}
+          selectedOptionId={session.selectedOptionIds.confirmation}
+          latestResult={session.latestResult}
+          onSelect={selectConfirmation}
+          onSubmit={submitConfirmation}
+        />
+      ) : session.phase === 'record' && session.evidence ? (
+        <CommunicationRecord
+          mission={mission}
+          evidence={session.evidence}
+          onRetry={() => dispatch({ type: 'mission.restarted' })}
+          onReturnCenter={() => dispatch({ type: 'center.returned' })}
+        />
       ) : (
         <section aria-labelledby="phase-heading">
-          <h2 id="phase-heading">
-            {session.phase === 'confirm' ? '확인 통화' : '통신 기록'}
-          </h2>
-          <p>다음 학습 단계가 준비되어 있습니다.</p>
+          <h2 id="phase-heading">통신 기록</h2>
+          <p role="alert">학습 증거를 찾을 수 없습니다. 이 미션을 다시 시작해 주세요.</p>
         </section>
       )}
     </section>
