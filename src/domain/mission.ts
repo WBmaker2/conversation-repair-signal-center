@@ -93,7 +93,7 @@ export interface Mission {
   clarifyingResponse: DialogueTurn;
   meaningOptions: MeaningOption[];
   confirmationOptions: ConfirmationOption[];
-  audioCues: AudioCue[];
+  audioCues: readonly AudioCue[];
 }
 
 export interface EvaluationResult {

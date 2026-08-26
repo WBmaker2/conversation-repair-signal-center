@@ -1,5 +1,6 @@
 import type { Mission } from '../../domain/mission';
 import { AMBIGUITY_RETRY_FEEDBACK_KO, createConfirmationRetryFeedback, createMeaningRetryFeedback } from '../feedback';
+import { getAudioCues } from './audioManifest';
 
 export const GRADE56_DIRECTIONS_MISSIONS = [
   {
@@ -35,7 +36,7 @@ export const GRADE56_DIRECTIONS_MISSIONS = [
       { id: 'g56-directions-place--confirmation-retry-a', mode: 'confirm', textEn: 'I turn toward the sports hall across from the bakery.', accepted: false, feedbackKo: createConfirmationRetryFeedback('place') },
       { id: 'g56-directions-place--confirmation-retry-b', mode: 'confirm', textEn: 'I turn toward the music hall beside the bank.', accepted: false, feedbackKo: createConfirmationRetryFeedback('place') },
     ],
-    audioCues: [],
+    audioCues: getAudioCues('g56-directions-place'),
   },
   {
     id: 'g56-directions-sequence',
@@ -70,6 +71,6 @@ export const GRADE56_DIRECTIONS_MISSIONS = [
       { id: 'g56-directions-sequence--confirmation-retry-a', mode: 'confirm', textEn: 'After the second light, I turn left.', accepted: false, feedbackKo: createConfirmationRetryFeedback('sequence') },
       { id: 'g56-directions-sequence--confirmation-retry-b', mode: 'confirm', textEn: 'After the second light, I turn right and pass the library on the right.', accepted: false, feedbackKo: createConfirmationRetryFeedback('sequence') },
     ],
-    audioCues: [],
+    audioCues: getAudioCues('g56-directions-sequence'),
   },
 ] satisfies readonly Mission[];

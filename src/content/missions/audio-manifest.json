@@ -1,0 +1,42 @@
+{
+  "g34-classroom-box": [
+    { "id": "g34-classroom-box-dialogue", "src": "audio/g34-classroom-box/dialogue.mp3", "mimeType": "audio/mpeg", "transcriptEn": "Teacher: Please put the crayons in that box." },
+    { "id": "g34-classroom-box-response", "src": "audio/g34-classroom-box/response.mp3", "mimeType": "audio/mpeg", "transcriptEn": "Teacher: The blue box by the window." }
+  ],
+  "g34-classroom-pencil": [
+    { "id": "g34-classroom-pencil-dialogue", "src": "audio/g34-classroom-pencil/dialogue.mp3", "mimeType": "audio/mpeg", "transcriptEn": "Partner: Can you pass me that one?" },
+    { "id": "g34-classroom-pencil-response", "src": "audio/g34-classroom-pencil/response.mp3", "mimeType": "audio/mpeg", "transcriptEn": "Partner: The short pencil, please." }
+  ],
+  "g34-recess-place": [
+    { "id": "g34-recess-place-dialogue", "src": "audio/g34-recess-place/dialogue.mp3", "mimeType": "audio/mpeg", "transcriptEn": "Partner: Let’s meet there after lunch." },
+    { "id": "g34-recess-place-response", "src": "audio/g34-recess-place/response.mp3", "mimeType": "audio/mpeg", "transcriptEn": "Partner: At the bench beside the playground gate." }
+  ],
+  "g34-recess-time": [
+    { "id": "g34-recess-time-dialogue", "src": "audio/g34-recess-time/dialogue.mp3", "mimeType": "audio/mpeg", "transcriptEn": "A bell rings. You could not catch this sentence." },
+    { "id": "g34-recess-time-response", "src": "audio/g34-recess-time/response.mp3", "mimeType": "audio/mpeg", "transcriptEn": "Partner: Let’s start the game at one thirty." }
+  ],
+  "g34-recess-rephrase": [
+    { "id": "g34-recess-rephrase-dialogue", "src": "audio/g34-recess-rephrase/dialogue.mp3", "mimeType": "audio/mpeg", "transcriptEn": "You: Let’s do it over there. Partner: I’m not sure what you mean." },
+    { "id": "g34-recess-rephrase-response", "src": "audio/g34-recess-rephrase/response.mp3", "mimeType": "audio/mpeg", "transcriptEn": "Partner: Okay, beside the hopscotch grid." }
+  ],
+  "g56-materials-quantity": [
+    { "id": "g56-materials-quantity-dialogue", "src": "audio/g56-materials-quantity/dialogue.mp3", "mimeType": "audio/mpeg", "transcriptEn": "Leader: Please bring some sheets of poster paper tomorrow." },
+    { "id": "g56-materials-quantity-response", "src": "audio/g56-materials-quantity/response.mp3", "mimeType": "audio/mpeg", "transcriptEn": "Leader: Please bring four sheets." }
+  ],
+  "g56-materials-person": [
+    { "id": "g56-materials-person-dialogue", "src": "audio/g56-materials-person/dialogue.mp3", "mimeType": "audio/mpeg", "transcriptEn": "Leader: Minseo has the tape. We still need the markers." },
+    { "id": "g56-materials-person-response", "src": "audio/g56-materials-person/response.mp3", "mimeType": "audio/mpeg", "transcriptEn": "Leader: I will bring two packs of markers." }
+  ],
+  "g56-directions-place": [
+    { "id": "g56-directions-place-dialogue", "src": "audio/g56-directions-place/dialogue.mp3", "mimeType": "audio/mpeg", "transcriptEn": "Guide: After the bank, turn toward the hall." },
+    { "id": "g56-directions-place-response", "src": "audio/g56-directions-place/response.mp3", "mimeType": "audio/mpeg", "transcriptEn": "Guide: The music hall across from the bakery." }
+  ],
+  "g56-directions-sequence": [
+    { "id": "g56-directions-sequence-dialogue", "src": "audio/g56-directions-sequence/dialogue.mp3", "mimeType": "audio/mpeg", "transcriptEn": "Guide: Walk past the pharmacy and cross at the second light. Then take the next turn." },
+    { "id": "g56-directions-sequence-response", "src": "audio/g56-directions-sequence/response.mp3", "mimeType": "audio/mpeg", "transcriptEn": "Guide: Turn right. The library is the first building on the left." }
+  ],
+  "g56-event-decision": [
+    { "id": "g56-event-decision-dialogue", "src": "audio/g56-event-decision/dialogue.mp3", "mimeType": "audio/mpeg", "transcriptEn": "Partner: We could meet at two in the library, or at three in the art room. I think the second plan works better." },
+    { "id": "g56-event-decision-response", "src": "audio/g56-event-decision/response.mp3", "mimeType": "audio/mpeg", "transcriptEn": "Partner: Yes. Three in the art room is the final plan." }
+  ]
+}

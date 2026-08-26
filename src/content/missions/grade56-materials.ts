@@ -1,5 +1,6 @@
 import type { Mission } from '../../domain/mission';
 import { AMBIGUITY_RETRY_FEEDBACK_KO, createConfirmationRetryFeedback, createMeaningRetryFeedback } from '../feedback';
+import { getAudioCues } from './audioManifest';
 
 export const GRADE56_MATERIALS_MISSIONS = [
   {
@@ -35,7 +36,7 @@ export const GRADE56_MATERIALS_MISSIONS = [
       { id: 'g56-materials-quantity--confirmation-retry-a', mode: 'confirm', textEn: 'I’ll bring two sheets of poster paper tomorrow.', accepted: false, feedbackKo: createConfirmationRetryFeedback('quantity') },
       { id: 'g56-materials-quantity--confirmation-retry-b', mode: 'confirm', textEn: 'I’ll bring four packs of poster paper tomorrow.', accepted: false, feedbackKo: createConfirmationRetryFeedback('quantity') },
     ],
-    audioCues: [],
+    audioCues: getAudioCues('g56-materials-quantity'),
   },
   {
     id: 'g56-materials-person',
@@ -70,6 +71,6 @@ export const GRADE56_MATERIALS_MISSIONS = [
       { id: 'g56-materials-person--confirmation-retry-a', mode: 'confirm', textEn: 'Minseo will bring the markers and the tape.', accepted: false, feedbackKo: createConfirmationRetryFeedback('person') },
       { id: 'g56-materials-person--confirmation-retry-b', mode: 'confirm', textEn: 'You’ll bring the tape, and Minseo has the markers.', accepted: false, feedbackKo: createConfirmationRetryFeedback('person') },
     ],
-    audioCues: [],
+    audioCues: getAudioCues('g56-materials-person'),
   },
 ] satisfies readonly Mission[];

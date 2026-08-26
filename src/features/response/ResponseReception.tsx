@@ -1,11 +1,13 @@
 import type { EvaluationResult, Mission } from '../../domain/mission';
 import { FeedbackNotice } from '../../shared/FeedbackNotice';
 import { LanguageText } from '../../shared/LanguageText';
+import { MissionAudioPlayer } from '../audio/MissionAudioPlayer';
 
 export interface ResponseReceptionProps {
   mission: Mission;
   selectedOptionId: string | undefined;
   latestResult: EvaluationResult | null;
+  voiceEnabled?: boolean;
   onSelect: (optionId: string) => void;
   onSubmit: (optionId: string) => void;
 }
@@ -14,6 +16,7 @@ export function ResponseReception({
   mission,
   selectedOptionId,
   latestResult,
+  voiceEnabled = false,
   onSelect,
   onSubmit,
 }: ResponseReceptionProps) {
@@ -26,6 +29,9 @@ export function ResponseReception({
           <LanguageText language="ko" as="p">{mission.clarifyingResponse.supportKo}</LanguageText>
         )}
       </blockquote>
+      {voiceEnabled && mission.audioCues[1] ? (
+        <MissionAudioPlayer cue={mission.audioCues[1]} labelKo="응답 듣기" />
+      ) : null}
       <fieldset>
         <legend>상대가 확인해 준 뜻은 무엇인가요?</legend>
         {mission.meaningOptions.map((option) => (

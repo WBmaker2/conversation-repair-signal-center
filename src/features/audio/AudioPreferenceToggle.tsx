@@ -15,7 +15,7 @@ export function AudioPreferenceToggle({ checked, onChange }: AudioPreferenceTogg
         />{' '}
         음성 자료 사용(선택 사항)
       </label>
-      <p>번들 음성은 선택 사항이며 처음에는 꺼져 있어요.</p>
+      <p>번들 음성은 선택 사항이며 처음에는 꺼져 있어요. 로컬 합성 참고 음원이고 교사·사람의 녹음이나 발음 평가는 아니에요.</p>
     </fieldset>
   );
 }

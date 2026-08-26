@@ -2,12 +2,14 @@ import type { Mission, EvaluationResult } from '../../domain/mission';
 import { CriticalActionButton } from '../../shared/CriticalActionButton';
 import { FeedbackNotice } from '../../shared/FeedbackNotice';
 import { LanguageText } from '../../shared/LanguageText';
+import { MissionAudioPlayer } from '../audio/MissionAudioPlayer';
 import { DialogueTurnView } from './DialogueTurnView';
 
 export interface DialogueObservationProps {
   mission: Mission;
   selectedOptionId: string | undefined;
   latestResult: EvaluationResult | null;
+  voiceEnabled?: boolean;
   onSelect: (optionId: string) => void;
   onSubmit: (optionId: string) => void;
 }
@@ -16,6 +18,7 @@ export function DialogueObservation({
   mission,
   selectedOptionId,
   latestResult,
+  voiceEnabled = false,
   onSelect,
   onSubmit,
 }: DialogueObservationProps) {
@@ -28,6 +31,9 @@ export function DialogueObservation({
           <DialogueTurnView key={turn.id} turn={turn} sequence={index + 1} />
         ))}
       </ol>
+      {voiceEnabled && mission.audioCues[0] ? (
+        <MissionAudioPlayer cue={mission.audioCues[0]} labelKo="대화 듣기" />
+      ) : null}
       <fieldset>
         <legend>어느 부분이 분명하지 않나요?</legend>
         {mission.ambiguityOptions.map((option) => (

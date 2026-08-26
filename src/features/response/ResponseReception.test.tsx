@@ -2,7 +2,7 @@ import { cleanup, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 import { MISSIONS } from '../../content/missionRepository';
 import { getMissionById } from '../../content/missionRepository';
-import { renderMissionAtResponse } from '../../test/missionHarness';
+import { renderMissionAtPhase, renderMissionAtResponse } from '../../test/missionHarness';
 import { ResponseReception } from './ResponseReception';
 
 afterEach(cleanup);
@@ -28,6 +28,19 @@ describe('ResponseReception', () => {
     expect(screen.getAllByRole('radio')).toHaveLength(3);
     expect(screen.getAllByRole('radio').every((radio) => radio.getAttribute('name') === 'meaning')).toBe(true);
     expect(screen.getByRole('button', { name: '이해한 뜻 확인하기' })).toBeDisabled();
+  });
+
+  it('keeps the exact response text and only adds the labelled player when voice is on', () => {
+    const mission = getMissionById('g34-classroom-box');
+    renderMissionAtResponse(mission.id);
+    expect(screen.getByText(mission.clarifyingResponse.textEn)).toBeVisible();
+    expect(screen.queryByRole('figure', { name: '응답 듣기 음원' })).not.toBeInTheDocument();
+    cleanup();
+
+    renderMissionAtPhase(mission.id, 'response', true);
+    expect(screen.getByText(mission.clarifyingResponse.textEn)).toBeVisible();
+    expect(screen.getByText(mission.audioCues[1]!.transcriptEn)).toHaveAttribute('lang', 'en');
+    expect(screen.getByRole('figure', { name: '응답 듣기 음원' })).toBeVisible();
   });
 
   it('marks optional Korean support as Korean text', () => {

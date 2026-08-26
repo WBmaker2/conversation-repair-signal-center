@@ -69,6 +69,7 @@ export function MissionFlow({ mission, session, dispatch, voiceEnabled }: Missio
           mission={mission}
           selectedOptionId={session.selectedOptionIds.ambiguity}
           latestResult={session.latestResult}
+          voiceEnabled={voiceEnabled}
           onSelect={selectAmbiguity}
           onSubmit={submitAmbiguity}
         />
@@ -85,6 +86,7 @@ export function MissionFlow({ mission, session, dispatch, voiceEnabled }: Missio
           mission={mission}
           selectedOptionId={session.selectedOptionIds.meaning}
           latestResult={session.latestResult}
+          voiceEnabled={voiceEnabled}
           onSelect={selectMeaning}
           onSubmit={submitMeaning}
         />

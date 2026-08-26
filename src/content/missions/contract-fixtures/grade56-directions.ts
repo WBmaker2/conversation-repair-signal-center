@@ -25,7 +25,10 @@ export const GRADE56_DIRECTIONS_CONTRACT = [
       { id: 'g56-directions-place--confirmation-correct', mode: 'confirm', textEn: 'I turn toward the music hall across from the bakery.', accepted: true, feedbackKo: '빵집 맞은편 음악당이라는 장소를 확인했어요.' },
       { id: 'g56-directions-place--confirmation-retry-a', mode: 'confirm', textEn: 'I turn toward the sports hall across from the bakery.', accepted: false, feedbackKo: '어떤 정보가 아직 없나요? 확인 문장에서 장소 정보가 바뀌거나 빠졌어요.' },
       { id: 'g56-directions-place--confirmation-retry-b', mode: 'confirm', textEn: 'I turn toward the music hall beside the bank.', accepted: false, feedbackKo: '어떤 정보가 아직 없나요? 확인 문장에서 장소 정보가 바뀌거나 빠졌어요.' },
-    ], audioCues: [],
+    ], audioCues: [
+      { id: 'g56-directions-place-dialogue', src: 'audio/g56-directions-place/dialogue.mp3', mimeType: 'audio/mpeg', transcriptEn: 'Guide: After the bank, turn toward the hall.' },
+      { id: 'g56-directions-place-response', src: 'audio/g56-directions-place/response.mp3', mimeType: 'audio/mpeg', transcriptEn: 'Guide: The music hall across from the bakery.' },
+    ],
   },
   {
     id: 'g56-directions-sequence', gradeBand: '5-6', titleKo: '길 안내 순서', scenarioKo: '약국과 두 번째 신호등 뒤의 이동 순서를 확인합니다.', politenessContext: 'peer-brief', curriculumCodes: ['[6영02-07]', '[6영02-09]'], learningTargets: ['understand', 'apply', 'analyze', 'create'],
@@ -51,6 +54,9 @@ export const GRADE56_DIRECTIONS_CONTRACT = [
       { id: 'g56-directions-sequence--confirmation-correct', mode: 'confirm', textEn: 'After the second light, I turn right and find the library on the left.', accepted: true, feedbackKo: '두 번째 신호등 뒤 우회전과 도서관 위치를 확인했어요.' },
       { id: 'g56-directions-sequence--confirmation-retry-a', mode: 'confirm', textEn: 'After the second light, I turn left.', accepted: false, feedbackKo: '어떤 정보가 아직 없나요? 확인 문장에서 순서 정보가 바뀌거나 빠졌어요.' },
       { id: 'g56-directions-sequence--confirmation-retry-b', mode: 'confirm', textEn: 'After the second light, I turn right and pass the library on the right.', accepted: false, feedbackKo: '어떤 정보가 아직 없나요? 확인 문장에서 순서 정보가 바뀌거나 빠졌어요.' },
-    ], audioCues: [],
+    ], audioCues: [
+      { id: 'g56-directions-sequence-dialogue', src: 'audio/g56-directions-sequence/dialogue.mp3', mimeType: 'audio/mpeg', transcriptEn: 'Guide: Walk past the pharmacy and cross at the second light. Then take the next turn.' },
+      { id: 'g56-directions-sequence-response', src: 'audio/g56-directions-sequence/response.mp3', mimeType: 'audio/mpeg', transcriptEn: 'Guide: Turn right. The library is the first building on the left.' },
+    ],
   },
 ] satisfies readonly Mission[];

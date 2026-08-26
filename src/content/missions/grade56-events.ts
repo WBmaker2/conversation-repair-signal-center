@@ -1,5 +1,6 @@
 import type { Mission } from '../../domain/mission';
 import { AMBIGUITY_RETRY_FEEDBACK_KO, createConfirmationRetryFeedback, createMeaningRetryFeedback } from '../feedback';
+import { getAudioCues } from './audioManifest';
 
 export const GRADE56_EVENTS_MISSIONS = [
   {
@@ -35,6 +36,6 @@ export const GRADE56_EVENTS_MISSIONS = [
       { id: 'g56-event-decision--confirmation-retry-a', mode: 'confirm', textEn: 'Got it. The final plan is two o’clock in the library.', accepted: false, feedbackKo: createConfirmationRetryFeedback('decision') },
       { id: 'g56-event-decision--confirmation-retry-b', mode: 'confirm', textEn: 'Got it. The final plan is three o’clock in the library.', accepted: false, feedbackKo: createConfirmationRetryFeedback('decision') },
     ],
-    audioCues: [],
+    audioCues: getAudioCues('g56-event-decision'),
   },
 ] satisfies readonly Mission[];

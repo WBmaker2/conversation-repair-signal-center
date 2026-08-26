@@ -6,6 +6,7 @@ import {
   createSessionAtPhase,
   renderMissionAtConfirmation,
   renderMissionAtObservation,
+  renderMissionAtPhase,
   renderMissionAtRepair,
   renderMissionAtResponse,
 } from '../../test/missionHarness';
@@ -37,6 +38,19 @@ describe('DialogueObservation', () => {
     expect(screen.getByText(mission.dialogue[0]!.textEn)).toHaveAttribute('lang', 'en');
     expect(screen.getByText(mission.dialogue[0]!.obscuredLabelKo!)).toHaveAttribute('lang', 'ko');
     expect(screen.getByRole('button', { name: '모호한 부분 찾기' })).toBeDisabled();
+  });
+
+  it('keeps the exact dialogue text with voice off and labels the optional player with voice on', () => {
+    const mission = getMissionById('g34-classroom-box');
+    renderMissionAtObservation(mission.id);
+    expect(screen.getByText(mission.dialogue[0]!.textEn)).toBeVisible();
+    expect(screen.queryByRole('figure', { name: '대화 듣기 음원' })).not.toBeInTheDocument();
+    cleanup();
+
+    renderMissionAtPhase(mission.id, 'observe', true);
+    expect(screen.getByText(mission.dialogue[0]!.textEn)).toBeVisible();
+    expect(screen.getByText(mission.audioCues[0]!.transcriptEn)).toHaveAttribute('lang', 'en');
+    expect(screen.getByRole('figure', { name: '대화 듣기 음원' })).toBeVisible();
   });
 
   it('renders exactly three controlled ambiguity radios with keyboard selection', async () => {

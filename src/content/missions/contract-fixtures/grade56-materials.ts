@@ -25,7 +25,10 @@ export const GRADE56_MATERIALS_CONTRACT = [
       { id: 'g56-materials-quantity--confirmation-correct', mode: 'confirm', textEn: 'I’ll bring four sheets of poster paper tomorrow.', accepted: true, feedbackKo: '포스터 종이 네 장이라는 수량을 확인했어요.' },
       { id: 'g56-materials-quantity--confirmation-retry-a', mode: 'confirm', textEn: 'I’ll bring two sheets of poster paper tomorrow.', accepted: false, feedbackKo: '어떤 정보가 아직 없나요? 확인 문장에서 수량 정보가 바뀌거나 빠졌어요.' },
       { id: 'g56-materials-quantity--confirmation-retry-b', mode: 'confirm', textEn: 'I’ll bring four packs of poster paper tomorrow.', accepted: false, feedbackKo: '어떤 정보가 아직 없나요? 확인 문장에서 수량 정보가 바뀌거나 빠졌어요.' },
-    ], audioCues: [],
+    ], audioCues: [
+      { id: 'g56-materials-quantity-dialogue', src: 'audio/g56-materials-quantity/dialogue.mp3', mimeType: 'audio/mpeg', transcriptEn: 'Leader: Please bring some sheets of poster paper tomorrow.' },
+      { id: 'g56-materials-quantity-response', src: 'audio/g56-materials-quantity/response.mp3', mimeType: 'audio/mpeg', transcriptEn: 'Leader: Please bring four sheets.' },
+    ],
   },
   {
     id: 'g56-materials-person', gradeBand: '5-6', titleKo: '준비물 담당자', scenarioKo: '테이프와 마커를 누가 가져올지 확인합니다.', politenessContext: 'classroom-polite', curriculumCodes: ['[6영02-07]', '[6영02-09]', '[6영02-10]'], learningTargets: ['understand', 'apply', 'analyze', 'create'],
@@ -51,6 +54,9 @@ export const GRADE56_MATERIALS_CONTRACT = [
       { id: 'g56-materials-person--confirmation-correct', mode: 'confirm', textEn: 'You’ll bring two packs of markers, and Minseo has the tape.', accepted: true, feedbackKo: '상대와 민서의 준비물 담당을 확인했어요.' },
       { id: 'g56-materials-person--confirmation-retry-a', mode: 'confirm', textEn: 'Minseo will bring the markers and the tape.', accepted: false, feedbackKo: '어떤 정보가 아직 없나요? 확인 문장에서 담당자 정보가 바뀌거나 빠졌어요.' },
       { id: 'g56-materials-person--confirmation-retry-b', mode: 'confirm', textEn: 'You’ll bring the tape, and Minseo has the markers.', accepted: false, feedbackKo: '어떤 정보가 아직 없나요? 확인 문장에서 담당자 정보가 바뀌거나 빠졌어요.' },
-    ], audioCues: [],
+    ], audioCues: [
+      { id: 'g56-materials-person-dialogue', src: 'audio/g56-materials-person/dialogue.mp3', mimeType: 'audio/mpeg', transcriptEn: 'Leader: Minseo has the tape. We still need the markers.' },
+      { id: 'g56-materials-person-response', src: 'audio/g56-materials-person/response.mp3', mimeType: 'audio/mpeg', transcriptEn: 'Leader: I will bring two packs of markers.' },
+    ],
   },
 ] satisfies readonly Mission[];

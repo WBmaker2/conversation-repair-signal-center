@@ -25,7 +25,10 @@ export const GRADE34_CLASSROOM_CONTRACT = [
       { id: 'g34-classroom-box--confirmation-correct', mode: 'confirm', textEn: 'So, I’ll put the crayons in the blue box by the window.', accepted: true, feedbackKo: '창가의 파란 상자라는 뜻을 정확히 확인했어요.' },
       { id: 'g34-classroom-box--confirmation-retry-a', mode: 'confirm', textEn: 'So, I’ll put the crayons in the red box by the door.', accepted: false, feedbackKo: '어떤 정보가 아직 없나요? 확인 문장에서 대상 정보가 바뀌거나 빠졌어요.' },
       { id: 'g34-classroom-box--confirmation-retry-b', mode: 'confirm', textEn: 'So, I’ll put the crayons in the blue box under the desk.', accepted: false, feedbackKo: '어떤 정보가 아직 없나요? 확인 문장에서 대상 정보가 바뀌거나 빠졌어요.' },
-    ], audioCues: [],
+    ], audioCues: [
+      { id: 'g34-classroom-box-dialogue', src: 'audio/g34-classroom-box/dialogue.mp3', mimeType: 'audio/mpeg', transcriptEn: 'Teacher: Please put the crayons in that box.' },
+      { id: 'g34-classroom-box-response', src: 'audio/g34-classroom-box/response.mp3', mimeType: 'audio/mpeg', transcriptEn: 'Teacher: The blue box by the window.' },
+    ],
   },
   {
     id: 'g34-classroom-pencil', gradeBand: '3-4', titleKo: '어떤 연필', scenarioKo: '책상에 긴 연필과 짧은 연필이 있습니다.', politenessContext: 'classroom-polite', curriculumCodes: ['[4영02-10]'], learningTargets: ['understand', 'apply', 'analyze', 'create'],
@@ -51,6 +54,9 @@ export const GRADE34_CLASSROOM_CONTRACT = [
       { id: 'g34-classroom-pencil--confirmation-correct', mode: 'confirm', textEn: 'Okay, you mean the short pencil.', accepted: true, feedbackKo: '짧은 연필이라는 뜻을 정확히 확인했어요.' },
       { id: 'g34-classroom-pencil--confirmation-retry-a', mode: 'confirm', textEn: 'Okay, you mean the long pencil.', accepted: false, feedbackKo: '어떤 정보가 아직 없나요? 확인 문장에서 대상 정보가 바뀌거나 빠졌어요.' },
       { id: 'g34-classroom-pencil--confirmation-retry-b', mode: 'confirm', textEn: 'Okay, you mean the short ruler.', accepted: false, feedbackKo: '어떤 정보가 아직 없나요? 확인 문장에서 대상 정보가 바뀌거나 빠졌어요.' },
-    ], audioCues: [],
+    ], audioCues: [
+      { id: 'g34-classroom-pencil-dialogue', src: 'audio/g34-classroom-pencil/dialogue.mp3', mimeType: 'audio/mpeg', transcriptEn: 'Partner: Can you pass me that one?' },
+      { id: 'g34-classroom-pencil-response', src: 'audio/g34-classroom-pencil/response.mp3', mimeType: 'audio/mpeg', transcriptEn: 'Partner: The short pencil, please.' },
+    ],
   },
 ] satisfies readonly Mission[];

@@ -25,6 +25,9 @@ export const GRADE56_EVENTS_CONTRACT = [
       { id: 'g56-event-decision--confirmation-correct', mode: 'confirm', textEn: 'Got it. The final plan is three o’clock in the art room.', accepted: true, feedbackKo: '오후 3시 미술실이라는 최종 계획을 확인했어요.' },
       { id: 'g56-event-decision--confirmation-retry-a', mode: 'confirm', textEn: 'Got it. The final plan is two o’clock in the library.', accepted: false, feedbackKo: '어떤 정보가 아직 없나요? 확인 문장에서 최종 결정 정보가 바뀌거나 빠졌어요.' },
       { id: 'g56-event-decision--confirmation-retry-b', mode: 'confirm', textEn: 'Got it. The final plan is three o’clock in the library.', accepted: false, feedbackKo: '어떤 정보가 아직 없나요? 확인 문장에서 최종 결정 정보가 바뀌거나 빠졌어요.' },
-    ], audioCues: [],
+    ], audioCues: [
+      { id: 'g56-event-decision-dialogue', src: 'audio/g56-event-decision/dialogue.mp3', mimeType: 'audio/mpeg', transcriptEn: 'Partner: We could meet at two in the library, or at three in the art room. I think the second plan works better.' },
+      { id: 'g56-event-decision-response', src: 'audio/g56-event-decision/response.mp3', mimeType: 'audio/mpeg', transcriptEn: 'Partner: Yes. Three in the art room is the final plan.' },
+    ],
   },
 ] satisfies readonly Mission[];

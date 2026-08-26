@@ -67,7 +67,13 @@ describe('reviewed ten-mission content pack', () => {
           optionIds.add(option.id);
         }
       }
-      expect(mission.audioCues).toEqual([]);
+      expect(mission.audioCues).toHaveLength(2);
+      expect(mission.audioCues.map((cue) => cue.id)).toEqual([
+        `${mission.id}-dialogue`,
+        `${mission.id}-response`,
+      ]);
+      expect(mission.audioCues.every((cue) => cue.src.startsWith('audio/'))).toBe(true);
+      expect(mission.audioCues.every((cue) => cue.transcriptEn.trim().length > 0)).toBe(true);
     }
     expect(optionIds.size).toBe(120);
   });

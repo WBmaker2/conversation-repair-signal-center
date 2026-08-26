@@ -25,7 +25,10 @@ export const GRADE34_RECESS_CONTRACT = [
       { id: 'g34-recess-place--confirmation-correct', mode: 'confirm', textEn: 'We’ll meet at the bench beside the playground gate.', accepted: true, feedbackKo: '운동장 문 옆 벤치라는 뜻을 정확히 확인했어요.' },
       { id: 'g34-recess-place--confirmation-retry-a', mode: 'confirm', textEn: 'We’ll meet by the swings.', accepted: false, feedbackKo: '어떤 정보가 아직 없나요? 확인 문장에서 장소 정보가 바뀌거나 빠졌어요.' },
       { id: 'g34-recess-place--confirmation-retry-b', mode: 'confirm', textEn: 'We’ll meet by the classroom door.', accepted: false, feedbackKo: '어떤 정보가 아직 없나요? 확인 문장에서 장소 정보가 바뀌거나 빠졌어요.' },
-    ], audioCues: [],
+    ], audioCues: [
+      { id: 'g34-recess-place-dialogue', src: 'audio/g34-recess-place/dialogue.mp3', mimeType: 'audio/mpeg', transcriptEn: 'Partner: Let’s meet there after lunch.' },
+      { id: 'g34-recess-place-response', src: 'audio/g34-recess-place/response.mp3', mimeType: 'audio/mpeg', transcriptEn: 'Partner: At the bench beside the playground gate.' },
+    ],
   },
   {
     id: 'g34-recess-time', gradeBand: '3-4', titleKo: '놀이 시작 시간', scenarioKo: '종이 울려 친구의 문장 전체를 놓쳤습니다.', politenessContext: 'peer-brief', curriculumCodes: ['[4영02-10]'], learningTargets: ['understand', 'apply', 'analyze', 'create'],
@@ -51,7 +54,10 @@ export const GRADE34_RECESS_CONTRACT = [
       { id: 'g34-recess-time--confirmation-correct', mode: 'confirm', textEn: 'The game starts at one thirty, right?', accepted: true, feedbackKo: '놀이 시작 시간이 오후 1시 30분이라는 뜻을 확인했어요.' },
       { id: 'g34-recess-time--confirmation-retry-a', mode: 'confirm', textEn: 'The game starts at one, right?', accepted: false, feedbackKo: '어떤 정보가 아직 없나요? 확인 문장에서 문장 전체 정보가 바뀌거나 빠졌어요.' },
       { id: 'g34-recess-time--confirmation-retry-b', mode: 'confirm', textEn: 'The game starts at two thirty, right?', accepted: false, feedbackKo: '어떤 정보가 아직 없나요? 확인 문장에서 문장 전체 정보가 바뀌거나 빠졌어요.' },
-    ], audioCues: [],
+    ], audioCues: [
+      { id: 'g34-recess-time-dialogue', src: 'audio/g34-recess-time/dialogue.mp3', mimeType: 'audio/mpeg', transcriptEn: 'A bell rings. You could not catch this sentence.' },
+      { id: 'g34-recess-time-response', src: 'audio/g34-recess-time/response.mp3', mimeType: 'audio/mpeg', transcriptEn: 'Partner: Let’s start the game at one thirty.' },
+    ],
   },
   {
     id: 'g34-recess-rephrase', gradeBand: '3-4', titleKo: '장소를 다시 설명하기', scenarioKo: '친구가 “저기”가 어디인지 이해하지 못했습니다.', politenessContext: 'peer-brief', curriculumCodes: ['[4영02-10]'], learningTargets: ['understand', 'apply', 'analyze', 'create'],
@@ -77,6 +83,9 @@ export const GRADE34_RECESS_CONTRACT = [
       { id: 'g34-recess-rephrase--confirmation-correct', mode: 'rephrase', textEn: 'Right, I mean the place beside the hopscotch grid.', accepted: true, feedbackKo: '사방치기 칸 옆이라는 뜻을 다시 분명하게 말했어요.' },
       { id: 'g34-recess-rephrase--confirmation-retry-a', mode: 'rephrase', textEn: 'Right, I mean the place under the big tree.', accepted: false, feedbackKo: '어떤 정보가 아직 없나요? 확인 문장에서 장소 정보가 바뀌거나 빠졌어요.' },
       { id: 'g34-recess-rephrase--confirmation-retry-b', mode: 'rephrase', textEn: 'Right, I mean the place beside the swings.', accepted: false, feedbackKo: '어떤 정보가 아직 없나요? 확인 문장에서 장소 정보가 바뀌거나 빠졌어요.' },
-    ], audioCues: [],
+    ], audioCues: [
+      { id: 'g34-recess-rephrase-dialogue', src: 'audio/g34-recess-rephrase/dialogue.mp3', mimeType: 'audio/mpeg', transcriptEn: 'You: Let’s do it over there. Partner: I’m not sure what you mean.' },
+      { id: 'g34-recess-rephrase-response', src: 'audio/g34-recess-rephrase/response.mp3', mimeType: 'audio/mpeg', transcriptEn: 'Partner: Okay, beside the hopscotch grid.' },
+    ],
   },
 ] satisfies readonly Mission[];

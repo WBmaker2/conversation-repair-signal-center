@@ -1,5 +1,6 @@
 import type { Mission } from '../../domain/mission';
 import { AMBIGUITY_RETRY_FEEDBACK_KO, createConfirmationRetryFeedback, createMeaningRetryFeedback } from '../feedback';
+import { getAudioCues } from './audioManifest';
 
 export const GRADE34_RECESS_MISSIONS = [
   {
@@ -35,7 +36,7 @@ export const GRADE34_RECESS_MISSIONS = [
       { id: 'g34-recess-place--confirmation-retry-a', mode: 'confirm', textEn: 'We’ll meet by the swings.', accepted: false, feedbackKo: createConfirmationRetryFeedback('place') },
       { id: 'g34-recess-place--confirmation-retry-b', mode: 'confirm', textEn: 'We’ll meet by the classroom door.', accepted: false, feedbackKo: createConfirmationRetryFeedback('place') },
     ],
-    audioCues: [],
+    audioCues: getAudioCues('g34-recess-place'),
   },
   {
     id: 'g34-recess-time',
@@ -70,7 +71,7 @@ export const GRADE34_RECESS_MISSIONS = [
       { id: 'g34-recess-time--confirmation-retry-a', mode: 'confirm', textEn: 'The game starts at one, right?', accepted: false, feedbackKo: createConfirmationRetryFeedback('whole-utterance') },
       { id: 'g34-recess-time--confirmation-retry-b', mode: 'confirm', textEn: 'The game starts at two thirty, right?', accepted: false, feedbackKo: createConfirmationRetryFeedback('whole-utterance') },
     ],
-    audioCues: [],
+    audioCues: getAudioCues('g34-recess-time'),
   },
   {
     id: 'g34-recess-rephrase',
@@ -105,6 +106,6 @@ export const GRADE34_RECESS_MISSIONS = [
       { id: 'g34-recess-rephrase--confirmation-retry-a', mode: 'rephrase', textEn: 'Right, I mean the place under the big tree.', accepted: false, feedbackKo: createConfirmationRetryFeedback('place') },
       { id: 'g34-recess-rephrase--confirmation-retry-b', mode: 'rephrase', textEn: 'Right, I mean the place beside the swings.', accepted: false, feedbackKo: createConfirmationRetryFeedback('place') },
     ],
-    audioCues: [],
+    audioCues: getAudioCues('g34-recess-rephrase'),
   },
 ] satisfies readonly Mission[];

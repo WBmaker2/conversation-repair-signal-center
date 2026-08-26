@@ -1,5 +1,6 @@
 import type { Mission } from '../../domain/mission';
 import { AMBIGUITY_RETRY_FEEDBACK_KO, createConfirmationRetryFeedback, createMeaningRetryFeedback } from '../feedback';
+import { getAudioCues } from './audioManifest';
 
 export const GRADE34_CLASSROOM_MISSIONS = [
   {
@@ -35,7 +36,7 @@ export const GRADE34_CLASSROOM_MISSIONS = [
       { id: 'g34-classroom-box--confirmation-retry-a', mode: 'confirm', textEn: 'So, I’ll put the crayons in the red box by the door.', accepted: false, feedbackKo: createConfirmationRetryFeedback('object') },
       { id: 'g34-classroom-box--confirmation-retry-b', mode: 'confirm', textEn: 'So, I’ll put the crayons in the blue box under the desk.', accepted: false, feedbackKo: createConfirmationRetryFeedback('object') },
     ],
-    audioCues: [],
+    audioCues: getAudioCues('g34-classroom-box'),
   },
   {
     id: 'g34-classroom-pencil',
@@ -70,6 +71,6 @@ export const GRADE34_CLASSROOM_MISSIONS = [
       { id: 'g34-classroom-pencil--confirmation-retry-a', mode: 'confirm', textEn: 'Okay, you mean the long pencil.', accepted: false, feedbackKo: createConfirmationRetryFeedback('object') },
       { id: 'g34-classroom-pencil--confirmation-retry-b', mode: 'confirm', textEn: 'Okay, you mean the short ruler.', accepted: false, feedbackKo: createConfirmationRetryFeedback('object') },
     ],
-    audioCues: [],
+    audioCues: getAudioCues('g34-classroom-pencil'),
   },
 ] satisfies readonly Mission[];
