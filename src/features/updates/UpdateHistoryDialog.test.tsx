@@ -64,4 +64,15 @@ describe('update history dialog', () => {
       removeSpy.mockRestore();
     }
   });
+
+  it('keeps repeated date and category records free of duplicate React keys', () => {
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    try {
+      render(<UpdateHistoryDialog records={CHANGELOG} onClose={() => undefined} />);
+      const warnings = consoleError.mock.calls.flat().join(' ');
+      expect(warnings).not.toMatch(/same key|unique "key"/i);
+    } finally {
+      consoleError.mockRestore();
+    }
+  });
 });

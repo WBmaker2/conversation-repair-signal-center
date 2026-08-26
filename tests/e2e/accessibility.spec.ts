@@ -3,44 +3,22 @@ import AxeBuilder from '@axe-core/playwright';
 import { ACCEPTED_PATHS, chooseGradeAndMission, completeAcceptedPath } from '../fixtures/accepted-paths';
 import { getMissionById } from '../../src/content/missionRepository';
 
-test('375px dialogue stays in one column without overlap or horizontal overflow', async ({ page }) => {
+test('375px full learner path stays inside one column without overlap or overflow', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
-  await page.goto('/');
   const path = ACCEPTED_PATHS.find(({ missionId }) => missionId === 'g56-directions-sequence')!;
-  await chooseGradeAndMission(page, path);
-  await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth)).toBe(375);
-  await expect.poll(() => page.evaluate(() => document.documentElement.clientWidth)).toBe(375);
-  expect(await findOverlappingBoxes(page.locator('.dialogue-turn'))).toEqual([]);
-  const undersized = await page.locator('button, select, summary, .choice-label').evaluateAll((nodes) => nodes
-    .filter((node) => {
-      const box = node.getBoundingClientRect();
-      return box.width < 44 || box.height < 44;
-    })
-    .map((node) => node.textContent?.trim() || node.getAttribute('aria-label') || node.tagName));
-  expect(undersized).toEqual([]);
+  await walkGeometryPath(page, path);
 });
 
-test('200% zoom keeps content and update dialog inside the viewport width', async ({ page }) => {
+test('200% CSS zoom keeps the full learner path and update dialog inside the viewport', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
-  await page.goto('/');
-  await page.evaluate(() => { document.documentElement.style.zoom = '2'; });
-  await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth)).toBe(375);
-  await expect.poll(() => page.evaluate(() => document.documentElement.clientWidth)).toBe(375);
-  const controls = await page.locator('button, select, summary, input').evaluateAll((nodes) => nodes
-    .filter((node) => getComputedStyle(node).position !== 'fixed')
-    .filter((node) => {
-      const box = node.getBoundingClientRect();
-      return box.left < 0 || box.right > document.documentElement.clientWidth;
-    })
-    .map((node) => node.textContent?.trim() || node.getAttribute('aria-label') || node.tagName));
-  expect(controls).toEqual([]);
-  await page.getByRole('button', { name: '업데이트 내역' }).click();
-  const dialog = page.getByRole('dialog', { name: '업데이트 내역' });
-  const dialogBox = await dialog.boundingBox();
-  expect(dialogBox).not.toBeNull();
-  expect(dialogBox!.x).toBeGreaterThanOrEqual(0);
-  expect(dialogBox!.x + dialogBox!.width).toBeLessThanOrEqual(375);
-  await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth)).toBe(375);
+  const path = ACCEPTED_PATHS.find(({ missionId }) => missionId === 'g56-directions-sequence')!;
+  await walkGeometryPath(page, path, true);
+});
+
+test('desktop representative viewport has no horizontal overflow across the learner path', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  const path = ACCEPTED_PATHS.find(({ missionId }) => missionId === 'g56-directions-sequence')!;
+  await walkGeometryPath(page, path);
 });
 
 test('keyboard-only navigation completes g34-classroom-box and closes update dialog', async ({ page }) => {
@@ -175,6 +153,112 @@ test('signal color contrast is at least 4.5 against paper and white', async ({ p
   expect(contrast.paper).toBeGreaterThanOrEqual(4.5);
   expect(contrast.white).toBeGreaterThanOrEqual(4.5);
 });
+
+type GeometryPhase = 'center' | 'observe' | 'repair' | 'response' | 'confirm' | 'record' | 'update dialog';
+
+async function walkGeometryPath(page: Page, path: (typeof ACCEPTED_PATHS)[number], zoom = false) {
+  await page.goto('/');
+  if (zoom) await page.evaluate(() => { document.documentElement.style.zoom = '2'; });
+  await assertResponsiveGeometry(page, 'center');
+  await chooseGradeAndMission(page, path);
+  await expect(page.getByRole('heading', { name: '대화 관측' })).toBeVisible();
+  await assertResponsiveGeometry(page, 'observe');
+
+  await page.getByRole('radio', { name: path.ambiguityLabel }).check();
+  await page.getByRole('button', { name: '모호한 부분 찾기' }).click();
+  await expect(page.getByRole('heading', { name: '수리 송신' })).toBeVisible();
+  await assertResponsiveGeometry(page, 'repair');
+
+  await page.getByRole('radio', { name: path.repairExpression }).check();
+  await page.getByRole('button', { name: '수리 표현 보내기' }).click();
+  await expect(page.getByRole('heading', { name: '응답 수신' })).toBeVisible();
+  await assertResponsiveGeometry(page, 'response');
+
+  await page.getByRole('radio', { name: path.meaningLabelKo }).check();
+  await page.getByRole('button', { name: '이해한 뜻 확인하기' }).click();
+  await expect(page.getByRole('heading', { name: '확인 통화' })).toBeVisible();
+  await assertResponsiveGeometry(page, 'confirm');
+
+  await page.getByRole('radio', { name: path.confirmationExpression }).check();
+  await page.getByRole('button', { name: '확인 질문 보내기' }).click();
+  await expect(page.getByRole('heading', { name: '통신 기록' })).toBeVisible();
+  await assertResponsiveGeometry(page, 'record');
+
+  await page.getByRole('button', { name: '신호센터로 돌아가기' }).click();
+  await assertResponsiveGeometry(page, 'center');
+  await page.getByRole('button', { name: '업데이트 내역' }).click();
+  await expect(page.getByRole('dialog', { name: '업데이트 내역' })).toBeVisible();
+  await assertResponsiveGeometry(page, 'update dialog');
+  await assertDialogGeometry(page);
+}
+
+async function assertResponsiveGeometry(page: Page, phase: GeometryPhase) {
+  await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth
+    <= document.documentElement.clientWidth)).toBe(true);
+  const geometry = await page.evaluate(() => {
+    const viewport = {
+      width: document.documentElement.clientWidth,
+      height: document.documentElement.clientHeight,
+    };
+    const candidates = Array.from(document.querySelectorAll<HTMLElement>('a, button, select, summary, .choice-label, [role="button"]'));
+    const controls = candidates.filter((node) => {
+      const box = node.getBoundingClientRect();
+      const style = getComputedStyle(node);
+      const intersectsViewport = box.right > 0 && box.bottom > 0
+        && box.left < viewport.width && box.top < viewport.height;
+      return box.width > 0 && box.height > 0 && style.visibility !== 'hidden' && style.display !== 'none'
+        && (style.position === 'fixed' || intersectsViewport);
+    }).map((node) => {
+      const box = node.getBoundingClientRect();
+      return {
+        label: node.getAttribute('aria-label') ?? node.textContent?.trim() ?? node.tagName,
+        left: box.left,
+        right: box.right,
+        top: box.top,
+        bottom: box.bottom,
+        width: box.width,
+        height: box.height,
+        position: getComputedStyle(node).position,
+      };
+    });
+    const turns = Array.from(document.querySelectorAll<HTMLElement>('.dialogue-turn')).map((node) => {
+      const box = node.getBoundingClientRect();
+      return { left: box.left, right: box.right, top: box.top, bottom: box.bottom };
+    });
+    return {
+      viewport,
+      controls,
+      outsideHorizontal: controls.filter(({ left, right }) => left < 0 || right > viewport.width),
+      undersized: controls.filter(({ width, height }) => width < 44 || height < 44),
+      fixedOutsideViewport: controls.filter(({ position, top, bottom }) => position === 'fixed' && (top < 0 || bottom > viewport.height)),
+      turns,
+    };
+  });
+  expect(geometry.outsideHorizontal, `${phase} controls outside viewport`).toEqual([]);
+  expect(geometry.undersized, `${phase} controls below 44px`).toEqual([]);
+  expect(geometry.fixedOutsideViewport, `${phase} fixed controls outside viewport`).toEqual([]);
+  const expectedTurnCount = phase === 'observe' ? 1 : 0;
+  expect(geometry.turns, `${phase} canonical dialogue structure`).toHaveLength(expectedTurnCount);
+  if (geometry.turns.length >= 2) {
+    expect(await findOverlappingBoxes(page.locator('.dialogue-turn')), `${phase} dialogue overlap`).toEqual([]);
+  } else if (geometry.turns.length === 1) {
+    // Every canonical mission currently has one source turn; containment is the applicable invariant.
+    const [turn] = geometry.turns;
+    expect(turn!.left).toBeGreaterThanOrEqual(0);
+    expect(turn!.right).toBeLessThanOrEqual(geometry.viewport.width);
+    expect(turn!.bottom).toBeGreaterThan(turn!.top);
+  }
+}
+
+async function assertDialogGeometry(page: Page) {
+  const viewport = page.viewportSize();
+  const dialogBox = await page.getByRole('dialog', { name: '업데이트 내역' }).boundingBox();
+  expect(dialogBox).not.toBeNull();
+  expect(dialogBox!.x).toBeGreaterThanOrEqual(0);
+  expect(dialogBox!.y).toBeGreaterThanOrEqual(0);
+  expect(dialogBox!.x + dialogBox!.width).toBeLessThanOrEqual(viewport!.width);
+  expect(dialogBox!.y + dialogBox!.height).toBeLessThanOrEqual(viewport!.height);
+}
 
 async function tabUntil(page: Page, label: string, maximumTabs = 80) {
   for (let index = 0; index < maximumTabs; index += 1) {

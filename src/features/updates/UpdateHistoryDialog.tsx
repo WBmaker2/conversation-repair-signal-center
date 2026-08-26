@@ -53,7 +53,7 @@ export function UpdateHistoryDialog({ records, onClose }: UpdateHistoryDialogPro
         </div>
         <ol className="update-history-list">
           {records.map((record) => (
-            <li key={`${record.date}-${record.category}`}>
+            <li key={`${record.date}-${record.category}-${record.detailKo}`}>
               <p><time dateTime={record.date}>{record.date}</time> · {record.category}</p>
               <p lang="ko">{record.detailKo}</p>
             </li>

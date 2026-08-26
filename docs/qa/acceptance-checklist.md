@@ -17,11 +17,12 @@ npm run test:run
 npm run check:size
 npm run check:audio
 npm run check:privacy
+npm run test:release-artifacts
 npm run build
 npm run test:e2e
 ```
 
-포트 4173이 다른 로컬 앱에서 사용 중인 최종 실행에서는 기본값(4173)을 유지한 채 `PLAYWRIGHT_PORT=4175 npm run verify`로 동일한 production preview gate를 실행했습니다. focused E2E는 `npm run test:e2e -- tests/e2e/learner-flow.spec.ts` (12/12), `npm run test:e2e -- tests/e2e/audio-off-parity.spec.ts` (11/11), `npm run test:e2e -- tests/e2e/accessibility.spec.ts` (8/8), `npm run test:e2e -- tests/e2e/privacy.spec.ts` (1/1)로 확인했습니다.
+포트 4173이 다른 로컬 앱에서 사용 중인 최종 실행에서는 기본값(4173)을 유지한 채 `PLAYWRIGHT_PORT=4175 npm run verify`로 동일한 production preview gate를 실행했습니다. focused E2E는 `npm run test:e2e -- tests/e2e/learner-flow.spec.ts` (12/12), `npm run test:e2e -- tests/e2e/audio-off-parity.spec.ts` (11/11), `npm run test:e2e -- tests/e2e/accessibility.spec.ts` (9/9), `npm run test:e2e -- tests/e2e/privacy.spec.ts` (1/1)로 확인했습니다.
 
 | 검증 범위 | 결과 | 실제 확인 근거 |
 |---|---|---|
@@ -30,9 +31,10 @@ npm run test:e2e
 | `g34-classroom-box` works 별도 완료 | 통과 | `tests/e2e/learner-flow.spec.ts`, `Do you mean the blue box?` 경로 완료 |
 | 음성 꺼짐 문자/대본 parity | 통과 | `tests/e2e/audio-off-parity.spec.ts`, 10개 미션의 대화·추가 응답 텍스트와 audio player 부재 확인 |
 | 음성 켜짐 20개 manifest parity | 통과 | `tests/e2e/audio-off-parity.spec.ts`, 20 cue의 local `currentSrc`, transcript, media response 확인 |
-| 음성 컨트롤·3속도 | 통과 | 각 cue의 재생/일시정지 custom control, native control/autoplay 부재, `0.75×`·`1×`·`1.25×` 선택 및 playbackRate 확인 |
-| 375×812 모바일 | 통과 | Chromium에서 `scrollWidth === clientWidth === 375`, dialogue-turn 교차 면적 0, 버튼·select·summary·choice-label 44px 이상 확인 |
-| 200% 확대 | 통과 | Chromium에서 `html.style.zoom = 2`, 가로 overflow 0, 본문 제어 bounding box 및 업데이트 dialog가 viewport 안에 있음 확인 |
+| 음성 컨트롤·3속도 | 통과 | 20개 각 cue에서 실제 사용자 click 재생·일시정지와 label/paused 상태, native control/autoplay 부재, `0.75×`·`1×`·`1.25×` playbackRate를 확인 |
+| 375×812 모바일 전 phase | 통과 | Chromium에서 center/observe/repair/response/confirm/record/update dialog의 `scrollWidth <= clientWidth`, visible control 경계·44px, dialogue-turn containment/2개 이상 pairwise overlap 분기를 확인 |
+| 200% 확대 전 phase | 통과 | Chromium에서 `html.style.zoom = 2`, 같은 전 phase geometry와 update dialog x/y 경계, 가로 overflow 0을 확인 |
+| desktop 대표 viewport | 통과 | Chromium 1280×900에서 전체 learner path와 update dialog의 가로 overflow·control geometry를 확인 |
 | 키보드 전체 학습·dialog | 통과 | `Tab`, `Enter`, `Space`, `Escape`만으로 g34-classroom-box 완료, 센터 복귀, 업데이트 dialog 열기·닫기 및 trigger focus 복원 |
 | reduced motion | 통과 | `prefers-reduced-motion: reduce`에서 pulse `animationName: none`, `outlineWidth: 3px`, dialogue transform `none` 확인 |
 | 6개 phase axe | 통과 | center/observe/repair/response/confirm/record 각각 `@axe-core/playwright` wcag2a·wcag2aa 실행, serious·critical 0개 |
@@ -40,8 +42,11 @@ npm run test:e2e
 | privacy browser gate | 통과 | preview origin 밖 request 0, getUserMedia 호출 0, local/session storage 항목 0 |
 | `--color-signal` 대비 회귀 | 통과 | Chromium 계산 luminance로 paper·white 각각 contrast ratio 4.5 이상 확인 |
 | source size/privacy/audio/build | 통과 | `check:size`, `check:privacy`, `check:audio`, `build` 종료 코드 0 |
+| Playwright 산출물 격리 | 통과 | `test:release-artifacts`와 `git check-ignore -v output/playwright/.last-run.json`에서 `.gitignore` 규칙 확인 |
 
 초기 RED 기록: Task 14 테스트를 만들기 전 `npm run test:e2e`는 Playwright 설정과 testDir가 없어 `Error: No tests found`로 실패했습니다. 첫 fixture를 추가한 뒤에는 production preview/baseURL 설정 전이라 실제 경로를 수집하지 못했고, Node ESM JSON import attribute 오류도 드러났습니다. 이후 `playwright.config.ts`, 표준 JSON import attribute, Vitest의 `tests/e2e/**` 제외를 최소 보완했습니다. 첫 접근성 실행은 200% zoom에서 `scrollWidth = 640`이고 keyboard helper가 화면 전환 전 포커스를 놓쳐 2건이 실패했으며, 모바일 min-inline-size 예외와 실제 phase 포커스 대기를 추가한 뒤 GREEN이 되었습니다.
+
+Fix Round 1 RED 기록: 강화한 geometry E2E 첫 실행은 20개 중 17개 통과·3개 실패였습니다. 대상은 375px/desktop의 화면 밖 skip link를 visible control로 세던 테스트 조건과, 실제 200% CSS zoom에서 update dialog가 `y = -324.8px`로 잘리던 모바일 dialog CSS였습니다. dialog max-height를 보완하고 viewport 교차 control만 검사한 뒤 rebuilt preview에서 accessibility 9/9, audio 11/11이 통과했습니다. duplicate date/category React key 회귀 unit은 수정 전 4개 중 3개 통과·1개 실패로 재현했고 key 안정화 후 4/4가 통과했습니다.
 
 ## 사람이 직접 확인해야 하는 항목
 

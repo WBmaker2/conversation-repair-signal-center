@@ -145,4 +145,8 @@ summary {
     max-inline-size: 100%;
     overflow-wrap: anywhere;
   }
+
+  .update-history-dialog {
+    max-block-size: calc(50vh - 2rem);
+  }
 }

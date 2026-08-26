@@ -4,7 +4,7 @@ import { CHANGELOG } from './changelog';
 describe('CHANGELOG', () => {
   it('keeps dated design, development, content, curriculum, and accessibility records', () => {
     expect(CHANGELOG).toEqual([
-      { date: '2026-08-26', category: '접근성', detailKo: '375px 모바일과 200% 확대에서 본문·업데이트 대화상자의 가로 잘림을 막았습니다.' },
+      { date: '2026-08-26', category: '접근성', detailKo: '375px 모바일과 200% 확대에서 본문·업데이트 대화상자의 가로·세로 잘림을 막았습니다.' },
       { date: '2026-08-26', category: '접근성', detailKo: '업데이트 대화상자 키보드 초점 범위와 개인정보 안전 검사를 강화했습니다.' },
       { date: '2026-08-26', category: '접근성', detailKo: '키보드, 375px 모바일, 200% 확대, 스크린 리더 언어, 모션 감소 대체를 검증했습니다.' },
       { date: '2026-08-26', category: '교육과정', detailKo: '4영02-10과 6영02-07·09·10을 미션별 성취 증거에 연결했습니다.' },

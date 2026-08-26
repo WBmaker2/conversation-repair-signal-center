@@ -2,6 +2,12 @@ import { expect, test } from '@playwright/test';
 import { ACCEPTED_PATHS, chooseGradeAndMission } from '../fixtures/accepted-paths';
 import { getMissionById } from '../../src/content/missionRepository';
 
+interface AudioResponseRecord {
+  count: number;
+  statuses: number[];
+  ok: boolean[];
+}
+
 test.describe('audio-off text parity', () => {
   for (const path of ACCEPTED_PATHS) {
     test(`${path.missionId} keeps dialogue and response text without players`, async ({ page }) => {
@@ -22,9 +28,19 @@ test.describe('audio-off text parity', () => {
 });
 
 test('voice-on exposes every manifest cue with transcript, source, controls, and three rates', async ({ page }) => {
-  const seenAudioResponses = new Set<string>();
+  const previewPort = process.env.PLAYWRIGHT_PORT ?? '4173';
+  const previewOrigin = new URL(`http://127.0.0.1:${previewPort}`).origin;
+  const audioResponses = new Map<string, AudioResponseRecord>();
+  const mediaOrigins = new Set<string>();
   page.on('response', (response) => {
-    if (response.request().resourceType() === 'media') seenAudioResponses.add(response.url());
+    if (response.request().resourceType() !== 'media') return;
+    const url = new URL(response.url());
+    mediaOrigins.add(url.origin);
+    const record = audioResponses.get(url.pathname) ?? { count: 0, statuses: [], ok: [] };
+    record.count += 1;
+    record.statuses.push(response.status());
+    record.ok.push(response.ok());
+    audioResponses.set(url.pathname, record);
   });
 
   for (const path of ACCEPTED_PATHS) {
@@ -33,27 +49,56 @@ test('voice-on exposes every manifest cue with transcript, source, controls, and
     const voice = page.getByRole('checkbox', { name: /음성 자료/ });
     await voice.check();
     await chooseGradeAndMission(page, path);
-    await expectCue(page, mission.audioCues[0]!, '대화 듣기');
+    await expectCue(page, mission.audioCues[0]!, '대화 듣기', audioResponses, previewOrigin);
     await expect(page.getByText(mission.dialogue[0]!.textEn, { exact: true })).toBeVisible();
     await page.getByRole('radio', { name: path.ambiguityLabel }).check();
     await page.getByRole('button', { name: '모호한 부분 찾기' }).click();
     await page.getByRole('radio', { name: path.repairExpression }).check();
     await page.getByRole('button', { name: '수리 표현 보내기' }).click();
-    await expectCue(page, mission.audioCues[1]!, '응답 듣기');
+    await expectCue(page, mission.audioCues[1]!, '응답 듣기', audioResponses, previewOrigin);
     await expect(page.getByText(mission.clarifyingResponse.textEn, { exact: true })).toBeVisible();
   }
 
-  expect(seenAudioResponses.size).toBeGreaterThanOrEqual(20);
+  expect([...mediaOrigins].filter((origin) => origin !== previewOrigin)).toEqual([]);
+  for (const cue of ACCEPTED_PATHS.flatMap(({ missionId }) => getMissionById(missionId).audioCues)) {
+    const expectedPath = new URL(cue.src, `${previewOrigin}/`).pathname;
+    const record = audioResponses.get(expectedPath);
+    expect(record, `${expectedPath} was requested`).toBeDefined();
+    expect(record!.count, `${expectedPath} request count`).toBeGreaterThanOrEqual(1);
+    expect(record!.ok, `${expectedPath} response.ok`).toEqual(record!.ok.map(() => true));
+    expect(record!.statuses.every((status) => status >= 200 && status < 300), `${expectedPath} statuses`).toBe(true);
+  }
 });
 
-async function expectCue(page: import('@playwright/test').Page, cue: { src: string; transcriptEn: string }, labelKo: string) {
+async function expectCue(
+  page: import('@playwright/test').Page,
+  cue: { src: string; transcriptEn: string },
+  labelKo: string,
+  audioResponses: Map<string, AudioResponseRecord>,
+  previewOrigin: string,
+) {
   const figure = page.getByRole('figure', { name: `${labelKo} 음원` });
   await expect(figure).toBeVisible();
   const audio = figure.locator('audio');
   const expectedSource = new URL(cue.src, page.url()).href;
+  const expectedPath = new URL(expectedSource).pathname;
   await expect(audio).toHaveAttribute('src', `./${cue.src}`);
   await audio.evaluate((node) => (node as HTMLMediaElement).load());
-  await expect.poll(() => audio.evaluate((node) => (node as HTMLMediaElement).currentSrc)).toBe(expectedSource);
+  await expect.poll(() => audio.evaluate((node) => ({
+    currentSrc: (node as HTMLMediaElement).currentSrc,
+    duration: (node as HTMLMediaElement).duration,
+    error: (node as HTMLMediaElement).error?.code ?? null,
+    hasMetadata: (node as HTMLMediaElement).readyState >= HTMLMediaElement.HAVE_METADATA,
+  }))).toEqual({
+    currentSrc: expectedSource,
+    duration: expect.any(Number),
+    error: null,
+    hasMetadata: true,
+  });
+  await expect.poll(() => audio.evaluate((node) => Number.isFinite((node as HTMLMediaElement).duration)
+    && (node as HTMLMediaElement).duration > 0)).toBe(true);
+  await expect.poll(() => audioResponses.get(expectedPath)?.count ?? 0).toBeGreaterThanOrEqual(1);
+  expect(new URL(expectedSource).origin).toBe(previewOrigin);
   await expect(audio).not.toHaveAttribute('autoplay');
   await expect(audio).not.toHaveAttribute('controls');
   await expect(figure.getByText(cue.transcriptEn, { exact: true })).toHaveAttribute('lang', 'en');
@@ -64,4 +109,10 @@ async function expectCue(page: import('@playwright/test').Page, cue: { src: stri
     await rateSelect.selectOption(rate);
     await expect.poll(() => audio.evaluate((node) => (node as HTMLAudioElement).playbackRate)).toBe(Number(rate));
   }
+  await figure.getByRole('button', { name: '재생' }).click();
+  await expect.poll(() => audio.evaluate((node) => !(node as HTMLAudioElement).paused)).toBe(true);
+  await expect(figure.getByRole('button', { name: '일시 정지' })).toBeVisible();
+  await figure.getByRole('button', { name: '일시 정지' }).click();
+  await expect.poll(() => audio.evaluate((node) => (node as HTMLAudioElement).paused)).toBe(true);
+  await expect(figure.getByRole('button', { name: '재생' })).toBeVisible();
 }
