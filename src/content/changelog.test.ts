@@ -4,6 +4,7 @@ import { CHANGELOG } from './changelog';
 describe('CHANGELOG', () => {
   it('keeps dated design, development, content, curriculum, and accessibility records', () => {
     expect(CHANGELOG).toEqual([
+      { date: '2026-08-27', category: '개발', detailKo: '공개 Pages 배포와 브라우저 탭 아이콘을 추가했습니다.' },
       { date: '2026-08-26', category: '접근성', detailKo: '화면과 음성 대본을 일치시키고 음성 선택 영역을 44px 이상으로 넓혔습니다.' },
       { date: '2026-08-26', category: '접근성', detailKo: '375px 모바일과 200% 확대에서 본문·업데이트 대화상자의 가로·세로 잘림을 막았습니다.' },
       { date: '2026-08-26', category: '접근성', detailKo: '업데이트 대화상자 키보드 초점 범위와 개인정보 안전 검사를 강화했습니다.' },
