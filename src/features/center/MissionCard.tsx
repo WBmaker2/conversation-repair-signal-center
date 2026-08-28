@@ -3,6 +3,7 @@ import type { Mission } from '../../domain/mission';
 export interface MissionCardProps {
   mission: Mission;
   onStart: (missionId: string) => void;
+  isRecommended?: boolean;
 }
 
 function gradeLabel(gradeBand: Mission['gradeBand']) {
@@ -15,15 +16,21 @@ function contextLabel(context: Mission['politenessContext']) {
     : '친구와 간단히 말하는 상황';
 }
 
-export function MissionCard({ mission, onStart }: MissionCardProps) {
+export function MissionCard({ mission, onStart, isRecommended = false }: MissionCardProps) {
   return (
-    <article>
+    <article data-recommended={isRecommended ? 'true' : undefined}>
+      {isRecommended ? <p id={`${mission.id}-recommendation`} className="mission-recommendation">먼저 해 보기</p> : null}
       <h3>{mission.titleKo}</h3>
       <p>{mission.scenarioKo}</p>
       <p>
         <span>{gradeLabel(mission.gradeBand)}</span> · <span>{contextLabel(mission.politenessContext)}</span>
       </p>
-      <button type="button" onClick={() => onStart(mission.id)}>
+      <button
+        type="button"
+        className={isRecommended ? 'gi-pulse' : undefined}
+        aria-describedby={isRecommended ? `${mission.id}-recommendation` : undefined}
+        onClick={() => onStart(mission.id)}
+      >
         {mission.titleKo} 미션 시작
       </button>
     </article>

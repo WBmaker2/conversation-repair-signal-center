@@ -5,6 +5,7 @@ export type PlaybackRate = 0.75 | 1 | 1.25;
 export interface UseAudioPlayerResult {
   isPlaying: boolean;
   playbackRate: PlaybackRate;
+  playbackError: string | null;
   togglePlayback: () => Promise<void>;
   setPlaybackRate: (rate: PlaybackRate) => void;
   stop: () => void;
@@ -16,6 +17,7 @@ export function useAudioPlayer(
 ): UseAudioPlayerResult {
   const [isPlaying, setIsPlaying] = useState(false);
   const [playbackRate, setPlaybackRateState] = useState<PlaybackRate>(1);
+  const [playbackError, setPlaybackError] = useState<string | null>(null);
   const isPlayingRef = useRef(false);
   const generationRef = useRef(0);
   const mountedRef = useRef(true);
@@ -29,6 +31,7 @@ export function useAudioPlayer(
     }
     isPlayingRef.current = false;
     setIsPlaying(false);
+    setPlaybackError(null);
   }, [audioRef]);
 
   useEffect(() => {
@@ -42,6 +45,7 @@ export function useAudioPlayer(
       }
       isPlayingRef.current = false;
       if (mountedRef.current) setIsPlaying(false);
+      if (mountedRef.current) setPlaybackError(null);
     };
   }, [audioRef, cueId]);
 
@@ -67,8 +71,10 @@ export function useAudioPlayer(
       isPlayingRef.current = false;
       audio.pause();
       setIsPlaying(false);
+      setPlaybackError(null);
       return;
     }
+    setPlaybackError(null);
     isPlayingRef.current = true;
     const generation = ++generationRef.current;
     try {
@@ -80,8 +86,9 @@ export function useAudioPlayer(
       if (!mountedRef.current || generationRef.current !== generation || audioRef.current !== audio || !isPlayingRef.current) return;
       isPlayingRef.current = false;
       setIsPlaying(false);
+      setPlaybackError('음성을 재생할 수 없어요. 아래 대본을 읽어 주세요.');
     }
   }, [audioRef, playbackRate]);
 
-  return { isPlaying, playbackRate, togglePlayback, setPlaybackRate, stop };
+  return { isPlaying, playbackRate, playbackError, togglePlayback, setPlaybackRate, stop };
 }

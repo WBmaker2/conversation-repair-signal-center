@@ -23,11 +23,43 @@
   text-transform: uppercase;
 }
 
+@media (max-width: 640px) {
+  .signal-center > header {
+    margin-block-end: var(--space-3);
+    padding-block-end: var(--space-3);
+  }
+
+  .signal-center > p {
+    margin-block-end: var(--space-2);
+  }
+
+  .signal-center > section {
+    margin-block-start: var(--space-3);
+  }
+
+  .signal-center fieldset {
+    margin-block: var(--space-2);
+    padding: var(--space-2);
+  }
+
+}
+
 .mission-grid,
 .strategy-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--space-4);
+}
+
+.signal-center .mission-grid article[data-recommended="true"] h3,
+.signal-center .mission-grid article[data-recommended="true"] p {
+  margin-block-end: var(--space-2);
+}
+
+@media (min-width: 641px) {
+  .signal-center .audio-preference-toggle {
+    margin-block: var(--space-2);
+  }
 }
 
 .dialogue-list {

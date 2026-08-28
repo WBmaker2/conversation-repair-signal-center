@@ -39,7 +39,7 @@ describe('RepairTransmission', () => {
     expect(screen.getAllByText('교실에서 정중하게')).toHaveLength(2);
     expect(screen.getByText('Which one?')).toHaveAttribute('lang', 'en');
     expect(screen.getAllByText('Do you mean the blue box?').every((element) => element.getAttribute('lang') === 'en')).toBe(true);
-    expect(screen.getByRole('button', { name: '수리 표현 보내기' })).not.toHaveClass('gi-pulse');
+    expect(screen.getByRole('button', { name: '이 표현으로 다시 물어보기' })).toHaveClass('gi-pulse');
     expect(screen.getAllByRole('radio').every((radio) => radio.getAttribute('name') === 'repair')).toBe(true);
   });
 
@@ -49,7 +49,7 @@ describe('RepairTransmission', () => {
     expect(status).toBeEmptyDOMElement();
     expect(status).not.toHaveTextContent('불명확한 대상을 찾았어요.');
     await user.click(screen.getByRole('radio', { name: 'Could you say that again?' }));
-    await user.click(screen.getByRole('button', { name: '수리 표현 보내기' }));
+    await user.click(screen.getByRole('button', { name: '이 표현으로 다시 물어보기' }));
     expect(screen.getByRole('status')).toBe(status);
     expect(status).toHaveTextContent('말은 들었지만 어느 상자인지가 아직 분명하지 않아요.');
     await user.click(screen.getByRole('radio', { name: 'Which box?' }));
@@ -59,21 +59,21 @@ describe('RepairTransmission', () => {
 
   it('requires selection, then accepts both natural expressions with distinct feedback', async () => {
     const { user } = renderMissionAtRepair('g34-classroom-box');
-    const submit = screen.getByRole('button', { name: '수리 표현 보내기' });
+    const submit = screen.getByRole('button', { name: '이 표현으로 다시 물어보기' });
     expect(submit).toBeDisabled();
 
     await user.click(screen.getByRole('radio', { name: 'Which box?' }));
     expect(submit).toBeEnabled();
     await user.click(submit);
     expect(screen.getByRole('status')).toHaveTextContent('어느 상자인지 직접 물어 상황에 꼭 맞는 표현이에요.');
-    expect(screen.getByRole('heading', { name: '응답 수신' })).toBeVisible();
+    expect(screen.getByRole('heading', { name: '상대의 대답 살펴보기' })).toBeVisible();
   });
 
   it('keeps a retry on repair and gives a Korean hint without exposing an accepted expression', async () => {
     const { user } = renderMissionAtRepair('g34-classroom-box');
     await user.click(screen.getByRole('radio', { name: 'Could you say that again?' }));
-    await user.click(screen.getByRole('button', { name: '수리 표현 보내기' }));
-    expect(screen.getByRole('heading', { name: '수리 송신' })).toBeVisible();
+    await user.click(screen.getByRole('button', { name: '이 표현으로 다시 물어보기' }));
+    expect(screen.getByRole('heading', { name: '어떻게 다시 물어볼까요?' })).toBeVisible();
     expect(screen.getByRole('status')).toHaveTextContent('말은 들었지만 어느 상자인지가 아직 분명하지 않아요.');
     expect(screen.getByRole('status')).not.toHaveTextContent('Which box?');
     expect(screen.getByRole('radio', { name: 'Could you say that again?' })).toBeChecked();
@@ -82,15 +82,15 @@ describe('RepairTransmission', () => {
   it('preserves the second accepted expression feedback when entering response', async () => {
     const { user } = renderMissionAtRepair('g34-classroom-box');
     await user.click(screen.getByRole('radio', { name: 'Do you mean the blue box?' }));
-    await user.click(screen.getByRole('button', { name: '수리 표현 보내기' }));
-    expect(screen.getByRole('heading', { name: '응답 수신' })).toBeVisible();
+    await user.click(screen.getByRole('button', { name: '이 표현으로 다시 물어보기' }));
+    expect(screen.getByRole('heading', { name: '상대의 대답 살펴보기' })).toBeVisible();
     expect(screen.getByRole('status')).toHaveTextContent('가능한 상자를 정중하게 확인해 대화를 이어 갔어요.');
   });
 
   it('keeps accepted repair feedback in response, then clears the same status after meaning selection', async () => {
     const { user } = renderMissionAtRepair('g34-classroom-box');
     await user.click(screen.getByRole('radio', { name: 'Which box?' }));
-    await user.click(screen.getByRole('button', { name: '수리 표현 보내기' }));
+    await user.click(screen.getByRole('button', { name: '이 표현으로 다시 물어보기' }));
     const status = screen.getByRole('status');
     expect(status).toHaveTextContent('어느 상자인지 직접 물어 상황에 꼭 맞는 표현이에요.');
     expect(screen.getAllByRole('radio').every((radio) => radio.getAttribute('name') === 'meaning')).toBe(true);
@@ -105,7 +105,7 @@ describe('RepairTransmission', () => {
       .flatMap((option) => [option.id, option.textEn]);
     const { user } = renderMissionAtRepair(mission.id);
     await user.click(screen.getByRole('radio', { name: retry.textEn }));
-    await user.click(screen.getByRole('button', { name: '수리 표현 보내기' }));
+    await user.click(screen.getByRole('button', { name: '이 표현으로 다시 물어보기' }));
     const feedback = screen.getByRole('status').textContent ?? '';
     expect(acceptedRepairValues.every((value) => !feedback.includes(value))).toBe(true);
   });
@@ -117,9 +117,9 @@ describe('RepairTransmission', () => {
     choice.focus();
     await user.keyboard(' ');
     expect(choice).toBeChecked();
-    const submit = screen.getByRole('button', { name: '수리 표현 보내기' });
+    const submit = screen.getByRole('button', { name: '이 표현으로 다시 물어보기' });
     submit.focus();
     await user.keyboard('{Enter}');
-    expect(screen.getByRole('heading', { name: '응답 수신' })).toBeVisible();
+    expect(screen.getByRole('heading', { name: '상대의 대답 살펴보기' })).toBeVisible();
   });
 });

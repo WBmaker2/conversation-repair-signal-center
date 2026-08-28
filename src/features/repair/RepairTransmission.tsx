@@ -3,6 +3,7 @@ import { REPAIR_STRATEGIES } from '../../content/strategies';
 import { FeedbackNotice } from '../../shared/FeedbackNotice';
 import { LanguageText } from '../../shared/LanguageText';
 import { StrategyCard } from './StrategyCard';
+import { CriticalActionButton } from '../../shared/CriticalActionButton';
 
 export interface RepairTransmissionProps {
   mission: Mission;
@@ -23,7 +24,8 @@ export function RepairTransmission({
 
   return (
     <section aria-labelledby="repair-heading">
-      <h2 id="repair-heading" tabIndex={-1}>수리 송신</h2>
+      <p className="phase-label">수리 송신</p>
+      <h2 id="repair-heading" tabIndex={-1}>어떻게 다시 물어볼까요?</h2>
       <p lang="ko">대화가 막힌 신호에 맞는 표현을 골라 보내 보세요.</p>
       <div className="strategy-grid" aria-label="허용된 수리 전략">
         {visibleStrategies.map((strategy) => (
@@ -45,15 +47,13 @@ export function RepairTransmission({
           </label>
         ))}
       </fieldset>
-      <button
-        type="button"
+      <CriticalActionButton
+        action="send-repair"
         disabled={!selectedOptionId}
         onClick={() => {
           if (selectedOptionId) onSubmit(selectedOptionId);
         }}
-      >
-        수리 표현 보내기
-      </button>
+      />
       <FeedbackNotice result={latestResult?.stage === 'repair' ? latestResult : null} />
     </section>
   );

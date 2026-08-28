@@ -15,7 +15,10 @@ export function AudioPreferenceToggle({ checked, onChange }: AudioPreferenceTogg
         />{' '}
         음성 자료 사용(선택 사항)
       </label>
-      <p>번들 음성은 선택 사항이며 처음에는 꺼져 있어요. 로컬 합성 참고 음원이고 교사·사람의 녹음이나 발음 평가는 아니에요.</p>
+      <details className="audio-help">
+        <summary>음성은 선택 사항이에요 · 발음 점수 없음</summary>
+        <p>컴퓨터가 만든 참고 소리예요. 음성 없이도 대본으로 미션을 할 수 있어요.</p>
+      </details>
     </fieldset>
   );
 }

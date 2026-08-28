@@ -19,6 +19,29 @@ describe('signal center', () => {
     expect(screen.getByRole('button', { name: '행사 최종 계획 미션 시작' })).toBeVisible();
     expect(screen.getByRole('button', { name: '3~4학년' })).toHaveAttribute('aria-pressed', 'false');
     expect(screen.getByRole('button', { name: '5~6학년' })).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByText('현재 선택: 5~6학년')).toBeVisible();
+    expect(screen.getByText('먼저 해 보기').closest('article')?.querySelector('button')).toHaveClass('gi-pulse');
+  });
+
+  it('uses the mission grid and presents one recommended mission first', () => {
+    render(<App />);
+    const grid = document.querySelector('.mission-grid');
+    expect(grid).toBeInTheDocument();
+    expect(grid?.querySelector('article')).toHaveAttribute('data-recommended', 'true');
+    expect(screen.getByText('먼저 해 보기')).toBeVisible();
+    expect(screen.getByText('먼저 해 보기').closest('article')?.querySelector('button')).toHaveClass('gi-pulse');
+  });
+
+  it('keeps the setup and first-action order visible before strategy help', () => {
+    render(<App />);
+    const center = document.querySelector('.signal-center');
+    const children = Array.from(center?.children ?? []);
+    const indexOf = (selector: string) => children.findIndex((child) => child.matches(selector));
+
+    expect(indexOf('header')).toBeLessThan(indexOf('section[aria-labelledby="grade-selection-heading"]'));
+    expect(indexOf('section[aria-labelledby="grade-selection-heading"]')).toBeLessThan(indexOf('.audio-preference-toggle'));
+    expect(indexOf('.audio-preference-toggle')).toBeLessThan(indexOf('section[aria-labelledby="mission-list-heading"]'));
+    expect(document.querySelector('details')).not.toHaveAttribute('open');
   });
 
   it('keeps the controlled voice preference and exposes the optional bundled voice', async () => {
@@ -28,6 +51,7 @@ describe('signal center', () => {
     const voice = screen.getByRole('checkbox', { name: /음성/ });
     expect(voice).not.toBeChecked();
     expect(screen.getByText(/음성은 선택 사항/)).toBeVisible();
+    expect(screen.getByText('컴퓨터가 만든 참고 소리예요. 음성 없이도 대본으로 미션을 할 수 있어요.')).not.toBeVisible();
 
     await user.click(voice);
     expect(voice).toBeChecked();
@@ -43,14 +67,8 @@ describe('signal center', () => {
     expect(screen.getByText('오늘의 전략: 이해가 안 되면 다시 물어도 괜찮아요.')).toBeVisible();
     expect(screen.getByText('권장 학습 시간 20~30분')).toBeVisible();
     expect(screen.getByText('이름을 묻지 않으며, 새로고침하면 현재 통신 기록이 사라져요.')).toBeVisible();
-    expect(screen.getByText('다시 말해 주세요')).toBeVisible();
-    expect(screen.getByText('더 구체적으로')).toBeVisible();
-    expect(screen.getByText('뜻 확인')).toBeVisible();
-    expect(screen.getByText('다르게 말하기')).toBeVisible();
-    expect(screen.getByText('전체 발화를 놓쳤을 때')).toBeVisible();
-    expect(screen.getByText('대상·시간·장소·수량·담당·순서가 불분명할 때')).toBeVisible();
-    expect(screen.getByText('내가 이해한 내용이 맞는지 확인할 때')).toBeVisible();
-    expect(screen.getByText('상대가 내 말을 이해하지 못했을 때')).toBeVisible();
+    expect(screen.getByText('전략 도움말')).toBeVisible();
+    expect(screen.getByText('대화 수리 전략')).not.toBeVisible();
   });
 
   it('starts only the selected mission and never asks for personal information', async () => {
@@ -59,7 +77,7 @@ describe('signal center', () => {
 
     await user.click(screen.getByRole('button', { name: '어느 상자 미션 시작' }));
 
-    expect(screen.getByRole('heading', { name: '대화 관측' })).toBeVisible();
+    expect(screen.getByRole('heading', { name: '다시 물어볼 부분 찾기' })).toBeVisible();
     expect(screen.getByRole('heading', { name: '어느 상자' })).toBeVisible();
     expect(screen.getByText('교실에 빨간 상자와 파란 상자가 함께 있습니다.')).toBeVisible();
     expect(screen.queryByRole('textbox')).not.toBeInTheDocument();

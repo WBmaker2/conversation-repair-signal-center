@@ -16,10 +16,10 @@ afterEach(cleanup);
 type Phase = 'center' | 'observe' | 'repair' | 'response' | 'confirm' | 'record';
 const phaseHeadings: Record<Phase, string> = {
   center: '오늘의 전략',
-  observe: '대화 관측',
-  repair: '수리 송신',
-  response: '응답 수신',
-  confirm: '확인 통화',
+  observe: '다시 물어볼 부분 찾기',
+  repair: '어떻게 다시 물어볼까요?',
+  response: '상대의 대답 살펴보기',
+  confirm: '내가 이해한 뜻 확인하기',
   record: '통신 기록',
 };
 
@@ -90,16 +90,16 @@ describe('responsive accessibility contract', () => {
     render(<App />);
     const mission = getMissionById('g34-classroom-box');
     await user.click(screen.getByRole('button', { name: `${mission.titleKo} 미션 시작` }));
-    expect(screen.getByRole('heading', { name: '대화 관측' })).toHaveFocus();
+    expect(screen.getByRole('heading', { name: '다시 물어볼 부분 찾기' })).toHaveFocus();
     const retry = screen.getByRole('radio', { name: 'the crayons' });
     await user.click(retry);
     expect(retry).toHaveFocus();
     await user.click(screen.getByRole('button', { name: '모호한 부분 찾기' }));
-    expect(screen.getByRole('heading', { name: '대화 관측' })).toBeVisible();
+    expect(screen.getByRole('heading', { name: '다시 물어볼 부분 찾기' })).toBeVisible();
     expect(screen.getByRole('button', { name: '모호한 부분 찾기' })).toHaveFocus();
     await user.click(screen.getByRole('radio', { name: 'that box' }));
     await user.click(screen.getByRole('button', { name: '모호한 부분 찾기' }));
-    expect(screen.getByRole('heading', { name: '수리 송신' })).toHaveFocus();
+    expect(screen.getByRole('heading', { name: '어떻게 다시 물어볼까요?' })).toHaveFocus();
   });
 
   it('completes a canonical mission and focuses service heading after center return', async () => {
@@ -110,7 +110,7 @@ describe('responsive accessibility contract', () => {
     await user.click(screen.getByRole('radio', { name: 'that box' }));
     await user.click(screen.getByRole('button', { name: '모호한 부분 찾기' }));
     await user.click(screen.getByRole('radio', { name: 'Which box?' }));
-    await user.click(screen.getByRole('button', { name: '수리 표현 보내기' }));
+    await user.click(screen.getByRole('button', { name: '이 표현으로 다시 물어보기' }));
     await user.click(screen.getByRole('radio', { name: '창가에 있는 파란 상자' }));
     await user.click(screen.getByRole('button', { name: '이해한 뜻 확인하기' }));
     const confirmation = mission.confirmationOptions.find((option) => option.accepted)!;
@@ -158,7 +158,7 @@ describe('responsive accessibility contract', () => {
     expect(screen.getByRole('button', { name: '모호한 부분 찾기' })).toHaveClass('gi-pulse');
     await user.click(screen.getByRole('radio', { name: 'that box' }));
     await user.click(screen.getByRole('button', { name: '모호한 부분 찾기' }));
-    expect(document.querySelectorAll('.gi-pulse')).toHaveLength(0);
+    expect(document.querySelectorAll('.gi-pulse')).toHaveLength(1);
     observe.unmount();
     renderAppAtPhase('confirm');
     expect(document.querySelectorAll('.gi-pulse')).toHaveLength(1);

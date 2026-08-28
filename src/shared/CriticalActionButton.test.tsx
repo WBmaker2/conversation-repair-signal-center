@@ -5,6 +5,8 @@ import { CriticalActionButton } from './CriticalActionButton';
 describe('CriticalActionButton', () => {
   it.each([
     ['find-ambiguity', '모호한 부분 찾기'],
+    ['send-repair', '이 표현으로 다시 물어보기'],
+    ['confirm-meaning', '이해한 뜻 확인하기'],
     ['send-confirmation', '확인 질문 보내기'],
   ] as const)('renders only the required pulse action: %s', (action, label) => {
     render(<CriticalActionButton action={action} />);

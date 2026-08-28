@@ -2,6 +2,7 @@ import type { EvaluationResult, Mission } from '../../domain/mission';
 import { FeedbackNotice } from '../../shared/FeedbackNotice';
 import { LanguageText } from '../../shared/LanguageText';
 import { MissionAudioPlayer } from '../audio/MissionAudioPlayer';
+import { CriticalActionButton } from '../../shared/CriticalActionButton';
 
 export interface ResponseReceptionProps {
   mission: Mission;
@@ -22,7 +23,8 @@ export function ResponseReception({
 }: ResponseReceptionProps) {
   return (
     <section aria-labelledby="response-heading">
-      <h2 id="response-heading" tabIndex={-1}>응답 수신</h2>
+      <p className="phase-label">응답 수신</p>
+      <h2 id="response-heading" tabIndex={-1}>상대의 대답 살펴보기</h2>
       <blockquote>
         <LanguageText language="en">{mission.clarifyingResponse.textEn}</LanguageText>
         {mission.clarifyingResponse.supportKo && (
@@ -47,15 +49,13 @@ export function ResponseReception({
           </label>
         ))}
       </fieldset>
-      <button
-        type="button"
+      <CriticalActionButton
+        action="confirm-meaning"
         disabled={!selectedOptionId}
         onClick={() => {
           if (selectedOptionId) onSubmit(selectedOptionId);
         }}
-      >
-        이해한 뜻 확인하기
-      </button>
+      />
       <FeedbackNotice result={latestResult} />
     </section>
   );

@@ -7,6 +7,7 @@ import { RepairTransmission } from '../features/repair/RepairTransmission';
 import { ResponseReception } from '../features/response/ResponseReception';
 import { ConfirmationCall } from '../features/confirmation/ConfirmationCall';
 import { CommunicationRecord } from '../features/record/CommunicationRecord';
+import { PhaseProgress, type LearningPhase } from '../shared/PhaseProgress';
 
 export interface MissionFlowProps {
   mission: Mission;
@@ -65,6 +66,10 @@ export function MissionFlow({ mission, session, dispatch, voiceEnabled }: Missio
     });
   };
 
+  const isLearningPhase = (phase: MissionSessionState['phase']): phase is LearningPhase => (
+    phase === 'observe' || phase === 'repair' || phase === 'response' || phase === 'confirm'
+  );
+
   return (
     <>
       <a className="skip-link" href="#main-content">본문으로 건너뛰기</a>
@@ -75,6 +80,18 @@ export function MissionFlow({ mission, session, dispatch, voiceEnabled }: Missio
         <h1>{mission.titleKo}</h1>
         <p lang="ko">{mission.scenarioKo}</p>
       </header>
+      {isLearningPhase(session.phase) ? (
+        <>
+          <PhaseProgress
+            phase={session.phase}
+            onBack={session.phase === 'observe' ? undefined : () => dispatch({ type: 'phase.back' })}
+          />
+          <div className="mission-navigation" aria-label="미션 조작">
+            <button type="button" onClick={() => dispatch({ type: 'center.returned' })}>신호센터로 돌아가기</button>
+            <button type="button" onClick={() => dispatch({ type: 'mission.restarted' })}>이 미션 다시 하기</button>
+          </div>
+        </>
+      ) : null}
       {session.phase === 'observe' ? (
         <DialogueObservation
           mission={mission}

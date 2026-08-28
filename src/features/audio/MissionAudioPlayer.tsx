@@ -9,7 +9,7 @@ export interface MissionAudioPlayerProps {
 
 export function MissionAudioPlayer({ cue, labelKo }: MissionAudioPlayerProps) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const { isPlaying, playbackRate, togglePlayback, setPlaybackRate, stop } = useAudioPlayer(audioRef, cue.id);
+  const { isPlaying, playbackRate, playbackError, togglePlayback, setPlaybackRate, stop } = useAudioPlayer(audioRef, cue.id);
   const playerLabel = `${labelKo} 음원`;
 
   useEffect(() => {
@@ -46,7 +46,8 @@ export function MissionAudioPlayer({ cue, labelKo }: MissionAudioPlayerProps) {
         </label>
       </div>
       <p lang="en">{cue.transcriptEn}</p>
-      <p>번들 음성은 선택 가능한 로컬 합성 참고 음원이며, 교사·사람의 녹음이나 발음 평가가 아닙니다.</p>
+      {playbackError ? <p role="status" aria-live="polite">{playbackError}</p> : null}
+      <p>컴퓨터가 만든 참고 소리이며 발음 점수는 없어요. 아래 대본으로도 연습할 수 있어요.</p>
     </figure>
   );
 }

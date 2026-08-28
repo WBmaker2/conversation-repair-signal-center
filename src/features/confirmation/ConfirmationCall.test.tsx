@@ -75,7 +75,7 @@ describe('ConfirmationCall', () => {
         expect(status).not.toHaveTextContent(accepted.textEn);
         expect(status).not.toHaveTextContent(accepted.id);
         expect(status).toHaveTextContent(retry.mode === 'rephrase' ? '장소' : expectedHint.split(' ')[5] ?? '정보');
-        expect(screen.getByRole('heading', { name: '확인 통화' })).toBeVisible();
+        expect(screen.getByRole('heading', { name: '내가 이해한 뜻 확인하기' })).toBeVisible();
         unmount();
         cleanup();
       }

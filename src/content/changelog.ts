@@ -7,6 +7,11 @@ export interface ChangeRecord {
 }
 
 export const CHANGELOG = [
+  {
+    date: '2026-08-28',
+    category: '개발',
+    detailKo: '추천 미션과 단계 진행 표시를 앞세우고, 학생용 문구·오디오 오류 안내·확대 대화상자를 개선했습니다.',
+  },
   { date: '2026-08-27', category: '개발', detailKo: '공개 Pages 배포와 브라우저 탭 아이콘을 추가했습니다.' },
   {
     date: '2026-08-26',

@@ -22,7 +22,8 @@ export function ConfirmationCall({
 
   return (
     <section aria-labelledby="confirm-heading">
-      <h2 id="confirm-heading" tabIndex={-1}>확인 통화</h2>
+      <p className="phase-label">확인 통화</p>
+      <h2 id="confirm-heading" tabIndex={-1}>내가 이해한 뜻 확인하기</h2>
       <p lang="ko">상대의 추가 답을 바탕으로 내가 이해한 뜻을 다시 연결해 보세요.</p>
       <fieldset>
         <legend>내가 이해한 뜻을 영어로 다시 확인해 보세요.</legend>

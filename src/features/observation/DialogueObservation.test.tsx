@@ -17,7 +17,7 @@ describe('DialogueObservation', () => {
     await user.click(screen.getByRole('radio', { name: 'the crayons' }));
     await user.click(screen.getByRole('button', { name: '모호한 부분 찾기' }));
     expect(screen.getByRole('status')).toHaveTextContent('어떤 정보가 아직 없나요?');
-    expect(screen.getByRole('heading', { name: '대화 관측' })).toBeVisible();
+    expect(screen.getByRole('heading', { name: '다시 물어볼 부분 찾기' })).toBeVisible();
     expect(screen.queryByText('Which box?')).not.toBeInTheDocument();
   });
 
@@ -25,7 +25,7 @@ describe('DialogueObservation', () => {
     const { user } = renderMissionAtObservation('g34-classroom-box');
     await user.click(screen.getByRole('radio', { name: 'that box' }));
     await user.click(screen.getByRole('button', { name: '모호한 부분 찾기' }));
-    expect(screen.getByRole('heading', { name: '수리 송신' })).toBeVisible();
+    expect(screen.getByRole('heading', { name: '어떻게 다시 물어볼까요?' })).toBeVisible();
   });
 
   it('renders ordered dialogue language metadata and an initially disabled action', () => {
@@ -78,16 +78,16 @@ describe('DialogueObservation', () => {
     const { user } = renderMissionAtObservation('g34-classroom-box');
     await user.click(screen.getByRole('radio', { name: 'that box' }));
     await user.click(screen.getByRole('button', { name: '모호한 부분 찾기' }));
-    expect(screen.getByRole('heading', { name: '수리 송신' })).toBeVisible();
+    expect(screen.getByRole('heading', { name: '어떻게 다시 물어볼까요?' })).toBeVisible();
     expect(screen.getAllByRole('radio')).toHaveLength(3);
     expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
   });
 
   it('renders semantic headings for every harness phase without later-stage interactions', () => {
     for (const [renderPhase, heading] of [
-      [renderMissionAtRepair, '수리 송신'],
-      [renderMissionAtResponse, '응답 수신'],
-      [renderMissionAtConfirmation, '확인 통화'],
+      [renderMissionAtRepair, '어떻게 다시 물어볼까요?'],
+      [renderMissionAtResponse, '상대의 대답 살펴보기'],
+      [renderMissionAtConfirmation, '내가 이해한 뜻 확인하기'],
     ] as const) {
       renderPhase('g34-classroom-box');
       expect(screen.getByRole('heading', { name: heading })).toBeVisible();

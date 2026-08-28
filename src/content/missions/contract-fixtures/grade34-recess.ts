@@ -31,8 +31,8 @@ export const GRADE34_RECESS_CONTRACT = [
     ],
   },
   {
-    id: 'g34-recess-time', gradeBand: '3-4', titleKo: '놀이 시작 시간', scenarioKo: '종이 울려 친구의 문장 전체를 놓쳤습니다.', politenessContext: 'peer-brief', curriculumCodes: ['[4영02-10]'], learningTargets: ['understand', 'apply', 'analyze', 'create'],
-    dialogue: [{ id: 'g34-recess-time-dialogue', speaker: 'Partner', textEn: 'You could not catch this sentence because the bell rang.', obscuredLabelKo: '종소리 때문에 이 문장 전체를 놓쳤습니다.' }],
+    id: 'g34-recess-time', gradeBand: '3-4', titleKo: '놀이 시작 시간', scenarioKo: '종이 울려 친구의 말을 잘 듣지 못했습니다.', politenessContext: 'peer-brief', curriculumCodes: ['[4영02-10]'], learningTargets: ['understand', 'apply', 'analyze', 'create'],
+    dialogue: [{ id: 'g34-recess-time-dialogue', speaker: 'Partner', textEn: 'You could not catch this sentence because the bell rang.', obscuredLabelKo: '종소리 때문에 친구가 말한 내용을 놓쳤습니다.' }],
     ambiguityOptions: [
       { id: 'g34-recess-time--ambiguity-target', turnId: 'g34-recess-time-dialogue', labelEn: 'the whole sentence', slotKind: 'whole-utterance', accepted: true, feedbackKo: '놓친 문장 전체를 찾았어요.' },
       { id: 'g34-recess-time--ambiguity-distractor-a', turnId: 'g34-recess-time-dialogue', labelEn: 'the bell sound', slotKind: 'whole-utterance', accepted: false, feedbackKo: '어떤 정보가 아직 없나요? 대화에서 두 가지로 해석되거나 놓친 부분을 다시 찾아보세요.' },
@@ -60,7 +60,7 @@ export const GRADE34_RECESS_CONTRACT = [
     ],
   },
   {
-    id: 'g34-recess-rephrase', gradeBand: '3-4', titleKo: '장소를 다시 설명하기', scenarioKo: '친구가 “저기”가 어디인지 이해하지 못했습니다.', politenessContext: 'peer-brief', curriculumCodes: ['[4영02-10]'], learningTargets: ['understand', 'apply', 'analyze', 'create'],
+    id: 'g34-recess-rephrase', gradeBand: '3-4', titleKo: '장소를 다시 설명하기', scenarioKo: '친구가 내가 말한 장소를 이해하지 못했습니다.', politenessContext: 'peer-brief', curriculumCodes: ['[4영02-10]'], learningTargets: ['understand', 'apply', 'analyze', 'create'],
     dialogue: [
       { id: 'g34-recess-rephrase-you-dialogue', speaker: 'You', textEn: 'Let’s do it over there.' },
       { id: 'g34-recess-rephrase-partner-dialogue', speaker: 'Partner', textEn: 'I’m not sure what you mean.' },

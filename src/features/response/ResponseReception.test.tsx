@@ -23,7 +23,7 @@ describe('ResponseReception', () => {
     renderMissionAtResponse('g34-classroom-box');
     const mission = getMissionById('g34-classroom-box');
     expect(screen.getByText(mission.clarifyingResponse.textEn)).toHaveAttribute('lang', 'en');
-    expect(screen.getByRole('heading', { name: '응답 수신' })).toBeVisible();
+    expect(screen.getByRole('heading', { name: '상대의 대답 살펴보기' })).toBeVisible();
     expect(screen.getByRole('group', { name: '상대가 확인해 준 뜻은 무엇인가요?' })).toBeVisible();
     expect(screen.getAllByRole('radio')).toHaveLength(3);
     expect(screen.getAllByRole('radio').every((radio) => radio.getAttribute('name') === 'meaning')).toBe(true);
@@ -61,7 +61,7 @@ describe('ResponseReception', () => {
     const { user } = renderMissionAtResponse('g34-classroom-box');
     await user.click(screen.getByRole('radio', { name: '문 옆 빨간 상자' }));
     await user.click(screen.getByRole('button', { name: '이해한 뜻 확인하기' }));
-    expect(screen.getByRole('heading', { name: '응답 수신' })).toBeVisible();
+    expect(screen.getByRole('heading', { name: '상대의 대답 살펴보기' })).toBeVisible();
     expect(screen.getByRole('status')).toHaveTextContent(EXPECTED_MEANING_RETRY_FEEDBACK.object!);
     expect(screen.getByRole('status')).not.toHaveTextContent('창가에 있는 파란 상자');
     expect(screen.getByRole('radio', { name: '문 옆 빨간 상자' })).toBeChecked();
@@ -71,7 +71,7 @@ describe('ResponseReception', () => {
     const { user } = renderMissionAtResponse('g34-classroom-box');
     await user.click(screen.getByRole('radio', { name: '창가에 있는 파란 상자' }));
     await user.click(screen.getByRole('button', { name: '이해한 뜻 확인하기' }));
-    expect(screen.getByRole('heading', { name: '확인 통화' })).toBeVisible();
+    expect(screen.getByRole('heading', { name: '내가 이해한 뜻 확인하기' })).toBeVisible();
   });
 
   it.each(MISSIONS)('uses the slot-specific retry factory for %s', async (mission) => {

@@ -2,8 +2,18 @@ import { describe, expect, it } from 'vitest';
 import { CHANGELOG } from './changelog';
 
 describe('CHANGELOG', () => {
+  it('starts with the 2026-08-28 improvement record', () => {
+    expect(CHANGELOG[0]).toEqual(expect.objectContaining({ date: '2026-08-28' }));
+    expect(CHANGELOG[0]?.detailKo).toMatch(/추천|진행|학생|오디오|확대/);
+  });
+
   it('keeps dated design, development, content, curriculum, and accessibility records', () => {
     expect(CHANGELOG).toEqual([
+      {
+        date: '2026-08-28',
+        category: '개발',
+        detailKo: '추천 미션과 단계 진행 표시를 앞세우고, 학생용 문구·오디오 오류 안내·확대 대화상자를 개선했습니다.',
+      },
       { date: '2026-08-27', category: '개발', detailKo: '공개 Pages 배포와 브라우저 탭 아이콘을 추가했습니다.' },
       { date: '2026-08-26', category: '접근성', detailKo: '화면과 음성 대본을 일치시키고 음성 선택 영역을 44px 이상으로 넓혔습니다.' },
       { date: '2026-08-26', category: '접근성', detailKo: '375px 모바일과 200% 확대에서 본문·업데이트 대화상자의 가로·세로 잘림을 막았습니다.' },
