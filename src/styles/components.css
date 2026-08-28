@@ -41,6 +41,78 @@ legend {
   block-size: 1.15rem;
 }
 
+.grade-band-button[aria-pressed="true"] {
+  border-width: 3px;
+  border-color: var(--color-signal);
+  background: var(--color-surface);
+  font-weight: 800;
+}
+
+.selected-grade {
+  font-weight: 700;
+}
+
+.phase-label {
+  color: var(--color-muted);
+  font-size: 0.875rem;
+  font-weight: 700;
+  margin-block-end: var(--space-2);
+}
+
+.phase-progress {
+  display: grid;
+  gap: var(--space-3);
+  margin-block: 0 var(--space-5);
+}
+
+.phase-progress ol {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-2);
+  padding-inline-start: 0;
+  list-style: none;
+}
+
+.phase-progress li {
+  border-block-end: 3px solid var(--color-line);
+  color: var(--color-muted);
+  padding-block: var(--space-2);
+}
+
+.phase-progress li[aria-current="step"] {
+  border-color: var(--color-signal);
+  color: var(--color-ink);
+  font-weight: 800;
+}
+
+.mission-navigation {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-block-end: var(--space-5);
+}
+
+.learner-takeaway {
+  border-inline-start: 4px solid var(--color-signal);
+  background: var(--color-surface);
+  margin-block: var(--space-5);
+  padding: var(--space-4);
+}
+
+.learner-takeaway h3 {
+  margin-block-end: var(--space-2);
+}
+
+.mission-recommendation {
+  color: var(--color-signal-dark);
+  font-weight: 800;
+  margin-block-end: var(--space-2);
+}
+
+.audio-preference-toggle .audio-help {
+  margin-block-start: 0;
+}
+
 .dialogue-turn {
   display: grid;
   grid-template-columns: auto 1fr;
@@ -115,14 +187,17 @@ summary {
   inset: 0;
   z-index: 30;
   display: grid;
-  place-items: center;
+  align-items: start;
+  justify-items: center;
+  overflow: auto;
   padding: var(--space-4);
   background: rgb(18 45 66 / 64%);
 }
 
 .update-history-dialog {
   inline-size: min(100%, 42rem);
-  max-block-size: 90vh;
+  max-block-size: calc(100dvh - 2rem);
+  min-block-size: min(12rem, calc(100dvh - 2rem));
   overflow: auto;
   border: 2px solid var(--color-signal-dark);
   border-radius: var(--radius);
@@ -133,6 +208,11 @@ summary {
 }
 
 .update-history-dialog-header {
+  position: sticky;
+  inset-block-start: calc(var(--space-5) * -1);
+  z-index: 1;
+  padding-block: var(--space-2);
+  background: var(--color-paper);
   display: flex;
   align-items: start;
   justify-content: space-between;
@@ -163,6 +243,6 @@ summary {
   }
 
   .update-history-dialog {
-    max-block-size: calc(50vh - 2rem);
+    max-block-size: calc(100dvh - 2rem);
   }
 }

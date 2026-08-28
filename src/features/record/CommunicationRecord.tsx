@@ -3,6 +3,7 @@ import type { MissionEvidence } from '../../domain/session';
 import { REPAIR_STRATEGIES } from '../../content/strategies';
 import { SLOT_LABELS_KO } from '../../content/feedback';
 import { TeacherSummary } from './TeacherSummary';
+import { LearnerTakeaway } from './LearnerTakeaway';
 
 export interface CommunicationRecordProps {
   mission: Mission;
@@ -13,9 +14,9 @@ export interface CommunicationRecordProps {
 
 const STAGE_LABELS: Record<MissionStage, string> = {
   ambiguity: '불명확한 부분 찾기',
-  repair: '수리 표현 선택',
-  meaning: '추가 응답 이해',
-  confirmation: '확인 통화',
+  repair: '다시 물어볼 표현 고르기',
+  meaning: '상대 답 이해하기',
+  confirmation: '이해한 뜻 확인하기',
 };
 
 type Validation =
@@ -145,6 +146,7 @@ export function CommunicationRecord({
       <p role="status" aria-live="polite" lang="ko">학습 기록이 준비되었습니다.</p>
       <h3>미션</h3>
       <p>{mission.titleKo}</p>
+      <LearnerTakeaway mission={mission} evidence={safeEvidence} />
       <dl>
         <div>
           <dt>찾은 슬롯 종류</dt>

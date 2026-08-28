@@ -93,7 +93,7 @@ describe('reviewed ten-mission content pack', () => {
         clarifyingResponse: { id: 'g34-recess-place-response', speaker: 'Partner', textEn: 'At the bench beside the playground gate.' },
       },
       'g34-recess-time': {
-        dialogue: [{ id: 'g34-recess-time-dialogue', speaker: 'Partner', textEn: 'You could not catch this sentence because the bell rang.', obscuredLabelKo: '종소리 때문에 이 문장 전체를 놓쳤습니다.' }],
+        dialogue: [{ id: 'g34-recess-time-dialogue', speaker: 'Partner', textEn: 'You could not catch this sentence because the bell rang.', obscuredLabelKo: '종소리 때문에 친구가 말한 내용을 놓쳤습니다.' }],
         clarifyingResponse: { id: 'g34-recess-time-response', speaker: 'Partner', textEn: 'Let’s start the game at one thirty.' },
       },
       'g34-recess-rephrase': {
@@ -129,7 +129,7 @@ describe('reviewed ten-mission content pack', () => {
     }
     expect(getMissionById('g34-recess-time').dialogue[0]).toMatchObject({
       textEn: 'You could not catch this sentence because the bell rang.',
-      obscuredLabelKo: '종소리 때문에 이 문장 전체를 놓쳤습니다.',
+      obscuredLabelKo: '종소리 때문에 친구가 말한 내용을 놓쳤습니다.',
     });
     expect(getMissionById('g34-recess-rephrase').confirmationOptions.every((option) => option.mode === 'rephrase')).toBe(true);
     expect(MISSIONS.filter((mission) => mission.id !== 'g34-recess-rephrase').every((mission) => mission.confirmationOptions.every((option) => option.mode === 'confirm'))).toBe(true);

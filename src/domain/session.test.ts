@@ -215,6 +215,30 @@ describe('missionSessionReducer', () => {
     expect(beforeState).toEqual(createInitialSession());
     expect(mission).toEqual(beforeMission);
   });
+
+  it.each([
+    ['repair', 'observe'],
+    ['response', 'repair'],
+    ['confirm', 'response'],
+  ] as const)('moves back from %s to %s while preserving selections and attempts', (from, expected) => {
+    let state = startSession();
+    state = submit(state, 'ambiguity', optionId('ambiguity', 'target'), 'accepted');
+    if (from === 'response' || from === 'confirm') state = submit(state, 'repair', optionId('repair', 'best'), 'accepted');
+    if (from === 'confirm') state = submit(state, 'meaning', optionId('meaning', 'correct'), 'accepted');
+    expect(state.phase).toBe(from);
+    const backed = missionSessionReducer(state, { type: 'phase.back' });
+    expect(backed.phase).toBe(expected);
+    expect(backed.selectedOptionIds).toEqual(state.selectedOptionIds);
+    expect(backed.attempts).toEqual(state.attempts);
+    expect(backed.latestResult).toBeNull();
+  });
+
+  it('ignores phase.back from the first learning step and center', () => {
+    const initial = createInitialSession();
+    expect(missionSessionReducer(initial, { type: 'phase.back' })).toBe(initial);
+    const started = startSession();
+    expect(missionSessionReducer(started, { type: 'phase.back' })).toBe(started);
+  });
 });
 
 describe('buildMissionEvidence', () => {

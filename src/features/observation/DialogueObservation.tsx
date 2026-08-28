@@ -24,7 +24,8 @@ export function DialogueObservation({
 }: DialogueObservationProps) {
   return (
     <section aria-labelledby="observe-heading">
-      <h2 id="observe-heading" tabIndex={-1}>대화 관측</h2>
+      <p className="phase-label">대화 관측</p>
+      <h2 id="observe-heading" tabIndex={-1}>다시 물어볼 부분 찾기</h2>
       <p>대화에서 어떤 부분이 분명하지 않은지 살펴보세요.</p>
       <ol className="dialogue-list" aria-label="대화 순서">
         {mission.dialogue.map((turn, index) => (

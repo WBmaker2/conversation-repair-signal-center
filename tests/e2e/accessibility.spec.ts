@@ -29,22 +29,22 @@ test('keyboard-only navigation completes g34-classroom-box and closes update dia
   await page.keyboard.press('Enter');
   await tabUntil(page, '어느 상자 미션 시작');
   await page.keyboard.press('Enter');
-  await expect(page.getByRole('heading', { name: '대화 관측' })).toBeFocused();
+  await expect(page.getByRole('heading', { name: '다시 물어볼 부분 찾기' })).toBeFocused();
   await tabUntil(page, path.ambiguityLabel);
   await page.keyboard.press('Space');
   await tabUntil(page, '모호한 부분 찾기');
   await page.keyboard.press('Enter');
-  await expect(page.getByRole('heading', { name: '수리 송신' })).toBeFocused();
+  await expect(page.getByRole('heading', { name: '어떻게 다시 물어볼까요?' })).toBeFocused();
   await tabUntil(page, path.repairExpression);
   await page.keyboard.press('Space');
-  await tabUntil(page, '수리 표현 보내기');
+  await tabUntil(page, '이 표현으로 다시 물어보기');
   await page.keyboard.press('Enter');
-  await expect(page.getByRole('heading', { name: '응답 수신' })).toBeFocused();
+  await expect(page.getByRole('heading', { name: '상대의 대답 살펴보기' })).toBeFocused();
   await tabUntil(page, path.meaningLabelKo);
   await page.keyboard.press('Space');
   await tabUntil(page, '이해한 뜻 확인하기');
   await page.keyboard.press('Enter');
-  await expect(page.getByRole('heading', { name: '확인 통화' })).toBeFocused();
+  await expect(page.getByRole('heading', { name: '내가 이해한 뜻 확인하기' })).toBeFocused();
   await tabUntil(page, path.confirmationExpression);
   await page.keyboard.press('Space');
   await tabUntil(page, '확인 질문 보내기');
@@ -86,7 +86,7 @@ test('each learning phase has no serious or critical axe violations', async ({ p
   await page.getByRole('button', { name: '모호한 부분 찾기' }).click();
   await expectNoSeriousAxe(page, 'repair');
   await page.getByRole('radio', { name: path.repairExpression }).check();
-  await page.getByRole('button', { name: '수리 표현 보내기' }).click();
+  await page.getByRole('button', { name: '이 표현으로 다시 물어보기' }).click();
   await expectNoSeriousAxe(page, 'response');
   await page.getByRole('radio', { name: path.meaningLabelKo }).check();
   await page.getByRole('button', { name: '이해한 뜻 확인하기' }).click();
@@ -161,22 +161,22 @@ async function walkGeometryPath(page: Page, path: (typeof ACCEPTED_PATHS)[number
   if (zoom) await page.evaluate(() => { document.documentElement.style.zoom = '2'; });
   await assertResponsiveGeometry(page, 'center');
   await chooseGradeAndMission(page, path);
-  await expect(page.getByRole('heading', { name: '대화 관측' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: '다시 물어볼 부분 찾기' })).toBeVisible();
   await assertResponsiveGeometry(page, 'observe');
 
   await page.getByRole('radio', { name: path.ambiguityLabel }).check();
   await page.getByRole('button', { name: '모호한 부분 찾기' }).click();
-  await expect(page.getByRole('heading', { name: '수리 송신' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: '어떻게 다시 물어볼까요?' })).toBeVisible();
   await assertResponsiveGeometry(page, 'repair');
 
   await page.getByRole('radio', { name: path.repairExpression }).check();
-  await page.getByRole('button', { name: '수리 표현 보내기' }).click();
-  await expect(page.getByRole('heading', { name: '응답 수신' })).toBeVisible();
+  await page.getByRole('button', { name: '이 표현으로 다시 물어보기' }).click();
+  await expect(page.getByRole('heading', { name: '상대의 대답 살펴보기' })).toBeVisible();
   await assertResponsiveGeometry(page, 'response');
 
   await page.getByRole('radio', { name: path.meaningLabelKo }).check();
   await page.getByRole('button', { name: '이해한 뜻 확인하기' }).click();
-  await expect(page.getByRole('heading', { name: '확인 통화' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: '내가 이해한 뜻 확인하기' })).toBeVisible();
   await assertResponsiveGeometry(page, 'confirm');
 
   await page.getByRole('radio', { name: path.confirmationExpression }).check();

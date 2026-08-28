@@ -40,6 +40,7 @@ export type MissionSessionAction =
   | { type: 'mission.started'; missionId: string }
   | { type: 'choice.selected'; stage: MissionStage; optionId: string }
   | { type: 'choice.submitted'; mission: Mission; result: EvaluationResult }
+  | { type: 'phase.back' }
   | { type: 'mission.restarted' }
   | { type: 'center.returned' };
 
@@ -55,6 +56,12 @@ const nextPhase: Record<MissionStage, SessionPhase> = {
   repair: 'response',
   meaning: 'confirm',
   confirmation: 'record',
+};
+
+const previousLearningPhase: Partial<Record<SessionPhase, SessionPhase>> = {
+  repair: 'observe',
+  response: 'repair',
+  confirm: 'response',
 };
 
 function assertNever(value: never): never {
@@ -144,6 +151,12 @@ export function missionSessionReducer(
         return { ...nextState, evidence: buildMissionEvidence(mission, nextState) };
       }
       return nextState;
+    }
+
+    case 'phase.back': {
+      const previousPhase = previousLearningPhase[state.phase];
+      if (!previousPhase) return state;
+      return { ...state, phase: previousPhase, latestResult: null };
     }
 
     case 'mission.restarted':

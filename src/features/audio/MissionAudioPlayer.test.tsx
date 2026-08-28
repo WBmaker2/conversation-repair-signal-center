@@ -41,6 +41,7 @@ describe('MissionAudioPlayer', () => {
     const { user } = renderWithUser(<MissionAudioPlayer cue={cue} labelKo="대화 듣기" />);
     await user.click(screen.getByRole('button', { name: '재생' }));
     expect(screen.getByRole('button', { name: '재생' })).toBeVisible();
+    expect(screen.getByRole('status')).toHaveTextContent('음성을 재생할 수 없어요. 아래 대본을 읽어 주세요.');
 
     const audio = screen.getByTestId('audio-element') as HTMLAudioElement;
     Object.defineProperty(audio, 'currentTime', { configurable: true, writable: true, value: 4 });

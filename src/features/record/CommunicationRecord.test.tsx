@@ -67,6 +67,14 @@ describe('CommunicationRecord', () => {
     expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
   });
 
+  it('shows student takeaway outside the collapsed teacher details', () => {
+    const fixture = completedEvidence('g34-classroom-box');
+    renderWithUser(<CommunicationRecord mission={fixture.mission} evidence={fixture.evidence} onRetry={() => undefined} onReturnCenter={() => undefined} />);
+    expect(screen.getByRole('heading', { name: '오늘 배운 점' })).toBeVisible();
+    expect(screen.getByRole('heading', { name: '다음에 해 보기' })).toBeVisible();
+    expect(screen.getByRole('group', { name: '교사용 보기' })).not.toHaveTextContent('오늘 배운 점');
+  });
+
   it('renders the exact mission slot, strategy, collaboration feedback, and attempt counts', () => {
     const { mission, evidence } = completedEvidence('g56-materials-person');
     renderWithUser(<CommunicationRecord mission={mission} evidence={evidence} onRetry={() => undefined} onReturnCenter={() => undefined} />);
@@ -75,7 +83,7 @@ describe('CommunicationRecord', () => {
     expect(screen.getByText('더 구체적으로')).toBeVisible();
     expect(screen.getByText('비난하지 않고 확인 질문으로 대화를 이어 갔어요.')).toBeVisible();
     expect(screen.getByText(/불명확한 부분 찾기.*1회/)).toBeVisible();
-    expect(screen.getByText(/확인 통화.*1회/)).toBeVisible();
+    expect(screen.getByText(/이해한 뜻 확인하기.*1회/)).toBeVisible();
   });
 
   it('dispatches retry and center actions through the supplied callbacks', async () => {
@@ -133,9 +141,9 @@ describe('CommunicationRecord', () => {
       const fixture = retryRichEvidence(mission.id);
       const { unmount } = renderWithUser(<CommunicationRecord mission={fixture.mission} evidence={fixture.evidence} onRetry={() => undefined} onReturnCenter={() => undefined} />);
       expect(screen.getByText(/불명확한 부분 찾기: 2회/)).toBeVisible();
-      expect(screen.getByText(/수리 표현 선택: 2회/)).toBeVisible();
-      expect(screen.getByText(/추가 응답 이해: 2회/)).toBeVisible();
-      expect(screen.getByText(/확인 통화: 2회/)).toBeVisible();
+    expect(screen.getByText(/다시 물어볼 표현 고르기: 2회/)).toBeVisible();
+    expect(screen.getByText(/상대 답 이해하기: 2회/)).toBeVisible();
+    expect(screen.getByText(/이해한 뜻 확인하기: 2회/)).toBeVisible();
       expect(screen.getByText('처음 이해')).toBeVisible();
       expect(screen.getByText('확인된 이해')).toBeVisible();
       unmount();
@@ -147,7 +155,7 @@ describe('CommunicationRecord', () => {
     const retryView = renderWithUser(<MissionFlowHarness initialState={{ ...createSessionAtPhase(fixture.mission, 'record'), evidence: fixture.evidence }} />);
     await retryView.user.click(screen.getByRole('button', { name: '이 미션 다시 하기' }));
     expect(retryView.container.querySelector('[data-session-phase="observe"]')).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: '대화 관측' })).toBeVisible();
+    expect(screen.getByRole('heading', { name: '다시 물어볼 부분 찾기' })).toBeVisible();
     retryView.unmount();
 
     const centerView = renderWithUser(<MissionFlowHarness initialState={{ ...createSessionAtPhase(fixture.mission, 'record'), evidence: fixture.evidence }} exposeState />);
