@@ -90,4 +90,14 @@
 
 ## 릴리스 전환 기록
 
-후속 사용자 지시로 구현 결과를 기능 브랜치에 커밋하고 GitHub 원격에 푸시한 뒤, `main` 병합과 GitHub Pages 배포를 별도 릴리스 게이트로 진행한다. 커밋 SHA, PR, workflow 실행, 공개 URL의 HTTP·HTML·자산·학생 경로 결과는 릴리스가 실제로 완료된 후 이 섹션에 기록한다. 이 기록은 로컬 자동 검증, 관리형 Chromium 호스트 제한, 실제 아동·교사 수동 사용성 검증과 섞지 않는다.
+후속 사용자 지시에 따라 구현 결과를 기능 브랜치에 커밋하고 GitHub 원격에 푸시한 뒤, `main` 병합과 GitHub Pages 배포를 별도 릴리스 게이트로 진행했다. 커밋 SHA, PR, workflow 실행, 공개 URL의 HTTP·HTML·자산·학생 경로 결과는 아래에 기록했으며, 로컬 자동 검증·관리형 Chromium 호스트 제한·실제 아동·교사 수동 사용성 검증과 섞지 않았다.
+
+## 릴리스 결과 — 2026-08-28
+
+- 기능 브랜치 커밋: `ff7fc3b` (`feat: improve learner repair flow`), `878e3e1` (`test: cover learner flow regressions`), `ed7daba` (`docs: record learner improvement plan`)
+- GitHub PR: [#1](https://github.com/WBmaker2/conversation-repair-signal-center/pull/1), `main` 병합 커밋 `2de588c3abbfd508d225df77e4802b704138b82b`
+- Pages workflow: [Deploy to GitHub Pages run 33146560286](https://github.com/WBmaker2/conversation-repair-signal-center/actions/runs/33146560286) 성공. `build`의 quality checks·production build·artifact upload와 `deploy`가 모두 성공했습니다.
+- Pages 설정: `build_type=workflow`, `public=true`, `https_enforced=true`
+- 공개 학습 경로: [https://wbmaker2.github.io/conversation-repair-signal-center/](https://wbmaker2.github.io/conversation-repair-signal-center/)에서 HTTP 200, 앱 제목, CSS·JS 자산을 확인했습니다. 공개 JS 번들에서 `먼저 해 보기`, `이 표현으로 다시 물어보기`, `오늘 배운 점`, `음성을 재생할 수 없어요` 문구도 확인했습니다.
+- 공개 인터랙션: 이 macOS 호스트의 Chromium이 `bootstrap_check_in Permission denied (1100)` SIGTRAP으로 시작 전에 종료되어 자동 공개 클릭 경로는 실행하지 않았습니다. 로컬 대체 headless smoke에서 mobile·desktop CTA geometry, 단계 진행·복구, 완료 takeaway, reduced-motion, audio fallback을 확인한 결과와 구분해 기록합니다.
+- 남은 게이트: 실제 브라우저 200% 확대·키보드/터치 체감과 학생·교사 수동 사용성 확인이 남아 있습니다. VoiceOver 구현·검증은 프로젝트 범위에서 제외했습니다.
