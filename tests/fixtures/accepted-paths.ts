@@ -40,7 +40,7 @@ export async function completeAcceptedPath(
   await page.getByRole('radio', { name: path.ambiguityLabel }).check();
   await page.getByRole('button', { name: '모호한 부분 찾기' }).click();
   await page.getByRole('radio', { name: repairExpression }).check();
-  await page.getByRole('button', { name: '수리 표현 보내기' }).click();
+  await page.getByRole('button', { name: '이 표현으로 다시 물어보기' }).click();
   await page.getByRole('radio', { name: path.meaningLabelKo }).check();
   await page.getByRole('button', { name: '이해한 뜻 확인하기' }).click();
   await page.getByRole('radio', { name: path.confirmationExpression }).check();

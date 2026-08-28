@@ -19,7 +19,7 @@ test('preview uses no external requests, microphone, or browser storage', async 
   });
   await page.goto('/');
   await page.getByRole('button', { name: '어느 상자 미션 시작' }).click();
-  await expect(page.getByRole('heading', { name: '대화 관측' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: '다시 물어볼 부분 찾기' })).toBeVisible();
   await expect.poll(() => page.evaluate(() => ({
     mic: (window as Window & { __micCalled?: boolean }).__micCalled,
     local: localStorage.length,

@@ -22,7 +22,7 @@ test.describe('audio-off text parity', () => {
       await page.getByRole('radio', { name: path.ambiguityLabel }).check();
       await page.getByRole('button', { name: '모호한 부분 찾기' }).click();
       await page.getByRole('radio', { name: path.repairExpression }).check();
-      await page.getByRole('button', { name: '수리 표현 보내기' }).click();
+      await page.getByRole('button', { name: '이 표현으로 다시 물어보기' }).click();
       await expect(page.getByText(mission.clarifyingResponse.textEn, { exact: true })).toBeVisible();
       await expect(page.locator('audio')).toHaveCount(0);
     });
@@ -58,7 +58,7 @@ test('voice-on exposes every manifest cue with transcript, source, controls, and
     await page.getByRole('radio', { name: path.ambiguityLabel }).check();
     await page.getByRole('button', { name: '모호한 부분 찾기' }).click();
     await page.getByRole('radio', { name: path.repairExpression }).check();
-    await page.getByRole('button', { name: '수리 표현 보내기' }).click();
+    await page.getByRole('button', { name: '이 표현으로 다시 물어보기' }).click();
     await expectCue(page, mission.audioCues[1]!, '응답 듣기', audioResponses, previewOrigin);
     await expect(page.getByText(mission.clarifyingResponse.textEn, { exact: true })).toBeVisible();
   }
