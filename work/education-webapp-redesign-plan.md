@@ -496,3 +496,11 @@ npm run test:e2e -- tests/e2e/learner-flow.spec.ts tests/e2e/center-layout.spec.
 - 관리형 macOS Chromium E2E: `mach_port_rendezvous`/`bootstrap_check_in Permission denied (1100)` SIGTRAP으로 제품 assertion 전에 종료되어 새 geometry 결과를 만들지 못했습니다. 동일 실패 반복은 중단했습니다.
 
 VoiceOver 구현·검증과 실제 학생·교사 승인·물리 기기 터치/200% 확대는 프로젝트 규칙과 수동 검토 범위에 따라 실행하지 않았습니다. 재디자인 구현 단계에서는 커밋·푸시·배포·HVC 등록을 실행하지 않았으며, 별도 릴리스 요청의 실제 결과는 아래 20절에 기록합니다.
+
+## 20. 2026-08-30 릴리스 결과
+
+- `3e9f7d7 feat: redesign conversation repair signal center`를 기능 브랜치에 커밋하고 원격에 push했습니다.
+- [PR #3](https://github.com/WBmaker2/conversation-repair-signal-center/pull/3)을 `main`에 병합했으며 merge commit은 `0b323a4949a49ab6b641e09766ec962d3d2b3948`입니다.
+- [Pages workflow 33292337538](https://github.com/WBmaker2/conversation-repair-signal-center/actions/runs/33292337538)의 build quality checks·production build·deploy가 모두 성공했습니다.
+- [공개 학습 경로](https://wbmaker2.github.io/conversation-repair-signal-center/)가 HTTP 200을 반환하고 제목·favicon·JS·CSS 자산이 모두 200 응답을 반환했습니다. 공개 JS 번들에서 후속 리디자인 문구와 `2026-08-30` changelog를 확인했습니다.
+- 관리형 Chromium E2E·공개 상호작용은 `mach_port_rendezvous`/`bootstrap_check_in Permission denied (1100)` SIGTRAP으로 제품 assertion 전에 종료되어 실행하지 않았습니다. VoiceOver·실제 학생/교사 승인·물리 200% 확대는 계속 별도 게이트입니다.
