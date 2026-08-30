@@ -9,6 +9,7 @@ import { renderMissionAtPhase } from '../test/missionHarness';
 import '../styles/index.css';
 const baseCss = readFileSync('src/styles/base.css', 'utf8');
 const layoutCss = readFileSync('src/styles/layout.css', 'utf8');
+const componentsCss = readFileSync('src/styles/components.css', 'utf8');
 const motionCss = readFileSync('src/styles/motion.css', 'utf8');
 
 afterEach(cleanup);
@@ -141,6 +142,10 @@ describe('responsive accessibility contract', () => {
     expect(motionCss).toContain('scroll-behavior: auto');
     expect(motionCss).toContain('outline: 3px solid var(--color-signal)');
     expect(motionCss).toContain('border-inline-start: 4px solid var(--color-signal)');
+    expect(componentsCss).toContain('[data-feedback-state="empty"]');
+    expect(componentsCss).toContain('max-block-size: min(70dvh, calc(100dvh - 2rem))');
+    expect(componentsCss).toContain('.update-history-dialog');
+    expect(componentsCss).toContain('overflow: auto');
     render(<App />);
     const minBlockSize = getComputedStyle(screen.getByRole('button', { name: '3~4학년' })).minBlockSize;
     if (minBlockSize) expect(minBlockSize).toBe('44px');

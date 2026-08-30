@@ -23,23 +23,104 @@
   text-transform: uppercase;
 }
 
+.signal-center {
+  max-inline-size: 56rem;
+}
+
+.learning-promise {
+  border-block-end: 1px solid var(--color-line);
+  margin-block-end: var(--space-3);
+  padding-block-end: var(--space-3);
+}
+
+.learning-promise > h1,
+.learning-promise > p {
+  margin-block-end: var(--space-2);
+}
+
+.first-action {
+  border-inline-start: 4px solid var(--color-signal);
+  background: var(--color-signal-soft);
+  margin-block-start: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+}
+
+.first-action h2,
+.first-action p {
+  margin-block-end: var(--space-1);
+}
+
+.privacy-note,
+.center-status {
+  margin-block: var(--space-2);
+}
+
+.privacy-note,
+.center-status {
+  font-size: 0.9375rem;
+  line-height: 1.35;
+}
+
+.center-status {
+  min-block-size: 0;
+}
+
+.setup-panel,
+.audio-preference-toggle {
+  margin-block: var(--space-3);
+}
+
+.setup-panel h2 {
+  margin-block-end: var(--space-2);
+}
+
+.setup-panel fieldset {
+  margin-block: var(--space-2);
+}
+
+.setup-panel .selected-grade {
+  margin-block-end: var(--space-2);
+}
+
 @media (max-width: 640px) {
   .signal-center > header {
-    margin-block-end: var(--space-3);
-    padding-block-end: var(--space-3);
+    margin-block-end: var(--space-2);
+    padding-block-end: var(--space-2);
   }
 
   .signal-center > p {
+    margin-block-end: var(--space-1);
+  }
+
+  .signal-center > .privacy-note {
+    margin-block: 0;
+  }
+
+  .signal-center .learning-promise {
     margin-block-end: var(--space-2);
+    padding-block-end: var(--space-2);
+  }
+
+  .signal-center .first-action {
+    margin-block-start: var(--space-2);
+    padding-block: var(--space-1);
   }
 
   .signal-center > section {
     margin-block-start: var(--space-3);
   }
 
+  .signal-center > section[aria-labelledby="mission-list-heading"] {
+    margin-block-start: var(--space-1);
+  }
+
   .signal-center fieldset {
     margin-block: var(--space-2);
     padding: var(--space-2);
+  }
+
+  .signal-center .audio-preference-toggle {
+    margin-block: var(--space-2);
   }
 
 }
@@ -53,6 +134,10 @@
 
 .signal-center .mission-grid article[data-recommended="true"] h3,
 .signal-center .mission-grid article[data-recommended="true"] p {
+  margin-block-end: var(--space-2);
+}
+
+.signal-center > section[aria-labelledby="mission-list-heading"] > h2 {
   margin-block-end: var(--space-2);
 }
 
@@ -89,6 +174,7 @@
 @media (max-width: 640px) {
   .app-shell {
     inline-size: min(100%, 100vw);
+    padding-block-start: 0.75rem;
     padding-inline: 16px;
   }
 

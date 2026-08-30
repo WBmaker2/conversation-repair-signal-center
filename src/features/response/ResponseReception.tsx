@@ -37,7 +37,7 @@ export function ResponseReception({
       <fieldset>
         <legend>상대가 확인해 준 뜻은 무엇인가요?</legend>
         {mission.meaningOptions.map((option) => (
-          <label className="choice-label" key={option.id}>
+          <label className="choice-label" data-choice-selected={selectedOptionId === option.id ? 'true' : 'false'} key={option.id}>
             <input
               type="radio"
               name="meaning"

@@ -30,3 +30,18 @@ test('grade selection exposes one visible selected state', async ({ page }) => {
   await expect(page.getByText('현재 선택: 5~6학년')).toBeVisible();
   await expect(page.locator('[aria-pressed="true"]')).toHaveCount(1);
 });
+
+test('mobile update trigger falls back to normal flow without covering the first CTA', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 812 });
+  await page.goto('./');
+  const trigger = page.getByRole('button', { name: '업데이트 내역' });
+  await expect(trigger).toHaveCSS('position', 'static');
+  const boxes = await page.evaluate(() => {
+    const cta = document.querySelector<HTMLElement>('.mission-card[data-recommended="true"] button')?.getBoundingClientRect();
+    const update = document.querySelector<HTMLElement>('.update-history-trigger')?.getBoundingClientRect();
+    return { cta, update };
+  });
+  expect(boxes.cta).not.toBeNull();
+  expect(boxes.update).not.toBeNull();
+  expect(boxes.update!.top).toBeGreaterThanOrEqual(boxes.cta!.bottom);
+});

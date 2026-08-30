@@ -35,7 +35,7 @@ export function RepairTransmission({
       <fieldset>
         <legend>어떤 표현으로 다시 물어볼까요?</legend>
         {mission.repairOptions.map((option) => (
-          <label className="choice-label" key={option.id}>
+          <label className="choice-label" data-choice-selected={selectedOptionId === option.id ? 'true' : 'false'} key={option.id}>
             <input
               type="radio"
               name="repair"

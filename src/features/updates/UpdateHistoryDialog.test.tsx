@@ -75,4 +75,16 @@ describe('update history dialog', () => {
       consoleError.mockRestore();
     }
   });
+
+  it('keeps the same update trigger available throughout a mission phase', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await user.click(screen.getByRole('button', { name: '어느 상자 미션 시작' }));
+    const trigger = screen.getByRole('button', { name: '업데이트 내역' });
+    expect(trigger).toBeVisible();
+    await user.click(trigger);
+    expect(screen.getByRole('dialog', { name: '업데이트 내역' })).toBeVisible();
+    await user.keyboard('{Escape}');
+    expect(trigger).toHaveFocus();
+  });
 });

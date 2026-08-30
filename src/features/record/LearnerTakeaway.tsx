@@ -12,9 +12,9 @@ export function LearnerTakeaway({ mission, evidence }: LearnerTakeawayProps) {
   return (
     <section className="learner-takeaway" aria-labelledby="learner-takeaway-heading">
       <h3 id="learner-takeaway-heading">오늘 배운 점</h3>
-      <p>{copy.learnedKo}</p>
+      <p lang="ko">{copy.learnedKo}</p>
       <h3>다음에 해 보기</h3>
-      <p>{copy.nextStepKo}</p>
+      <p lang="ko">{copy.nextStepKo}</p>
     </section>
   );
 }

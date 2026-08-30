@@ -28,7 +28,7 @@ export function ConfirmationCall({
       <fieldset>
         <legend>내가 이해한 뜻을 영어로 다시 확인해 보세요.</legend>
         {mission.confirmationOptions.map((option) => (
-          <label className="choice-label" key={option.id}>
+          <label className="choice-label" data-choice-selected={selectedOptionId === option.id ? 'true' : 'false'} key={option.id}>
             <input
               type="radio"
               name="confirmation"
