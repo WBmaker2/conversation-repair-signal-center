@@ -21,7 +21,12 @@ export function PhaseProgress({ phase, onBack }: PhaseProgressProps) {
     <nav className="phase-progress" aria-label="미션 단계">
       <ol>
         {PHASES.map((item, index) => (
-          <li key={item.phase} aria-current={item.phase === phase ? 'step' : undefined}>
+          <li
+            key={item.phase}
+            aria-current={item.phase === phase ? 'step' : undefined}
+            aria-label={`${index + 1}/4 ${item.label}`}
+            data-phase-state={index < currentIndex ? 'complete' : index === currentIndex ? 'current' : 'upcoming'}
+          >
             <span>{index + 1}/4</span> <span>{item.label}</span>
           </li>
         ))}

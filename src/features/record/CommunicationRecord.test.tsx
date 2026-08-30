@@ -60,8 +60,8 @@ describe('CommunicationRecord', () => {
     renderWithUser(<CommunicationRecord mission={mission} evidence={evidence} onRetry={() => undefined} onReturnCenter={() => undefined} />);
 
     expect(screen.getByRole('heading', { name: '통신 기록' })).toBeVisible();
-    expect(screen.getByText('처음 이해')).toBeVisible();
-    expect(screen.getByText('확인된 이해')).toBeVisible();
+    expect(screen.getByText('처음 생각한 뜻')).toBeVisible();
+    expect(screen.getByText('확인한 뜻')).toBeVisible();
     expect(screen.getByText('의미 확인 완료')).toBeVisible();
     expect(screen.queryByText(/발음 점수|속도 점수|순위|성적/)).not.toBeInTheDocument();
     expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
@@ -82,8 +82,8 @@ describe('CommunicationRecord', () => {
     expect(screen.getByText('담당자')).toBeVisible();
     expect(screen.getByText('더 구체적으로')).toBeVisible();
     expect(screen.getByText('비난하지 않고 확인 질문으로 대화를 이어 갔어요.')).toBeVisible();
-    expect(screen.getByText(/불명확한 부분 찾기.*1회/)).toBeVisible();
-    expect(screen.getByText(/이해한 뜻 확인하기.*1회/)).toBeVisible();
+    expect(screen.getByText(/찾은 정보 고르기.*1회/)).toBeVisible();
+    expect(screen.getByText(/내가 이해한 뜻 확인하기.*1회/)).toBeVisible();
   });
 
   it('dispatches retry and center actions through the supplied callbacks', async () => {
@@ -94,6 +94,13 @@ describe('CommunicationRecord', () => {
     await user.click(screen.getByRole('button', { name: '신호센터로 돌아가기' }));
     expect(onRetry).toHaveBeenCalledOnce();
     expect(onReturnCenter).toHaveBeenCalledOnce();
+  });
+
+  it('gives the next learning action a primary visual treatment', () => {
+    const fixture = completedEvidence('g34-classroom-box');
+    renderWithUser(<CommunicationRecord mission={fixture.mission} evidence={fixture.evidence} onRetry={() => undefined} onReturnCenter={() => undefined} />);
+    expect(screen.getByRole('button', { name: '이 미션 다시 하기' })).toHaveClass('primary-action');
+    expect(screen.getByRole('button', { name: '신호센터로 돌아가기' })).not.toHaveClass('primary-action');
   });
 
   it('renders a controlled error for impossible evidence references', () => {
@@ -140,12 +147,12 @@ describe('CommunicationRecord', () => {
     for (const mission of MISSIONS) {
       const fixture = retryRichEvidence(mission.id);
       const { unmount } = renderWithUser(<CommunicationRecord mission={fixture.mission} evidence={fixture.evidence} onRetry={() => undefined} onReturnCenter={() => undefined} />);
-      expect(screen.getByText(/불명확한 부분 찾기: 2회/)).toBeVisible();
+    expect(screen.getByText(/찾은 정보 고르기: 2회/)).toBeVisible();
     expect(screen.getByText(/다시 물어볼 표현 고르기: 2회/)).toBeVisible();
-    expect(screen.getByText(/상대 답 이해하기: 2회/)).toBeVisible();
+    expect(screen.getByText(/상대 답에서 뜻 찾기: 2회/)).toBeVisible();
     expect(screen.getByText(/이해한 뜻 확인하기: 2회/)).toBeVisible();
-      expect(screen.getByText('처음 이해')).toBeVisible();
-      expect(screen.getByText('확인된 이해')).toBeVisible();
+      expect(screen.getByText('처음 생각한 뜻')).toBeVisible();
+      expect(screen.getByText('확인한 뜻')).toBeVisible();
       unmount();
     }
   });

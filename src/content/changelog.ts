@@ -8,6 +8,16 @@ export interface ChangeRecord {
 
 export const CHANGELOG = [
   {
+    date: '2026-08-30',
+    category: '접근성',
+    detailKo: '업데이트 기록 영역을 넓히고, 빈 미션·전략 요약·학생용 결과 문구를 보완했습니다.',
+  },
+  {
+    date: '2026-08-29',
+    category: '개발',
+    detailKo: '첫 추천 미션과 단계별 학습 행동을 앞세우고, 완료 화면의 다음 행동을 분명하게 정리했습니다.',
+  },
+  {
     date: '2026-08-28',
     category: '개발',
     detailKo: '추천 미션과 단계 진행 표시를 앞세우고, 학생용 문구·오디오 오류 안내·확대 대화상자를 개선했습니다.',
@@ -31,7 +41,7 @@ export const CHANGELOG = [
   {
     date: '2026-08-26',
     category: '접근성',
-    detailKo: '키보드, 375px 모바일, 200% 확대, 스크린 리더 언어, 모션 감소 대체를 검증했습니다.',
+    detailKo: '키보드, 375px 모바일, 200% 확대, 스크린 리더용 언어 표기와 모션 감소 대체 규칙을 점검했습니다.',
   },
   {
     date: '2026-08-26',

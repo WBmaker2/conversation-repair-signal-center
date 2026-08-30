@@ -25,4 +25,13 @@ describe('PhaseProgress', () => {
     await user.click(screen.getByRole('button', { name: '이전 단계 보기' }));
     expect(onBack).toHaveBeenCalledOnce();
   });
+
+  it('labels completed and upcoming steps while keeping one current step', () => {
+    render(<PhaseProgress phase="response" onBack={vi.fn()} />);
+    expect(screen.getAllByRole('listitem', { current: 'step' })).toHaveLength(1);
+    expect(screen.getByRole('listitem', { name: /1\/4/ })).toHaveAttribute('data-phase-state', 'complete');
+    expect(screen.getByRole('listitem', { name: /2\/4/ })).toHaveAttribute('data-phase-state', 'complete');
+    expect(screen.getByRole('listitem', { name: /3\/4/ })).toHaveAttribute('data-phase-state', 'current');
+    expect(screen.getByRole('listitem', { name: /4\/4/ })).toHaveAttribute('data-phase-state', 'upcoming');
+  });
 });

@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { vi } from 'vitest';
 import { App } from '../../app/App';
 import { LanguageText } from '../../shared/LanguageText';
 
@@ -44,6 +45,28 @@ describe('signal center', () => {
     expect(document.querySelector('details')).not.toHaveAttribute('open');
   });
 
+  it('makes the first action explicit and gives cards a shared visual contract', () => {
+    render(<App />);
+
+    expect(screen.getByRole('heading', { name: '오늘의 첫 행동' })).toBeVisible();
+    expect(document.querySelector('.first-action p')).toHaveTextContent('학년을 고른 뒤 어느 상자부터 시작해 보세요.');
+    expect(screen.getByText('어느 상자', { selector: 'strong' })).toBeVisible();
+    expect(document.querySelector('.setup-panel')).toBeInTheDocument();
+    expect(document.querySelectorAll('[data-recommended="true"]')).toHaveLength(1);
+    expect(document.querySelectorAll('.mission-card')).toHaveLength(5);
+    expect(document.querySelectorAll('.mission-card .gi-pulse')).toHaveLength(1);
+    expect(screen.getByText('추천 미션')).toBeVisible();
+  });
+
+  it('keeps the recommended card labels in one compact row for narrow screens', () => {
+    render(<App />);
+
+    const recommended = document.querySelector('[data-recommended="true"]');
+    expect(recommended?.querySelector('.mission-card-labels')).toBeInTheDocument();
+    expect(recommended?.querySelector('.mission-card-labels')?.textContent).toContain('추천 미션');
+    expect(recommended?.querySelector('.mission-card-labels')?.textContent).toContain('먼저 해 보기');
+  });
+
   it('keeps the controlled voice preference and exposes the optional bundled voice', async () => {
     const user = userEvent.setup();
     render(<App />);
@@ -64,11 +87,49 @@ describe('signal center', () => {
     render(<App />);
 
     expect(screen.getByText('못 알아들은 순간은 대화를 이어 가는 신호예요.')).toBeVisible();
-    expect(screen.getByText('오늘의 전략: 이해가 안 되면 다시 물어도 괜찮아요.')).toBeVisible();
+    expect(screen.getByText('이해가 안 되면 다시 물어도 괜찮아요.')).toBeVisible();
     expect(screen.getByText('권장 학습 시간 20~30분')).toBeVisible();
     expect(screen.getByText('이름을 묻지 않으며, 새로고침하면 현재 통신 기록이 사라져요.')).toBeVisible();
     expect(screen.getByText('전략 도움말')).toBeVisible();
     expect(screen.getByText('대화 수리 전략')).not.toBeVisible();
+  });
+
+  it('shows each strategy purpose before the detailed help is opened', () => {
+    render(<App />);
+
+    const summary = screen.getByRole('region', { name: '전략 한눈에 보기' });
+    expect(screen.getByRole('heading', { name: '전략 한눈에 보기' })).toBeVisible();
+    expect(summary).toHaveTextContent('다시 말해 주세요');
+    expect(summary).toHaveTextContent('전체 발화를 놓쳤을 때');
+    expect(summary).toHaveTextContent('더 구체적으로');
+    expect(summary).toHaveTextContent('대상·시간·장소·수량·담당·순서가 불분명할 때');
+    expect(summary).toHaveTextContent('뜻 확인');
+    expect(summary).toHaveTextContent('내가 이해한 내용이 맞는지 확인할 때');
+    expect(summary).toHaveTextContent('다르게 말하기');
+    expect(summary).toHaveTextContent('상대가 내 말을 이해하지 못했을 때');
+    expect(screen.getByText('대화 수리 전략')).not.toBeVisible();
+  });
+
+  it('renders a recovery action instead of an empty mission grid', async () => {
+    const onGradeBandChange = vi.fn();
+    const { SignalCenter } = await import('./SignalCenter');
+    render(
+      <SignalCenter
+        gradeBand="3-4"
+        missions={[]}
+        voiceEnabled={false}
+        onGradeBandChange={onGradeBandChange}
+        onVoiceEnabledChange={() => undefined}
+        onMissionStart={() => undefined}
+      />,
+    );
+
+    expect(screen.getByRole('alert')).toHaveTextContent('이 수준의 미션을 찾을 수 없어요.');
+    const recovery = screen.getByRole('button', { name: '5~6학년 미션 보기' });
+    expect(recovery).toBeVisible();
+    await userEvent.setup().click(recovery);
+    expect(onGradeBandChange).toHaveBeenCalledWith('5-6');
+    expect(document.querySelector('.mission-grid')).not.toBeInTheDocument();
   });
 
   it('starts only the selected mission and never asks for personal information', async () => {

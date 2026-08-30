@@ -13,10 +13,10 @@ export interface CommunicationRecordProps {
 }
 
 const STAGE_LABELS: Record<MissionStage, string> = {
-  ambiguity: '불명확한 부분 찾기',
+  ambiguity: '찾은 정보 고르기',
   repair: '다시 물어볼 표현 고르기',
-  meaning: '상대 답 이해하기',
-  confirmation: '이해한 뜻 확인하기',
+  meaning: '상대 답에서 뜻 찾기',
+  confirmation: '내가 이해한 뜻 확인하기',
 };
 
 type Validation =
@@ -46,8 +46,8 @@ function isSlotKind(value: string): value is keyof typeof SLOT_LABELS_KO {
 
 function RecoveryActions({ onRetry, onReturnCenter }: Pick<CommunicationRecordProps, 'onRetry' | 'onReturnCenter'>) {
   return (
-    <div>
-      <button type="button" onClick={onRetry}>이 미션 다시 하기</button>
+    <div className="record-recovery-actions">
+      <button className="primary-action" type="button" onClick={onRetry}>이 미션 다시 하기</button>
       <button type="button" onClick={onReturnCenter}>신호센터로 돌아가기</button>
     </div>
   );
@@ -149,33 +149,33 @@ export function CommunicationRecord({
       <LearnerTakeaway mission={mission} evidence={safeEvidence} />
       <dl>
         <div>
-          <dt>찾은 슬롯 종류</dt>
+        <dt>찾은 정보</dt>
           <dd>{slotLabel}</dd>
         </div>
         <div>
-          <dt>사용 전략</dt>
+        <dt>고른 방법</dt>
           <dd>{strategy.labelKo}</dd>
         </div>
         <div>
-          <dt>처음 이해</dt>
+        <dt>처음 생각한 뜻</dt>
           <dd>{firstMeaning.labelKo}</dd>
         </div>
         <div>
-          <dt>확인된 이해</dt>
+        <dt>확인한 뜻</dt>
           <dd>{confirmedMeaning.labelKo}</dd>
         </div>
         <div>
-          <dt>뜻 확인</dt>
+        <dt>확인 질문</dt>
           <dd>의미 확인 완료</dd>
         </div>
         <div>
-          <dt>협력 태도</dt>
+        <dt>대화 태도</dt>
           <dd>{safeEvidence.collaborationFeedbackKo}</dd>
         </div>
       </dl>
 
-      <h3>단계별 시도</h3>
-      <ul aria-label="단계별 시도 횟수">
+      <h3>다시 해 본 횟수</h3>
+      <ul aria-label="다시 해 본 횟수">
         {attemptCounts.map(({ stage, label, count }) => (
           <li key={stage} data-stage={stage}>
             {label}: {count}회
@@ -183,8 +183,8 @@ export function CommunicationRecord({
         ))}
       </ul>
 
-      <div>
-        <button type="button" onClick={onRetry}>이 미션 다시 하기</button>
+      <div className="record-recovery-actions">
+        <button className="primary-action" type="button" onClick={onRetry}>이 미션 다시 하기</button>
         <button type="button" onClick={onReturnCenter}>신호센터로 돌아가기</button>
       </div>
       <TeacherSummary mission={mission} evidence={safeEvidence} />

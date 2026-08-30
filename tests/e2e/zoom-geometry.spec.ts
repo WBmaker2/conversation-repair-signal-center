@@ -20,3 +20,14 @@ test('update dialog keeps title and close control inside a zoomed viewport', asy
   }
   await expect(page.locator('[role="dialog"]')).toHaveCSS('overflow-y', 'auto');
 });
+
+test('update dialog gives the history list a readable viewport before scrolling', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.goto('./');
+  await page.getByRole('button', { name: '업데이트 내역' }).click();
+  const dialog = await page.getByRole('dialog', { name: '업데이트 내역' }).boundingBox();
+  expect(dialog).not.toBeNull();
+  expect(dialog!.height).toBeGreaterThanOrEqual(500);
+  expect(dialog!.height).toBeLessThanOrEqual(812);
+  await expect(page.locator('[role="dialog"]')).toHaveCSS('overflow-y', 'auto');
+});

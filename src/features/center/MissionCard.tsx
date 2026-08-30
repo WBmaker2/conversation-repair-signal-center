@@ -18,16 +18,21 @@ function contextLabel(context: Mission['politenessContext']) {
 
 export function MissionCard({ mission, onStart, isRecommended = false }: MissionCardProps) {
   return (
-    <article data-recommended={isRecommended ? 'true' : undefined}>
-      {isRecommended ? <p id={`${mission.id}-recommendation`} className="mission-recommendation">먼저 해 보기</p> : null}
+    <article className="mission-card" data-recommended={isRecommended ? 'true' : undefined}>
+      {isRecommended ? (
+        <div className="mission-card-labels">
+          <p className="mission-badge">추천 미션</p>
+          <p id={`${mission.id}-recommendation`} className="mission-recommendation">먼저 해 보기</p>
+        </div>
+      ) : null}
       <h3>{mission.titleKo}</h3>
-      <p>{mission.scenarioKo}</p>
-      <p>
+      <p className="mission-scenario">{mission.scenarioKo}</p>
+      <p className="mission-context">
         <span>{gradeLabel(mission.gradeBand)}</span> · <span>{contextLabel(mission.politenessContext)}</span>
       </p>
       <button
         type="button"
-        className={isRecommended ? 'gi-pulse' : undefined}
+        className={isRecommended ? 'gi-pulse primary-action' : undefined}
         aria-describedby={isRecommended ? `${mission.id}-recommendation` : undefined}
         onClick={() => onStart(mission.id)}
       >

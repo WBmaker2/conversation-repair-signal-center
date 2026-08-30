@@ -38,7 +38,7 @@ export function DialogueObservation({
       <fieldset>
         <legend>어느 부분이 분명하지 않나요?</legend>
         {mission.ambiguityOptions.map((option) => (
-          <label className="choice-label" key={option.id}>
+          <label className="choice-label" data-choice-selected={selectedOptionId === option.id ? 'true' : 'false'} key={option.id}>
             <input
               type="radio"
               name="ambiguity"

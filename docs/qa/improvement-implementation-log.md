@@ -101,3 +101,13 @@
 - 공개 학습 경로: [https://wbmaker2.github.io/conversation-repair-signal-center/](https://wbmaker2.github.io/conversation-repair-signal-center/)에서 HTTP 200, 앱 제목, CSS·JS 자산을 확인했습니다. 공개 JS 번들에서 `먼저 해 보기`, `이 표현으로 다시 물어보기`, `오늘 배운 점`, `음성을 재생할 수 없어요` 문구도 확인했습니다.
 - 공개 인터랙션: 이 macOS 호스트의 Chromium이 `bootstrap_check_in Permission denied (1100)` SIGTRAP으로 시작 전에 종료되어 자동 공개 클릭 경로는 실행하지 않았습니다. 로컬 대체 headless smoke에서 mobile·desktop CTA geometry, 단계 진행·복구, 완료 takeaway, reduced-motion, audio fallback을 확인한 결과와 구분해 기록합니다.
 - 남은 게이트: 실제 브라우저 200% 확대·키보드/터치 체감과 학생·교사 수동 사용성 확인이 남아 있습니다. VoiceOver 구현·검증은 프로젝트 범위에서 제외했습니다.
+
+## 2026-08-30 재감사 후속 보완
+
+이번 실행은 `education-webapp-redesign` 규칙과 `work/education-webapp-redesign-plan.md`의 18절을 먼저 확인한 뒤, 기존 작업 트리의 리디자인을 보존하면서 남은 P1/P2만 TDD 순서로 보완했습니다.
+
+1. RED: `SignalCenter.test.tsx`에 전략 목적 요약과 빈 미션 복구 기준, `accessibility.test.tsx`에 빈 feedback selector 기준, `zoom-geometry.spec.ts`에 375×812 dialog 높이 기준을 추가했습니다. 최소 구현 전 새 전략 요약·복구·selector는 실패했습니다.
+2. 최소 구현: `StrategySummary.tsx`, `EmptyMissionState.tsx`를 추가하고 `SignalCenter.tsx`에 연결했습니다. `components.css`의 dialog를 `70dvh`까지 확장하고 `[data-feedback-state="empty"]` 공간을 제거했습니다. `CommunicationRecord.tsx`의 학생용 라벨과 `changelog.ts`의 2026-08-30 기록을 갱신했습니다.
+3. GREEN: 센터·접근성·기록 focused unit 36개가 통과했습니다. 이후 전체 자동 게이트를 다시 실행해 `npm run test:run` 23개 파일·231개 테스트, lint, typecheck, source-size, privacy, audio 20개, audio verifier 6개, privacy test 5개, release-artifacts 1개, build를 모두 통과했습니다.
+
+관리형 macOS Chromium은 제품 assertion 전에 `mach_port_rendezvous`/`bootstrap_check_in Permission denied (1100)` SIGTRAP으로 종료되어 새 E2E geometry 결과를 만들지 못했습니다. 같은 host에서 반복하지 않았으며, VoiceOver·실제 학생/교사·물리 200% 확대는 프로젝트 규칙과 수동 게이트에 따라 실행하지 않았습니다.

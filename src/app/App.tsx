@@ -40,32 +40,44 @@ export function App(): JSX.Element {
     setUpdatesOpen(false);
   };
 
+  const updateLayer = (
+    content: JSX.Element,
+  ) => (
+    <>
+      <div className="app-background" inert={updatesOpen ? true : undefined}>
+        {content}
+        <div className="update-history-anchor">
+          <UpdateHistoryButton ref={updateTriggerRef} inert={updatesOpen} onClick={() => setUpdatesOpen(true)} />
+        </div>
+      </div>
+      {updatesOpen && <UpdateHistoryDialog records={CHANGELOG} onClose={closeUpdates} />}
+    </>
+  );
+
   if (session.phase !== 'center') {
     const mission = MISSIONS.find((candidate) => candidate.id === session.missionId);
     if (mission) {
-      return <MissionFlow mission={mission} session={session} dispatch={dispatch} voiceEnabled={voiceEnabled} />;
+      return updateLayer(
+        <MissionFlow mission={mission} session={session} dispatch={dispatch} voiceEnabled={voiceEnabled} />,
+      );
     }
     return <InvalidMissionFallback onReturnCenter={() => dispatch({ type: 'center.returned' })} />;
   }
 
-  return (
+  return updateLayer(
     <>
-      <div className="app-background" inert={updatesOpen ? true : undefined}>
-        <a className="skip-link" href="#main-content">본문으로 건너뛰기</a>
-        <main id="main-content" tabIndex={-1} className="app-shell">
-          <SignalCenter
-            gradeBand={gradeBand}
-            missions={getMissionsByGradeBand(gradeBand)}
-            voiceEnabled={voiceEnabled}
-            onGradeBandChange={setGradeBand}
-            onVoiceEnabledChange={setVoiceEnabled}
-            onMissionStart={(missionId) => dispatch({ type: 'mission.started', missionId })}
-          />
-        </main>
-      </div>
-      <UpdateHistoryButton ref={updateTriggerRef} inert={updatesOpen} onClick={() => setUpdatesOpen(true)} />
-      {updatesOpen && <UpdateHistoryDialog records={CHANGELOG} onClose={closeUpdates} />}
-    </>
+      <a className="skip-link" href="#main-content">본문으로 건너뛰기</a>
+      <main id="main-content" tabIndex={-1} className="app-shell">
+        <SignalCenter
+          gradeBand={gradeBand}
+          missions={getMissionsByGradeBand(gradeBand)}
+          voiceEnabled={voiceEnabled}
+          onGradeBandChange={setGradeBand}
+          onVoiceEnabledChange={setVoiceEnabled}
+          onMissionStart={(missionId) => dispatch({ type: 'mission.started', missionId })}
+        />
+      </main>
+    </>,
   );
 }
 
