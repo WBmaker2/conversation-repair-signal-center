@@ -73,7 +73,7 @@
 ## 릴리스 상태와 롤백
 
 - 리디자인 구현 단계에서는 커밋·푸시·GitHub Pages 배포·HVC 등록을 실행하지 않았습니다. 별도 릴리스 요청의 실제 결과는 이 문서의 릴리스 기록에 추가합니다.
-- 기존 공개 학습 경로는 [conversation-repair-signal-center Pages](https://wbmaker2.github.io/conversation-repair-signal-center/)이며, 이 변경분은 아직 공개 주소에 배포되지 않았습니다.
+- 기존 공개 학습 경로는 [conversation-repair-signal-center Pages](https://wbmaker2.github.io/conversation-repair-signal-center/)이며, 리디자인 구현 완료 시점에는 아직 공개 주소에 반영되지 않은 상태였습니다. 2026-08-30 릴리스 결과는 아래 기록에 추가했습니다.
 - 소스 변경을 되돌릴 때는 이 작업 트리의 변경 파일만 원래 참조로 복원하고 `public/favicon.svg`, `public/audio/**`, 미션 manifest·reducer·판정 계약은 보존합니다. 새 이미지 파일이 없으므로 자산 롤백은 없습니다.
 
 ## 2026-08-30 재감사 후속 보완
@@ -101,3 +101,13 @@
 - `npm run build`: Vite production build 성공
 - `tests/e2e/zoom-geometry.spec.ts`의 375×812 dialog 높이 테스트는 제품 assertion 전에 macOS Chromium `mach_port_rendezvous`/`bootstrap_check_in Permission denied (1100)` SIGTRAP으로 실행되지 않았습니다. 동일 host 재시도는 중단하고 환경 제한으로 기록합니다.
 - VoiceOver 구현·검증, 실제 학생·교사 승인, 물리 기기 터치·200% 확대는 프로젝트 범위 또는 별도 사람 검토 게이트로 남겼습니다.
+
+## 릴리스 결과 — 2026-08-30
+
+- 기능 커밋: `3e9f7d7` (`feat: redesign conversation repair signal center`)
+- 원격 기능 브랜치: `codex/conversation-repair-signal-center-improvements`에 push 완료
+- GitHub PR: [#3](https://github.com/WBmaker2/conversation-repair-signal-center/pull/3), `main` 병합 커밋 `0b323a4949a49ab6b641e09766ec962d3d2b3948`
+- Pages workflow: [Deploy to GitHub Pages run 33292337538](https://github.com/WBmaker2/conversation-repair-signal-center/actions/runs/33292337538) 성공. `build`의 quality checks·production build와 `deploy`가 모두 성공했습니다.
+- 공개 URL: [https://wbmaker2.github.io/conversation-repair-signal-center/](https://wbmaker2.github.io/conversation-repair-signal-center/) HTTP 200, `<title>대화 수리 신호센터</title>`, favicon·JS·CSS HTTP 200을 확인했습니다.
+- 공개 번들 확인: `전략 한눈에 보기`, `이 수준의 미션을 찾을 수 없어요`, `다시 해 본 횟수`, `2026-08-30` 문자열이 포함되어 있습니다.
+- 공개 브라우저 상호작용은 이 macOS Chromium의 동일한 `bootstrap_check_in Permission denied (1100)` SIGTRAP 제한 때문에 실행하지 않았습니다. 실제 학생·교사 수동 사용성, VoiceOver, 물리 확대는 별도 게이트입니다.

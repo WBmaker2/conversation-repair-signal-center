@@ -111,3 +111,10 @@
 3. GREEN: 센터·접근성·기록 focused unit 36개가 통과했습니다. 이후 전체 자동 게이트를 다시 실행해 `npm run test:run` 23개 파일·231개 테스트, lint, typecheck, source-size, privacy, audio 20개, audio verifier 6개, privacy test 5개, release-artifacts 1개, build를 모두 통과했습니다.
 
 관리형 macOS Chromium은 제품 assertion 전에 `mach_port_rendezvous`/`bootstrap_check_in Permission denied (1100)` SIGTRAP으로 종료되어 새 E2E geometry 결과를 만들지 못했습니다. 같은 host에서 반복하지 않았으며, VoiceOver·실제 학생/교사·물리 200% 확대는 프로젝트 규칙과 수동 게이트에 따라 실행하지 않았습니다.
+
+## 2026-08-30 릴리스 기록
+
+- 기능 커밋 `3e9f7d7`을 원격 기능 브랜치에 push하고 [PR #3](https://github.com/WBmaker2/conversation-repair-signal-center/pull/3)을 `main`에 병합했습니다. merge commit은 `0b323a4949a49ab6b641e09766ec962d3d2b3948`입니다.
+- [Pages workflow 33292337538](https://github.com/WBmaker2/conversation-repair-signal-center/actions/runs/33292337538)가 quality checks·build·deploy 모두 성공했습니다.
+- [공개 URL](https://wbmaker2.github.io/conversation-repair-signal-center/)에서 HTTP 200, 제목, favicon·JS·CSS 자산 200과 후속 문구(`전략 한눈에 보기`, `이 수준의 미션을 찾을 수 없어요`, `다시 해 본 횟수`, `2026-08-30`)를 확인했습니다.
+- 공개 브라우저 상호작용은 macOS Chromium SIGTRAP 제한으로 실행하지 않았고, 실제 학생/교사 사용성·VoiceOver·물리 확대는 별도 게이트로 남겼습니다.
