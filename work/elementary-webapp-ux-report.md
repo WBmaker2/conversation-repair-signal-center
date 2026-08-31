@@ -59,8 +59,19 @@ CLI Playwright는 macOS Chrome daemon의 `SIGABRT`/`bootstrap_check_in Permissio
 3. 실제 iOS Safari/Android Chrome 터치에서 44px 조작 영역과 dialog 스크롤을 확인합니다.
 4. 실제 음원 재생 품질은 별도 청취 승인으로 확인합니다.
 
+## 릴리스 증거
+
+- 구현 커밋: `4dbd4d7 fix: clarify learner record language`
+- 원격 feature push: `codex/conversation-repair-signal-center-improvements`
+- Pull Request: [#5](https://github.com/WBmaker2/conversation-repair-signal-center/pull/5)
+- main merge commit: `23cb358a1cfec8b2a9969acc77ad041bb6d02fcd`
+- Pages workflow: [33344734533](https://github.com/WBmaker2/conversation-repair-signal-center/actions/runs/33344734533) — build/quality checks/deploy 모두 성공
+- 공개 주소: [Conversation Repair Signal Center](https://wbmaker2.github.io/conversation-repair-signal-center/)
+- 공개 HTTP 확인: `curl -I -L` 결과 HTTP 200, `last-modified: Mon, 31 Aug 2026 00:30:56 GMT`
+- 공개 브라우저 확인: 제목 `대화 수리 신호센터`, 375px에서 `g34-classroom-box` 오답 회복→완료, h2 `학습 기록`, 2026-08-31 업데이트 날짜, Escape 뒤 trigger focus 복원, 콘솔 error/warning 0, 정적 요청 4건 모두 200
+
 ## 공개 확인 링크
 
-기존 공개 Pages 주소는 [Conversation Repair Signal Center](https://wbmaker2.github.io/conversation-repair-signal-center/)입니다. 이번 개선 변경은 커밋·푸시·배포하지 않았으므로 이 주소에는 아직 반영되지 않았습니다. 현재 개선본은 로컬 브라우저 증거로만 확인했습니다.
+위 공개 주소에는 이번 개선본이 배포되어 있습니다. 실제 학생·교사 승인과 Safari/물리 터치 검토는 별도 사람 검토 항목으로 남아 있습니다.
 
-VoiceOver 구현과 검증은 프로젝트 범위에서 제외했습니다. 이번 요청에서는 패키지 설치, 커밋, 푸시, 배포, HVC 등록을 실행하지 않았습니다.
+VoiceOver 구현과 검증은 프로젝트 범위에서 제외했습니다. 이번 릴리스에서는 패키지 설치와 HVC 등록은 실행하지 않았고, 커밋·푸시·배포 및 공개 URL 검증은 완료했습니다.
