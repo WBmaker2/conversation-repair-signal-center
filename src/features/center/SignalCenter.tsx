@@ -48,7 +48,7 @@ export function SignalCenter({
         )}
       </section>
 
-      <p className="privacy-note">이름을 묻지 않으며, 새로고침하면 현재 통신 기록이 사라져요.</p>
+      <p className="privacy-note">이름을 묻지 않으며, 새로고침하면 지금까지의 학습 기록이 사라져요.</p>
       <p className="center-status" role="status" aria-live="polite" lang="ko">학년·음성을 고른 뒤 시작하세요.</p>
 
       <section aria-labelledby="today-strategy-heading">

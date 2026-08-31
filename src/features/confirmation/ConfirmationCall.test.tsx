@@ -29,7 +29,7 @@ describe('ConfirmationCall', () => {
     await user.click(screen.getByRole('radio', { name: accepted.textEn }));
     await user.click(screen.getByRole('button', { name: '확인 질문 보내기' }));
 
-    expect(screen.getByRole('heading', { name: '통신 기록' })).toBeVisible();
+    expect(screen.getByRole('heading', { name: '학습 기록' })).toBeVisible();
     expect(screen.getAllByText('뜻 확인').length).toBeGreaterThan(0);
     expect(screen.getByText('의미 확인 완료')).toBeVisible();
   });

@@ -8,6 +8,11 @@ export interface ChangeRecord {
 
 export const CHANGELOG = [
   {
+    date: '2026-08-31',
+    category: '콘텐츠',
+    detailKo: '학생이 이해하기 쉬운 학습 기록 이름과 복구 안내로 문구를 다듬었습니다.',
+  },
+  {
     date: '2026-08-30',
     category: '접근성',
     detailKo: '업데이트 기록 영역을 넓히고, 빈 미션·전략 요약·학생용 결과 문구를 보완했습니다.',

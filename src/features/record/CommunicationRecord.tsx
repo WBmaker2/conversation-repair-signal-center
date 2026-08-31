@@ -59,7 +59,7 @@ function controlledError(
 ) {
   return (
     <section aria-labelledby="record-heading">
-      <h2 id="record-heading" tabIndex={-1}>통신 기록</h2>
+      <h2 id="record-heading" tabIndex={-1}>학습 기록</h2>
       <p role="alert">{message}</p>
       <p role="status" aria-live="polite" lang="ko">복구 방법을 선택해 학습을 이어 갈 수 있어요.</p>
       <RecoveryActions {...callbacks} />
@@ -69,50 +69,50 @@ function controlledError(
 
 function validateEvidence(mission: Mission, value: unknown): Validation {
   if (!isObject(value)) {
-    return { ok: false, message: '통신 기록의 학습 증거를 읽을 수 없습니다. 이 미션을 다시 시작해 주세요.' };
+    return { ok: false, message: '학습 기록을 읽을 수 없어요. 이 미션을 다시 시작해 주세요.' };
   }
   if (value.missionId !== mission.id) {
-    return { ok: false, message: '이 미션의 통신 기록을 확인할 수 없습니다. 신호센터에서 다시 시작해 주세요.' };
+    return { ok: false, message: '이 미션 기록을 확인할 수 없어요. 신호센터에서 다시 시작해 주세요.' };
   }
   if (!Array.isArray(value.attempts)) {
-    return { ok: false, message: '통신 기록의 시도 정보가 올바르지 않습니다. 이 미션을 다시 시작해 주세요.' };
+    return { ok: false, message: '시도 기록을 읽을 수 없어요. 이 미션을 다시 시작해 주세요.' };
   }
 
   const seenStages = new Set<MissionStage>();
   const acceptedStages = new Set<MissionStage>();
   for (const attempt of value.attempts) {
     if (!isObject(attempt) || !isMissionStage(attempt.stage) || typeof attempt.optionId !== 'string' || (attempt.status !== 'accepted' && attempt.status !== 'retry')) {
-      return { ok: false, message: '통신 기록의 시도 정보가 올바르지 않습니다. 이 미션을 다시 시작해 주세요.' };
+      return { ok: false, message: '시도 기록을 읽을 수 없어요. 이 미션을 다시 시작해 주세요.' };
     }
     const option = optionsForStage(mission, attempt.stage).find(({ id }) => id === attempt.optionId);
     if (!option || (attempt.status === 'accepted') !== option.accepted) {
-      return { ok: false, message: '통신 기록의 선택 근거가 미션과 맞지 않습니다. 이 미션을 다시 시작해 주세요.' };
+      return { ok: false, message: '이 미션에서 고른 내용을 확인할 수 없어요. 이 미션을 다시 시작해 주세요.' };
     }
     seenStages.add(attempt.stage);
     if (attempt.status === 'accepted') acceptedStages.add(attempt.stage);
   }
   const allStages = (Object.keys(STAGE_LABELS) as MissionStage[]).every((stage) => seenStages.has(stage) && acceptedStages.has(stage));
   if (!allStages) {
-    return { ok: false, message: '통신 기록에 필요한 학습 단계가 빠져 있습니다. 이 미션을 다시 시작해 주세요.' };
+    return { ok: false, message: '필요한 학습 단계가 빠져 있어요. 이 미션을 다시 시작해 주세요.' };
   }
 
   if (typeof value.identifiedSlotKind !== 'string' || !isSlotKind(value.identifiedSlotKind)
     || !mission.ambiguityOptions.some((option) => option.accepted && option.slotKind === value.identifiedSlotKind)) {
-    return { ok: false, message: '통신 기록의 불명확한 정보가 미션과 맞지 않습니다. 이 미션을 다시 시작해 주세요.' };
+    return { ok: false, message: '찾은 정보가 이 미션과 맞지 않아요. 이 미션을 다시 시작해 주세요.' };
   }
   const strategy = REPAIR_STRATEGIES.find(({ id }) => id === value.repairStrategyId);
   if (!strategy || !mission.allowedStrategyIds.includes(strategy.id)) {
-    return { ok: false, message: '통신 기록의 수리 전략을 확인할 수 없습니다. 이 미션을 다시 시작해 주세요.' };
+    return { ok: false, message: '고른 수리 전략을 확인할 수 없어요. 이 미션을 다시 시작해 주세요.' };
   }
   if (typeof value.firstMeaningOptionId !== 'string' || !mission.meaningOptions.some(({ id }) => id === value.firstMeaningOptionId)) {
-    return { ok: false, message: '통신 기록의 처음 이해를 확인할 수 없습니다. 이 미션을 다시 시작해 주세요.' };
+    return { ok: false, message: '처음 생각한 뜻을 확인할 수 없어요. 이 미션을 다시 시작해 주세요.' };
   }
   const confirmedMeaning = mission.meaningOptions.find(({ id }) => id === value.confirmedMeaningOptionId);
   if (!confirmedMeaning || !confirmedMeaning.accepted || value.meaningConfirmed !== true) {
-    return { ok: false, message: '통신 기록의 확인된 이해를 확인할 수 없습니다. 이 미션을 다시 시작해 주세요.' };
+    return { ok: false, message: '확인한 뜻을 확인할 수 없어요. 이 미션을 다시 시작해 주세요.' };
   }
   if (typeof value.collaborationFeedbackKo !== 'string') {
-    return { ok: false, message: '통신 기록의 협력 피드백을 확인할 수 없습니다. 이 미션을 다시 시작해 주세요.' };
+    return { ok: false, message: '대화 태도 기록을 확인할 수 없어요. 이 미션을 다시 시작해 주세요.' };
   }
   return { ok: true, evidence: value as unknown as MissionEvidence };
 }
@@ -132,7 +132,7 @@ export function CommunicationRecord({
   const strategy = REPAIR_STRATEGIES.find(({ id }) => id === safeEvidence.repairStrategyId);
   const firstMeaning = mission.meaningOptions.find(({ id }) => id === safeEvidence.firstMeaningOptionId);
   const confirmedMeaning = mission.meaningOptions.find(({ id }) => id === safeEvidence.confirmedMeaningOptionId);
-  if (!slotLabel || !strategy || !firstMeaning || !confirmedMeaning) return controlledError('통신 기록을 표시할 수 없습니다. 이 미션을 다시 시작해 주세요.', { onRetry, onReturnCenter });
+  if (!slotLabel || !strategy || !firstMeaning || !confirmedMeaning) return controlledError('학습 기록을 표시할 수 없어요. 이 미션을 다시 시작해 주세요.', { onRetry, onReturnCenter });
 
   const attemptCounts = (Object.keys(STAGE_LABELS) as MissionStage[]).map((stage) => ({
     stage,
@@ -142,7 +142,7 @@ export function CommunicationRecord({
 
   return (
     <section aria-labelledby="record-heading">
-      <h2 id="record-heading" tabIndex={-1}>통신 기록</h2>
+      <h2 id="record-heading" tabIndex={-1}>학습 기록</h2>
       <p role="status" aria-live="polite" lang="ko">학습 기록이 준비되었습니다.</p>
       <h3>미션</h3>
       <p>{mission.titleKo}</p>

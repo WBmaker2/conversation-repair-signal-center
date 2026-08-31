@@ -21,7 +21,7 @@ const phaseHeadings: Record<Phase, string> = {
   repair: '어떻게 다시 물어볼까요?',
   response: '상대의 대답 살펴보기',
   confirm: '내가 이해한 뜻 확인하기',
-  record: '통신 기록',
+  record: '학습 기록',
 };
 
 function renderAppAtPhase(phase: Phase) {
@@ -125,6 +125,9 @@ describe('responsive accessibility contract', () => {
   it('focus-manages and recovers the invalid mission fallback', () => {
     render(<InvalidMissionFallback onReturnCenter={() => undefined} />);
     expect(screen.getByRole('heading', { name: '대화 수리 신호센터' })).toHaveFocus();
+    expect(screen.getByRole('heading', { name: '학습 기록' })).toBeVisible();
+    expect(screen.queryByRole('heading', { name: '통신 기록' })).not.toBeInTheDocument();
+    expect(screen.getByText('이 미션을 찾을 수 없어요. 신호센터에서 다른 미션을 골라 주세요.')).toBeVisible();
     expect(screen.getAllByRole('link', { name: '본문으로 건너뛰기' })).toHaveLength(1);
     expect(screen.getAllByRole('main')).toHaveLength(1);
     expect(screen.getByRole('button', { name: '신호센터로 돌아가기' })).toBeVisible();
