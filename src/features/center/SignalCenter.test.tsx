@@ -89,7 +89,7 @@ describe('signal center', () => {
     expect(screen.getByText('못 알아들은 순간은 대화를 이어 가는 신호예요.')).toBeVisible();
     expect(screen.getByText('이해가 안 되면 다시 물어도 괜찮아요.')).toBeVisible();
     expect(screen.getByText('권장 학습 시간 20~30분')).toBeVisible();
-    expect(screen.getByText('이름을 묻지 않으며, 새로고침하면 현재 통신 기록이 사라져요.')).toBeVisible();
+    expect(screen.getByText('이름을 묻지 않으며, 새로고침하면 지금까지의 학습 기록이 사라져요.')).toBeVisible();
     expect(screen.getByText('전략 도움말')).toBeVisible();
     expect(screen.getByText('대화 수리 전략')).not.toBeVisible();
   });

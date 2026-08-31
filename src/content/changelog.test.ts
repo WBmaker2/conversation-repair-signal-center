@@ -2,13 +2,18 @@ import { describe, expect, it } from 'vitest';
 import { CHANGELOG } from './changelog';
 
 describe('CHANGELOG', () => {
-  it('starts with the 2026-08-30 improvement record', () => {
-    expect(CHANGELOG[0]).toEqual(expect.objectContaining({ date: '2026-08-30' }));
+  it('starts with the 2026-08-31 learner-language improvement record', () => {
+    expect(CHANGELOG[0]).toEqual(expect.objectContaining({ date: '2026-08-31' }));
     expect(CHANGELOG[0]?.detailKo).toMatch(/업데이트|미션|전략|학생/);
   });
 
   it('keeps dated design, development, content, curriculum, and accessibility records', () => {
     expect(CHANGELOG).toEqual([
+      {
+        date: '2026-08-31',
+        category: '콘텐츠',
+        detailKo: '학생이 이해하기 쉬운 학습 기록 이름과 복구 안내로 문구를 다듬었습니다.',
+      },
       {
         date: '2026-08-30',
         category: '접근성',

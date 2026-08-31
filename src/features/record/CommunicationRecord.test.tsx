@@ -59,7 +59,8 @@ describe('CommunicationRecord', () => {
     const { mission, evidence } = completedEvidence('g34-classroom-box');
     renderWithUser(<CommunicationRecord mission={mission} evidence={evidence} onRetry={() => undefined} onReturnCenter={() => undefined} />);
 
-    expect(screen.getByRole('heading', { name: '통신 기록' })).toBeVisible();
+    expect(screen.getByRole('heading', { name: '학습 기록' })).toBeVisible();
+    expect(screen.queryByRole('heading', { name: '통신 기록' })).not.toBeInTheDocument();
     expect(screen.getByText('처음 생각한 뜻')).toBeVisible();
     expect(screen.getByText('확인한 뜻')).toBeVisible();
     expect(screen.getByText('의미 확인 완료')).toBeVisible();
@@ -113,7 +114,7 @@ describe('CommunicationRecord', () => {
         onReturnCenter={() => undefined}
       />,
     );
-    expect(screen.getByRole('alert')).toHaveTextContent(/통신 기록|학습 증거/);
+    expect(screen.getByRole('alert')).toHaveTextContent(/학습 기록|다시 시작/);
     expect(screen.queryByText('의미 확인 완료')).not.toBeInTheDocument();
   });
 
@@ -136,7 +137,7 @@ describe('CommunicationRecord', () => {
           onReturnCenter={() => undefined}
         />,
       );
-      expect(screen.getByRole('alert')).toHaveTextContent(/통신 기록|학습 증거/);
+      expect(screen.getByRole('alert')).toHaveTextContent(/학습 기록|시도 기록|다시 시작/);
       expect(screen.getByRole('button', { name: '이 미션 다시 하기' })).toBeVisible();
       expect(screen.getByRole('button', { name: '신호센터로 돌아가기' })).toBeVisible();
       unmount();
@@ -173,7 +174,7 @@ describe('CommunicationRecord', () => {
   it('makes null-evidence record recovery reachable from MissionFlow', () => {
     const mission = getMissionById('g34-classroom-box');
     renderWithUser(<MissionFlowHarness initialState={{ ...createSessionAtPhase(mission, 'record'), evidence: null }} />);
-    expect(screen.getByRole('alert')).toHaveTextContent('학습 증거를 찾을 수 없습니다');
+    expect(screen.getByRole('alert')).toHaveTextContent('학습 기록이 없어요');
     expect(screen.getByRole('button', { name: '이 미션 다시 하기' })).toBeVisible();
     expect(screen.getByRole('button', { name: '신호센터로 돌아가기' })).toBeVisible();
   });
