@@ -112,7 +112,7 @@ App
 - 소스·테스트·스타일 단일 파일은 500줄 미만으로 유지합니다.
 - VoiceOver 구현·검증, 실제 학생·교사 승인, 실제 음원 청취 승인을 주장하지 않습니다.
 - 관련 없는 `.gstack/` 미추적 자료와 기존 커밋 상태를 보존합니다.
-- 이번 요청에서는 커밋·푸시·배포·HVC 등록·패키지 설치를 실행하지 않습니다.
+- 사용자 승인 후 커밋·푸시·배포를 실행했으며, HVC 등록과 패키지 설치는 실행하지 않았습니다. 릴리스 증거는 `work/elementary-webapp-ux-report.md`에 기록합니다.
 
 ## 예상 파일 구조와 책임
 
@@ -213,21 +213,23 @@ src/
 - [x] Files: `work/elementary-webapp-ux-report.md`, `work/elementary-webapp-ux-audit.md`, `work/elementary-webapp-ux-language-audit.md`, `work/elementary-webapp-ux-simulation-test.md`
 - 100-point gate: 언어·시각 가독성을 별도 점수로 기록하고, P0/P1 0개·핵심 경로·모바일·키보드·자산 안전·문구 재검증의 상태를 `confirmed/partial/not run/blocked`로 구분합니다.
 - 최종 상태: 시뮬레이션 게이트 N/A, 이미지 `no-image-needed`, VoiceOver·실제 학생/교사 승인은 범위 제외 또는 사람 검토 pending.
-- 사용자에게 보고할 내용: 변경 파일, 테스트 명령·결과, 브라우저 증거, 남은 사람 검토, 커밋·푸시·배포를 실행하지 않았다는 사실.
-- 실행 결과: 자동·브라우저 증거 점수 84/100(학습 목표 12/15, 언어 14/20, 구조 11/12, 피드백 11/13, 시각 10/10, 키보드 9/10, 반응형 8/10, 런타임 5/5, 자산 안전 4/5), 전체 판정 `conditional`입니다. 실제 학생·교사·Safari·물리 터치 검토가 남아 릴리스 통과로 보고하지 않습니다.
+- 사용자에게 보고할 내용: 변경 파일, 테스트 명령·결과, 브라우저 증거, 남은 사람 검토, 커밋·푸시·배포 결과.
+- 실행 결과: 자동·브라우저 증거 점수 84/100(학습 목표 12/15, 언어 14/20, 구조 11/12, 피드백 11/13, 시각 10/10, 키보드 9/10, 반응형 8/10, 런타임 5/5, 자산 안전 4/5), 전체 판정 `conditional`입니다. 실제 학생·교사·Safari·물리 터치 검토가 남아 있어 사람 승인 게이트는 계속 pending이며, 공개 Pages 배포 자체는 성공했습니다.
 
-## 향후 릴리스 명령과 예상 결과
+## 릴리스 명령과 실행 결과
 
-이번 실행에서는 아래 명령을 실행하지 않습니다. 별도 릴리스 승인 뒤에만 다음 순서를 사용합니다.
+아래 순서는 2026-08-31 사용자 승인 후 실제로 실행했으며, 다음 결과를 남겼습니다.
 
-1. `git status --short --branch` → 계획에 포함된 변경과 기존 `.gstack/` 산출물 분리
-2. 위 Task 4의 전체 품질 명령 → 각 명령 exit 0
+1. `git status --short --branch` → `.gstack/`·`.playwright-mcp/`를 제외하고 관련 source/test/work 문서만 분리
+2. Task 4 품질 명령 → 각 명령 exit 0
 3. `git diff --check` → whitespace 오류 0
-4. 선택 파일만 `git add` → `.gstack/`와 무관한 변경은 staging하지 않음
-5. `git commit -m "fix: clarify learner record language"` → 문구·테스트·감사 문서 커밋 생성
-6. `git push origin HEAD` → 현재 작업 브랜치만 원격 갱신
-7. Pages workflow 확인 및 `curl -I https://wbmaker2.github.io/conversation-repair-signal-center/` → CI 성공·공개 URL HTTP 200
-8. 공개 learner path에서 제목·자산·모바일·콘솔·외부 요청을 확인한 뒤에만 릴리스 완료로 보고
+4. 선택 파일 `git add` → 관련 18개 파일만 staging
+5. `git commit -m "fix: clarify learner record language"` → `4dbd4d7` 생성
+6. `git push origin HEAD` → feature 브랜치 원격 push 성공
+7. PR #5 merge → main commit `23cb358a1cfec8b2a9969acc77ad041bb6d02fcd`
+8. Pages workflow `33344734533` → build/quality checks/deploy 성공
+9. `curl -I -L https://wbmaker2.github.io/conversation-repair-signal-center/` → HTTP 200
+10. 공개 learner path → 제목·학습 기록 문구·오답 회복·업데이트 날짜·focus·모바일·콘솔·정적 요청 확인
 
 ## 실행 체크리스트
 
@@ -241,4 +243,4 @@ src/
 - [x] 자동 게이트 실행
 - [x] 동일 시나리오 브라우저 재검증
 - [x] 최종 감사·보고서 작성
-- [x] 커밋·푸시·배포는 별도 승인 전까지 실행하지 않음
+- [x] 커밋·푸시·배포 실행 및 공개 Pages 결과 확인 완료
